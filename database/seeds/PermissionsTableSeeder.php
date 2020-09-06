@@ -22,7 +22,8 @@ class PermissionsTableSeeder extends Seeder
             'category', 'address', 'social', 'phone',
             'email', 'product', 'offer',
             'coupon', 'feature', 'screenshot',
-            'city', 'governorate', 'salon', 'branch'
+            'city', 'governorate', 'salon', 'branch',
+            'service'
         ];
 
         foreach($models as $model) {

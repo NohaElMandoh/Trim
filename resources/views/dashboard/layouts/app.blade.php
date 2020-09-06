@@ -182,6 +182,9 @@
                                 </span>
                             </a>
                             <ul class="treeview-menu" >
+                                @component('sidebar_item', ['icon' => 'fa fa-server', 'label' => 'service'])
+                                    service
+                                @endcomponent
                                 @component('sidebar_item', ['icon' => 'fa fa-cubes', 'label' => 'category', 'plural' => 'categories', 'plural_name' => 'categories'])
                                     category
                                 @endcomponent

@@ -1,7 +1,7 @@
 @extends('dashboard.layouts.app')
 @section('title',  __('Creating').' '.ucfirst(__('captain')))
 @section('content')
-<form role="form" class="form-horizontal" method="POST" action="{{ route('captains.store') }}" enctype="multipart/form-data">
+<form service="form" class="form-horizontal" method="POST" action="{{ route('captains.store') }}" enctype="multipart/form-data">
     @csrf
     <div class="form-body">
         @component('input', ['type' => 'text', 'label' => 'Name', 'required' => true])
@@ -47,6 +47,17 @@
                 <select class="js-example-basic-single js-states form-control" id="gender" name="gender">
                     <option value="male" {{ old('gender') == 'male' ? 'selected': ''}}>{{ ucfirst(__('male')) }}</option>
                     <option value="female" {{ old('gender') == 'female' ? 'selected': ''}}>{{ ucfirst(__('female')) }}</option>
+                </select>
+                <div class="form-control-focus"> </div>
+            </div>
+        </div>
+        <div class="form-group form-md-line-input">
+            <label class="col-md-2 control-label">{{ ucfirst(__('services')) }}</label>
+            <div class="col-md-10">
+                <select class="js-example-basic-single js-states form-control" id="services[]" name="services[]" multiple="multiple">
+                    @foreach(\Modules\Service\Entities\Service::all() as $service)
+                    <option value="{{ $service->id }}" @if(old('services')) @if(in_array($service->id, old('services'))) selected @endif @endif>{{ $service->title }}</option>
+                    @endforeach
                 </select>
                 <div class="form-control-focus"> </div>
             </div>

@@ -155,6 +155,17 @@
                 <br />
             </div>
         </div>
+        <div class="form-group form-md-line-input">
+            <label class="col-md-2 control-label">{{ ucfirst(__('services')) }}</label>
+            <div class="col-md-10">
+                <select class="js-example-basic-single js-states form-control" id="services[]" name="services[]" multiple="multiple">
+                    @foreach(\Modules\Service\Entities\Service::all() as $service)
+                    <option value="{{ $service->id }}" @if(old('services')) @if(in_array($service->id, old('services'))) selected @endif @else @if(in_array($service->id, $selected)) selected @endif  @endif>{{ $service->title }}</option>
+                    @endforeach
+                </select>
+                <div class="form-control-focus"> </div>
+            </div>
+        </div>
         @component('checkbox', ['label' => 'Active', 'value' => $row->is_active])
             is_active
         @endcomponent

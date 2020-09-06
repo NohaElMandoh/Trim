@@ -102,4 +102,8 @@ class User extends Authenticatable
     {
         return $this->hasMany('Modules\Salon\Entities\WorkDay', 'user_id');
     }
+
+    public function services() {
+        return $this->belongsToMany('Modules\Service\Entities\Service');
+    }
 }

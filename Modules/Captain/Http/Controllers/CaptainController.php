@@ -54,6 +54,8 @@ class CaptainController extends Controller
             'gender'        => 'required|in:male,female',
             'governorate_id'=> 'required|exists:governorates,id',
             'city_id'       => 'required|exists:cities,id',
+            'services'      => 'nullable|array',
+            'services.*'    => 'required|exists:services,id'
         ]);
 
         $data               = $request->all();
@@ -64,6 +66,7 @@ class CaptainController extends Controller
         $row                = User::create($data);
         $captain            = config('permission.models.role')::where('name', 'captain')->firstOrFail();
         $row->roles()->attach($captain);
+        $row->services()->sync($request->services);
         return redirect()->route('captains.index')->with(['status' => 'success', 'message' => __('Stored successfully')]);
     }
 
@@ -86,7 +89,8 @@ class CaptainController extends Controller
     public function edit($id)
     {
         $row               = User::findOrFail($id);
-        return view('captain::edit', compact('row'));
+        $selected           = $row->services()->pluck('id')->toArray();
+        return view('captain::edit', compact('row', 'selected'));
     }
 
     /**
@@ -106,6 +110,8 @@ class CaptainController extends Controller
             'id_photo'      => 'nullable|file|max:2048',
             'governorate_id'=> 'required|exists:governorates,id',
             'city_id'       => 'required|exists:cities,id',
+            'services'      => 'nullable|array',
+            'services.*'    => 'required|exists:services,id'
         ]);
 
         $data               = $request->all();
@@ -118,6 +124,7 @@ class CaptainController extends Controller
 
         $row                = User::findOrFail($id);
         $row->update($data);
+        $row->services()->sync($request->services);
         return redirect()->route('captains.index')->with(['status' => 'success', 'message' => __('Updated successfully')]);
     }
 

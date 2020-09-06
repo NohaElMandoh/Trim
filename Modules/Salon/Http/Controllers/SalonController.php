@@ -60,6 +60,8 @@ class SalonController extends Controller
             'works'         => 'required|array',
             'works.*.from'  => 'required|string|max:255',
             'works.*.to'    => 'required|string|max:255',
+            'services'      => 'nullable|array',
+            'services.*'    => 'required|exists:services,id'
         ]);
 
         $data               = $request->all();
@@ -71,6 +73,7 @@ class SalonController extends Controller
         $row                = User::create($data);
         $salon              = config('permission.models.role')::where('name', 'salon')->firstOrFail();
         $row->roles()->attach($salon);
+        $row->services()->sync($request->services);
         if($request->works) {
             foreach($request->works as $work) {
                 $row->works()->create($work);
@@ -98,7 +101,8 @@ class SalonController extends Controller
     public function edit($id)
     {
         $row               = User::findOrFail($id);
-        return view('salon::edit', compact('row'));
+        $selected          = $row->services()->pluck('id')->toArray();
+        return view('salon::edit', compact('row', 'selected'));
     }
 
     /**
@@ -123,6 +127,8 @@ class SalonController extends Controller
             'works'         => 'required|array',
             'works.*.from'  => 'required|string|max:255',
             'works.*.to'    => 'required|string|max:255',
+            'services'      => 'nullable|array',
+            'services.*'    => 'required|exists:services,id'
         ]);
 
         $data               = $request->all();
@@ -138,6 +144,7 @@ class SalonController extends Controller
 
         $row                = User::findOrFail($id);
         $row->update($data);
+        $row->services()->sync($request->services);
         WorkDay::where('user_id', $row->id)->delete();
         if($request->works) {
             foreach($request->works as $work) {

@@ -45,6 +45,18 @@
     <div class="panel-heading">{{ __('Points') }}</div>
     <div class="panel-body">{{ $row->points }}</div>
 </div>
+<div class="panel panel-default">
+    <div class="panel-heading">{{ ucfirst(__('services')) }}</div>
+    <div class="panel-body">
+        <div class="row">
+        @forelse ($row->services()->get() as $service)
+            <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">{{ $service->title }}</div>
+        @empty
+            <div class="alert alert-danger">{{ __('No services') }}</div>
+        @endforelse
+        </div>
+    </div>
+</div>
 @endsection
 @section('css')
 

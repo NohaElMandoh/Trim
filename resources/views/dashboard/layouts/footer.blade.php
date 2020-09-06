@@ -67,6 +67,7 @@
         
 
         if(
+            $('#service_sidebar').hasClass('active') || 
             $('#category_sidebar').hasClass('active') || 
             $('#product_sidebar').hasClass('active') || 
             $('#offer_sidebar').hasClass('active') || 

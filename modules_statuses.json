@@ -15,5 +15,6 @@
     "Governorate": true,
     "City": true,
     "Salon": true,
-    "Branch": true
+    "Branch": true,
+    "Service": true
 }
