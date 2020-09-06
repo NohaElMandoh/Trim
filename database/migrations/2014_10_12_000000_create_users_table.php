@@ -26,6 +26,7 @@ class CreateUsersTable extends Migration
             $table->string('password');
             $table->boolean('is_active')->nullable()->default(0);
             $table->string('gender')->nullable()->default('male');
+            $table->boolean('is_sponsored')->default(0)->nullable();
             $table->rememberToken();
             $table->timestamps();
         });

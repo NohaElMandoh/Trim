@@ -62,6 +62,9 @@
                 <div class="form-control-focus"> </div>
             </div>
         </div>
+        @component('checkbox', ['label' => 'Sponsored'])
+            is_sponsored
+        @endcomponent
         @component('checkbox', ['label' => 'Active'])
             is_active
         @endcomponent

@@ -130,6 +130,9 @@
                 <div class="form-control-focus"> </div>
             </div>
         </div>
+        @component('checkbox', ['label' => 'Sponsored'])
+            is_sponsored
+        @endcomponent
         @component('checkbox', ['label' => 'Active'])
             is_active
         @endcomponent
@@ -193,6 +196,9 @@ $(document).ready(function() {
     }
     $("#image").change(function() {
         readURL(this, "#image_image");
+    });
+    $("#cover").change(function() {
+        readURL(this, "#cover_image");
     });
     function loadCities() {
         var id = $('#governorate_id').val();

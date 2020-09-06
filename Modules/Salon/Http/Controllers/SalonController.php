@@ -67,6 +67,7 @@ class SalonController extends Controller
         $data               = $request->all();
         $data['password']   = bcrypt($request->password);
         $data['is_active']  = (bool) $request->is_active;
+        $data['is_sponsored']  = (boolean) $request->is_sponsored; 
         $data['image']      = $request->hasFile('image') ? upload_image($request, 'image', 200, 200) : 'salon.png';
         $data['cover']      = $request->hasFile('cover') ? upload_image($request, 'cover', 800, 400) : 'salon.png';
         $data['commercial_register']   = upload_file($request, 'commercial_register');
@@ -133,6 +134,7 @@ class SalonController extends Controller
 
         $data               = $request->all();
         $data['is_active']  = (bool) $request->is_active;
+        $data['is_sponsored']  = (boolean) $request->is_sponsored; 
         if ($request->hasFile('image'))
             $data['image']      = upload_image($request, 'image', 200, 200);
 

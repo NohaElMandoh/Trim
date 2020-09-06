@@ -59,6 +59,7 @@ class CaptainController extends Controller
         ]);
 
         $data               = $request->all();
+        $data['is_sponsored']  = (boolean) $request->is_sponsored; 
         $data['password']   = bcrypt($request->password);
         $data['is_active']  = (bool) $request->is_active;
         $data['image']      = $request->hasFile('image') ? upload_image($request, 'image', 200, 200) : 'captain.png';
@@ -116,6 +117,7 @@ class CaptainController extends Controller
 
         $data               = $request->all();
         $data['is_active']  = (bool) $request->is_active;
+        $data['is_sponsored']  = (boolean) $request->is_sponsored; 
         if ($request->hasFile('image'))
             $data['image']      = upload_image($request, 'image', 200, 200);
 

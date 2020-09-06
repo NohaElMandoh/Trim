@@ -46,9 +46,13 @@ class CategoryController extends Controller
         validate_trans($request, [
             'name'  => 'required|string|max:255'
         ]);
+        $request->validate([
+            'image' => 'required|image|max:2048',
+            'order' => 'required|integer'
+        ]);
 
         $data               = $request->all();
-        $data['is_shop']    = (bool) $request->is_shop;
+        $data['image']      = upload_image($request, 'image', 200, 200);
         $row                = Category::create($data);
         return redirect()->route('categories.index')->with(['status' => 'success', 'message' => __('Stored successfully')]);
     }
@@ -87,8 +91,14 @@ class CategoryController extends Controller
             'name'  => 'required|string|max:255'
         ]);
 
+        $request->validate([
+            'image' => 'nullable|image|max:2048',
+            'order' => 'required|integer'
+        ]);
+
         $data               = $request->all();
-        $data['is_shop']    = (bool) $request->is_shop;
+        if($request->hasFile('image'))
+            $data['image']      = upload_image($request, 'image', 200, 200);
         $row                = Category::findOrFail($id);
         $row->update($data);
         return redirect()->route('categories.index')->with(['status' => 'success', 'message' => __('Updated successfully')]);

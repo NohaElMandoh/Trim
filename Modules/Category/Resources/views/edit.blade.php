@@ -8,8 +8,11 @@
         @component('input_trans', ['type' => 'text', 'label' => 'Name', 'required' => true, 'model' => $row])
             name
         @endcomponent
-        @component('checkbox', ['label' => 'Shop', 'value' => $row->is_shop])
-            is_shop
+        @component('input_image', ['label' => 'Image', 'width' => 200, 'height' => 200, 'src' => route('file_show', $row->image)])
+            image
+        @endcomponent
+        @component('input', ['label' => 'Order', 'type' => 'number', 'required' => true, 'value' => $row->order])
+            order
         @endcomponent
     </div>
     <div class="form-actions">

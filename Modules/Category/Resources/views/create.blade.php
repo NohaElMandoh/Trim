@@ -7,8 +7,11 @@
         @component('input_trans', ['type' => 'text', 'label' => 'Name', 'required' => true])
             name
         @endcomponent
-        @component('checkbox', ['label' => 'Shop'])
-            is_shop
+         @component('input_image', ['label' => 'Image', 'width' => 200, 'height' => 200])
+            image
+        @endcomponent
+        @component('input', ['label' => 'Order', 'type' => 'number', 'required' => true])
+            order
         @endcomponent
     </div>
     <div class="form-actions">

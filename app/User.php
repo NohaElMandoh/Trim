@@ -23,7 +23,7 @@ class User extends Authenticatable
         'image', 'id_photo', 'commercial_register', 'is_active',
         'description', 'points', 'lat', 'lng',
         'city_id', 'governorate_id', 'sms_token', 'gender',
-        'cover'
+        'cover', 'is_sponsored'
     ];
 
     public static function days() {
