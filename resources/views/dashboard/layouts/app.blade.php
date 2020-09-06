@@ -144,6 +144,9 @@
                                 @component('sidebar_item', ['icon' => 'fa fa-shopping-bag', 'label' => 'salon'])
                                     salon
                                 @endcomponent
+                                @component('sidebar_item', ['icon' => 'fa fa-map-marker', 'label' => 'branch', 'plural' => 'branches', 'plural_name' => 'branches'])
+                                    branch
+                                @endcomponent
                                 @component('sidebar_item', ['icon' => 'fa fa-motorcycle', 'label' => 'captain'])
                                     captain
                                 @endcomponent
@@ -185,23 +188,17 @@
                                 @component('sidebar_item', ['icon' => 'fa fa-server', 'label' => 'service'])
                                     service
                                 @endcomponent
+                                @component('sidebar_item', ['icon' => 'fa fa-bullhorn', 'label' => 'offer'])
+                                    offer
+                                @endcomponent
                                 @component('sidebar_item', ['icon' => 'fa fa-cubes', 'label' => 'category', 'plural' => 'categories', 'plural_name' => 'categories'])
                                     category
                                 @endcomponent
                                 @component('sidebar_item', ['icon' => 'fa fa-coffee', 'label' => 'product'])
                                     product
                                 @endcomponent
-                                @component('sidebar_item', ['icon' => 'fa fa-bullhorn', 'label' => 'offer'])
-                                    offer
-                                @endcomponent
-                                @component('sidebar_item', ['icon' => 'fa fa-map-marker', 'label' => 'branch', 'plural' => 'branches', 'plural_name' => 'branches'])
-                                    branch
-                                @endcomponent
                                 @component('sidebar_item', ['icon' => 'fa fa-folder', 'label' => 'package'])
                                     package
-                                @endcomponent
-                                @component('sidebar_item', ['icon' => 'fa fa-car', 'label' => 'vehicle'])
-                                    vehicle
                                 @endcomponent
                                 @component('sidebar_item', ['icon' => 'fa fa-usd', 'label' => 'price'])
                                     price
@@ -212,9 +209,6 @@
                                 @component('sidebar_item', ['icon' => 'fa fa-bullhorn', 'label' => 'coupon'])
                                     coupon
                                 @endcomponent
-                                @can("complaint.view")                        
-                                <li id="complaint_sidebar" @if(url()->current() == route('complaints.index')) class="active" @endif><a href="{{ route('complaints.index') }}"><i class="fa fa-handshake-o"></i> <span>{{ __('Complaints')}}</span></a></li>
-                                @endcan 
                             </ul>
                         </li>
                         <li class="treeview" id="orders_sidebar">

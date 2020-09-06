@@ -15,11 +15,11 @@ class CreateOffersTable extends Migration
     {
         Schema::create('offers', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->unsignedBigInteger('shop_id');
-            $table->foreign('shop_id')->references('id')->on('users')->onUpdate('cascade')->onDelete('cascade');
-            $table->integer('order')->nullable();
+            $table->unsignedBigInteger('user_id');
+            $table->foreign('user_id')->references('id')->on('users')->onUpdate('cascade')->onDelete('cascade');
             $table->string('image')->nullable();
             $table->double('price', 10, 2);
+            $table->boolean('is_sponsored')->nullable()->default(0);
             $table->timestamps();
             $table->softDeletes();
         });

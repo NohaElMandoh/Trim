@@ -49,14 +49,13 @@ class OfferController extends Controller
         ]);
         $request->validate([
             'image'         => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-            'category_id'   => 'required|exists:categories,id',
-            'shop_id'       => 'required|exists:users,id',
+            'user_id'       => 'required|exists:users,id',
             'price'         => 'required|numeric',
-            'order'         => 'required|integer'
         ]);
 
         $data   = $request->all();
-        $data['image']  = upload_image($request, 'image', 128, 128);
+        $data['image']  = upload_image($request, 'image', 800, 400);
+        $data['is_sponsored']  = (boolean) $request->is_sponsored; 
         Offer::create($data);
 
         return redirect()->route('offers.index')->with(['status' => 'success', 'message' => __('Stored successfully')]);
@@ -98,15 +97,15 @@ class OfferController extends Controller
         ]);
         $request->validate([
             'image'         => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-            'category_id'   => 'required|exists:categories,id',
-            'shop_id'       => 'required|exists:users,id',
+            'user_id'       => 'required|exists:users,id',
             'price'         => 'required|numeric',
-            'order'         => 'required|integer'
         ]);
 
         $data   = $request->all();
         if($request->hasFile('image'))
-            $data['image']  = upload_image($request, 'image', 128, 128);
+            $data['image']  = upload_image($request, 'image', 800, 400);
+
+        $data['is_sponsored']  = (boolean) $request->is_sponsored; 
         $row    = Offer::findOrFail($id);
         $row->update($data);
 

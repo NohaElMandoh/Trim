@@ -55,6 +55,7 @@
             $('#role_sidebar').hasClass('active') || 
             $('#user_sidebar').hasClass('active') || 
             $('#salon_sidebar').hasClass('active') || 
+            $('#branch_sidebar').hasClass('active') || 
             $('#captain_sidebar').hasClass('active') ||
             $('#city_sidebar').hasClass('active') ||
             $('#governorate_sidebar').hasClass('active') 
@@ -71,7 +72,6 @@
             $('#category_sidebar').hasClass('active') || 
             $('#product_sidebar').hasClass('active') || 
             $('#offer_sidebar').hasClass('active') || 
-            $('#branch_sidebar').hasClass('active') || 
             $('#package_sidebar').hasClass('active') || 
             $('#vehicle_sidebar').hasClass('active') || 
             $('#price_sidebar').hasClass('active') ||

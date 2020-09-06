@@ -16,7 +16,7 @@
                     <tr>
                         <th> {{ __('ID') }} </th>
                         <th> {{ __('Name') }} </th>
-                        <th> {{ __('Shop') }} </th>
+                        <th> {{ __('User') }} </th>
                         <th> {{ __('Created at') }}  </th>
                         <th> {{ __('Actions')}} </th>
                     </tr>
@@ -26,7 +26,7 @@
                     <tr>
                         <td> {{ $row->id }} </td>
                         <td> {{ $row->name }} </td>
-                        <td> {{ $row->shop()->first()->name ?? '' }} </td>
+                        <td> {{ $row->user()->first()->name ?? '' }} </td>
                         <td> {{ $row->created_at }} </td>
                         <td>
                             <div class="btn-group">

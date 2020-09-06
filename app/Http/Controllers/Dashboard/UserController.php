@@ -91,7 +91,7 @@ class UserController extends Controller
     public function edit($id)
     {
         $roles              = config('permission.models.role')::where('name', '!=', 'salon')->where('name', '!=', 'captain')->latest()->get();
-        $row               = User::findOrFail($id);
+        $row                = User::findOrFail($id);
         $selected           = $row->roles()->pluck('id')->toArray();
         return view('dashboard.users.edit', compact('roles', 'row', 'selected'));
     }

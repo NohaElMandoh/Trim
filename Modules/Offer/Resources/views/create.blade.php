@@ -10,36 +10,27 @@
         @component('input_trans', ['type' => 'textarea', 'label' => 'Description', 'required' => true])
             description
         @endcomponent
-        @component('input_image', ['width' => 128, 'height' => 128, 'label' => 'Image'])
+        @component('input_image', ['width' => 800, 'height' => 400, 'label' => 'Image'])
             image
         @endcomponent
         @component('input', ['label' => 'Price', 'type' => 'number', 'required' => true])
             price
         @endcomponent
-        {{-- <div class="form-group form-md-line-input">
-            <label class="col-md-2 control-label">{{ ucfirst(__('shop')) }}</label>
-            <div class="col-md-10">
-                <select class="js-example-basic-single js-states form-control" id="shop_id" name="shop_id">
-                    @foreach(\App\User::role('shop')->latest()->get() as $shop)
-                    <option value="{{ $shop->id }}" {{ old('shop_id') == $shop->id }}>{{ $shop->name }}</option>
-                    @endforeach
-                </select>
-                <div class="form-control-focus"> </div>
-            </div>
-        </div> --}}
         <div class="form-group form-md-line-input">
-            <label class="col-md-2 control-label">{{ ucfirst(__('category')) }}</label>
+            <label class="col-md-2 control-label">{{ ucfirst(__('user')) }}</label>
             <div class="col-md-10">
-                <select class="js-example-basic-single js-states form-control" id="category_id" name="category_id">
-                    @foreach(\Modules\Category\Entities\Category::where('is_shop', 0)->latest()->get() as $category)
-                    <option value="{{ $category->id }}" {{ old('category_id') == $category->id ? 'selected': '' }}>{{ $category->name }}</option>
+                <select class="js-example-basic-single js-states form-control" id="user_id" name="user_id">
+                    @foreach(\App\User::whereHas('roles', function ($query) {
+                        $query->where('name', 'salon')->orWhere('name', 'captain');
+                    })->latest()->get() as $user)
+                    <option value="{{ $user->id }}" {{ old('user_id') == $user->id }}>{{ $user->name }}</option>
                     @endforeach
                 </select>
                 <div class="form-control-focus"> </div>
             </div>
         </div>
-        @component('input', ['label' => 'Order', 'type' => 'number', 'required' => true])
-            order
+        @component('checkbox', ['label' => 'Sponsored'])
+            is_sponsored
         @endcomponent
     </div>
     <div class="form-actions">
