@@ -1,0 +1,751 @@
+ /* Start navbar */
+
+
+@media(max-width:991.98px) and (min-width:768px){
+	
+		.navbar{
+		padding-bottom: 15%;
+	}
+	.navbar-light .navbar-nav .nav-link{
+		margin-left: 50%;
+	}
+}
+
+
+/* ====================================================================== */
+
+@media(max-width:768px) and (min-width:576px){
+		.navbar{
+		padding-bottom: 15%;
+	}
+	.navbar-light .navbar-nav .nav-link{
+		margin-left: 50%;
+	}
+	
+}
+
+
+/* ====================================================================== */	
+	
+@media(max-width:320px){
+	.navbar{
+		margin-bottom: 11px;
+	}
+	.navbar-light .navbar-nav .nav-link{
+		margin-left: 30%;
+	}
+}
+
+
+/* ====================================================================== */
+
+@media(max-width:575.98px){
+	.navbar{
+		padding-bottom: 15%;
+		
+	}
+	.navbar-light .navbar-nav .nav-link{
+		margin-left: 30%;
+	}
+}
+
+
+/* ***************************** End navba ************************************* */
+
+
+ /* Start Section2 */
+
+@media(max-width:991.98px) and (min-width:768px){
+	
+	.sex_shap_sec img {
+		width: 280px;
+	}
+	.text-col p {
+    font-size: 13px;
+	}
+	.text-col .app-img {
+		
+            width: 118px;
+    margin-right: 0px;
+    margin-left: -23px;
+	}
+	.text-col .googl-img {
+    margin-left: 7px;
+		width: 130px;
+	}
+ 
+}
+
+/* ========================================================= */
+
+@media(max-width:768px) and (min-width:576px){
+
+	.sex_shap_sec img{
+		
+		    width: 269px;
+	}
+	.text-col h1{
+		    font-size: 35px;
+    margin-bottom: 23px;
+	}
+	.text-col p{
+		    margin-bottom: 9px;
+    font-size: 14px;
+	}
+	.text-col .app-img{
+		      width: 102px;
+    height: 120px;
+    margin-right: 0;
+	}
+	.text-col .googl-img{
+		    width: 119px;
+    height: 60px;
+    margin-left: 20px;
+    margin-right: 33px;
+	}
+}
+
+
+/* ========================================================= */
+
+@media(max-width:575.98px){
+	
+	.sex_shap_sec .img-col img{
+		width: 0px;
+    visibility: hidden;
+	}
+	.sex_shap_sec img{
+		  width: 150px;
+		margin-top: 87%;
+	}
+	.text-col{
+		margin-top: 0%;
+		position: absolute;
+		top: 0
+	}
+		.text-col .app-img{
+	position: absolute;
+	width: 70px;
+    height: 82px;
+    top: -137%;
+    right: 119px;
+
+	}
+	.text-col .googl-img{
+	position: absolute;
+	width: 81px;
+    height: 39px;
+       top: -121%;
+    left: 195px;
+	}
+	.text-col h1{
+		margin-bottom: 29px;
+    font-weight: 400;
+    font-size: 27px;
+   }
+	.text-col p{
+		 margin-bottom: -4px;
+		font-size: 15px
+	  }
+	
+	}
+
+
+/* ================================================================== */
+
+@media(max-width:575.98px) and (min-width:400px){
+	.text-col p{
+		    margin-bottom: 50px;
+	}
+	.text-col .googl-img{
+		top: -133%;
+	}
+	.text-col .app-img{
+		    top: -147%;
+    right: 150px;
+	}
+}
+
+/* ======================================================== */
+
+@media(max-width:570px) and (min-width:480px){
+
+	
+	.text-col h1{
+		margin-bottom: 38px;
+    font-weight: 400;
+    margin-top: -30px;
+    font-size: 35px;
+	}
+	.text-col p{
+		font-size: 17px;
+    margin-bottom: 75px;
+	}
+	.text-col .googl-img{
+		    top: -132%;
+    margin-left: 73px;
+    height: 56px;
+    width: 137px;
+	}
+	.text-col .app-img{
+		    top: -147%;
+    right: 150px;
+    height: 110px;
+    width: 125px;
+	}
+}
+
+
+
+/* ====================================================== */
+
+@media(max-width:374px) and (min-width:320px){
+	
+	.sex_shap_sec .img-col img{
+		width: 0px;
+        visibility: hidden;
+	}
+	.sex_shap_sec img{
+		  width: 150px;
+		margin-top: 87%;
+	}
+	.text-col{
+		margin-top: 0%;
+		position: absolute;
+		top: 0
+	}
+	.text-col h1{
+	margin-top: -20px;
+    margin-bottom: 10px;
+    font-size: 24px;
+	}
+	.text-col .app-img{
+	position: absolute;
+	width: 70px;
+    height: 82px;
+    top: -328%;
+    right: 90px;
+
+	}
+	.text-col .googl-img{
+	position: absolute;
+	width: 81px;
+    height: 39px;
+    top: -290%;
+    left: 171px;
+	}
+	.text-col p{
+	     margin-bottom: -29px;
+		font-size: 15px;
+	  }
+} 
+
+/* ================================================================== */
+
+@media(max-width:767.98px) and (min-width:576px){
+	.sex_shap_sec .img-col img{
+		width: 200px
+	}
+	.sex_shap_sec .img-col{
+		width: 50%;
+	}
+	.text-col h1{
+		font-size: 25px
+	}
+	.text-col{
+		margin-top: 0
+	}
+	.text-col p{
+		font-size: 12px
+	}
+	.text-col .app-img{
+		
+    width: 145px;
+    height: 160px;
+    margin-right: 79px;
+
+	}
+	.text-col .googl-img{
+     width: 145px;
+    position: absolute;
+    height: 75px;
+    right: -68px;
+    top: 133px;
+	}
+}
+
+/* ================================================================== */
+
+@media(max-width:630px) and (min-width:590px){
+	
+	.text-col .app-img{
+        width: 78px;
+        height: 124px;
+		margin-left: -77px;
+	}
+	.text-col .googl-img{
+	    top: 146px;
+        width: 89px;
+        height: 62px;
+        margin-right: 134px;
+	}
+}
+@media(max-width:533px) and (min-width:500px){
+	
+	.text-col p {
+		    margin-bottom: 101px;
+	}
+
+	.text-col .app-img{
+		top: -147%;
+    right: 205px;
+	}
+	.text-col .googl-img{
+		top: -134%;
+	}
+	
+}
+/* ************************** End Section2 **************************************** */
+
+
+/*start Section About App */
+
+@media(max-width:991.98px) and (min-width:768px){
+	
+	.about-app .right-col p {
+    font-size: 15px;
+	}
+	.about-app .left-col .top-img {
+		width: 150px;
+		height: 150px;
+	}
+	.about-app .left-col .border-img {
+		width: 150px;
+		height: 150px;
+		margin-right: -56px;
+	}
+}
+
+
+@media(max-width:768px) and (min-width:576px){
+	
+	.about-app .left-col .top-img{
+		    width: 150px;
+            height: 150px;
+	}
+	.about-app .left-col .border-img{
+		    width: 150px;
+            height: 152px;
+		    margin-right: -43px;
+	}
+	.about-app .right-col h2 {
+			font-size: 27px;
+			margin-bottom: 20px;
+	}
+	.about-app .right-col p {
+    		font-size: 14px;
+	}
+}
+
+@media(max-width:630px) and (min-width:590px){
+	.about-app .left-col .border-img{
+		    margin-right: 34px;
+    margin-top: 20px;
+	}
+	.about-app .left-col .top-img{
+		 margin-top: 20px;
+	}
+	
+}
+
+/* =================================================================== */
+
+@media(max-width:575.98px){
+	.about-app .left-col .top-img{
+    width: 150px;
+    height: 150px;
+	 margin-top: 6%;
+	margin-right: 8%;
+	}
+	.about-app .left-col .border-img{
+		width: 135px;
+		height: 140px;
+		margin-right: -19px;
+	    margin-top: 6%;
+		    animation-delay: .3s;
+	}
+	.about-app .right-col{
+	    padding-left: 9%;
+    padding-right: 2%;
+	}
+}
+
+
+
+/* =================================================================== */
+
+@media(max-width:570px) and (min-width:480px){
+	.about-app .left-col .border-img{
+		    margin-right: 11px;
+		animation-delay: .5s
+	}
+
+}
+	
+/* ====================================================================== */
+@media (max-width: 533px) and (min-width: 500px){
+	.about-app .left-col .border-img {
+    margin-right: 35px;
+	}
+	
+}
+
+@media(max-width:374px) and (min-width:320px){
+	.about-app .left-col .border-img{
+		    margin-right: -64px;
+		animation-delay: .3s
+	}
+	.about-app .right-col p{
+		font-size: 16px
+	}
+	.about-app .right-col{
+	    padding-left: 6%;
+}
+}
+
+
+/* ***************************** End Section About App ************************************* */
+
+
+
+/*start Section About features */
+
+@media(max-width:991.98px) and (min-width:768px){
+	.App-features p {
+		font-size: 13px;
+	}
+	.App-features h2 {
+		font-size: 30px;
+	}
+	.App-features span {
+    font-size: 7.9px;
+	}
+	.App-features .right-col-features img {
+    width: 25px;
+    height: 25px;
+		margin: 5px;
+	}
+}
+
+/* ============================================================= */
+
+@media(max-width:768px) and (min-width:576px){
+	
+	.App-features .left-col-img {
+    margin-right: 9%;
+    height: 100%;
+	}
+	.App-features span {
+    font-size: 8px;
+	}
+	.App-features .right-col-features img {
+    width: 25px;
+    height: 25px;
+    margin: 5px;
+	}
+	.App-features h2 {
+    font-size: 30px;
+	}
+	.App-features p {
+		font-size: 13px;
+	}
+}
+
+/* ============================================================= */
+
+@media(max-width:575.98px){
+	.App-features span{
+		font-size: 10px
+	}
+	.App-features .right-col-features img{
+		width: 22px;
+		height: 22px;
+		margin-right: 5px
+	}
+	.App-features p{
+		font-size: 13.8px
+	}
+	.App-features h2{
+		font-size: 30px
+	}
+	.App-features .right-col-features{
+		padding: 3%;
+    padding-left: 5%;
+	}
+	
+}
+
+
+
+/* ============================================================= */
+
+
+@media(max-width:374px) and (min-width:320px){
+	.App-features p{
+		font-size: 11.8px
+	}
+	.App-features span{
+		font-size: 7px
+	}
+	.App-features .right-col-features{
+		margin-left: 2%
+	}
+}
+
+
+/* ******************************** End Section About features ********************************** */
+
+
+/*start Section Delivery Men */
+
+@media(max-width:991.98px) and (min-width:768px){
+	.Delivery-Men p {
+		font-size: 18px;
+	}
+	.Delivery-Men .app-img {
+    width: 121px;
+    height: 120px;
+		margin-right: 20px;
+	}
+	.Delivery-Men .google-img {
+		width: 155px;
+	}
+}
+
+
+/* ===================================================================== */
+
+@media(max-width:768px) and (min-width:576px){
+	
+	.Delivery-Men p {
+    font-size: 18px;
+	}
+	.Delivery-Men .Delivery-Men-img {
+    margin-right: 7%;
+	}
+}
+
+/* ===================================================================== */
+
+@media(max-width:575.98px){
+	.Delivery-Men .Delivery-Men-img img{
+		    margin-left: 5%;
+	}
+	.Delivery-Men .app-img{
+		  width: 110px;
+    margin-left: -5px;
+    margin-right: 24px;
+		
+	}
+	.Delivery-Men .google-img{
+		 width: 130px;
+	}
+	.Delivery-Men p{
+		font-size: 15px
+	}
+}
+
+
+/* ===================================================================== */
+
+@media(max-width:374px) and (min-width:320px){
+	.Delivery-Men h3{
+	
+		font-size: 27px
+	}
+	.Delivery-Men p{
+		font-size: 18px;
+		    margin-top: 12px;
+    margin-bottom: -14px;
+	}
+	.Delivery-Men .app-img{
+		margin-left: 0;
+		margin-right: 0;
+		width: 110px;
+	}
+}
+
+/* ***************************** End Section Delivery Men ************************************* */
+
+
+/*  Start Section  Screen shots   */
+
+
+@media(max-width:991.98px) and (min-width:768px){
+	.Screen-shots .owl-carousel img {
+    width: 183px;
+    height: 390px;
+}
+
+@media(max-width:768px) and (min-width:576px){
+	.Screen-shots .owl-carousel img {
+    width: 180px;
+    height: 360px;
+		
+	}
+	.Screen-shots h2{
+		font-size: 35px;
+	}
+	.Screen-shots p {
+		font-size: 20px;
+		}
+
+	}
+}
+
+/* ============================================================== */
+
+
+@media(max-width:575.98px){
+	.Screen-shots h2{
+		font-size: 30px;
+	}
+	.Screen-shots p{
+		font-size: 13px;
+	}
+	.Screen-shots .owl-carousel img{
+		    width: 110px;
+    height: 200px;
+    padding: 8%;
+	}
+	.Screen-shots .owl-carousel{
+		padding-left: 0%;
+		border-radius: 7px;
+	}
+}
+/* ============================================================== */
+
+@media(max-width:374px) and (min-width:320px){
+	.Screen-shots p{
+		font-size: 11px;
+	}
+	.Screen-shots .owl-carousel img{
+		    width: 98px;
+    height: 184px;
+	}
+}
+
+	
+
+@media(max-width:630px) and (min-width:590px){
+	.Screen-shots .owl-carousel img{
+		width: 129px;
+    height: 232px;
+	}
+	.Screen-shots p {
+		font-size: 18px;
+	}
+	
+}
+
+/* ====================================================================== */
+@media (max-width: 533px) and (min-width: 500px){
+
+	.Screen-shots .owl-carousel img {
+    width: 150px;
+    height: 242px;
+}
+}
+
+
+/* ********************************* End Section  Screen shots ********************************* */
+/*  Start footer   */
+@media(max-width:575.98px){
+	.footer{
+	    padding-top: 30px;
+	    padding-left: 50px;
+     }
+	.footer h4{
+		 font-size: 20px;
+		  margin-left: -40px;
+	}
+	.footer img {
+          width: 25px;
+          height: 25px;
+           margin-right: 28px;
+		  margin-bottom: 17px;
+	}
+	.footer .follow-img{
+		     width: 204px;
+		    margin-left: -45px;
+	}
+	.footer .contact-us{
+		padding-left: 78px;
+		padding: 0;
+        padding-top: 31px;
+        padding-left: 35px;
+	}
+		.footer .contact-us h4{
+		font-size: 19px;
+        margin-top: -4px;
+		margin-left: 12px
+	}
+}
+/* ================================================================== */
+
+@media(max-width:768px) and (min-width:576px){
+	
+	.footer{
+		padding-left: 47px;
+	}
+	
+}
+
+	
+
+
+
+/* ================================================================== */
+
+
+@media(max-width:630px) and (min-width:590px){
+	.footer img{
+		margin-right: 15px
+	}
+	.footer {
+    padding-left: 28px;
+		
+	}
+}
+
+
+@media(max-width:374px) and (min-width:320px){
+	.footer h4{
+		font-size: 19px;
+    margin-left: -40px;
+
+	}
+	.footer .contact-us{
+		padding-left: 78px;
+		padding: 0;
+    padding-top: 31px;
+    padding-left: 27px;
+	}
+	.footer .contact-us h4{
+		font-size: 19px;
+    margin-left: -40px;
+		margin-left: 0
+	}
+
+.footer img{
+	    width: 17px;
+       height: 17px;
+	  margin-right: 6px;
+}
+.footer{
+	padding-top: 30px;
+	    padding-left: 50px;
+}
+}
+
+/*  End footer   */

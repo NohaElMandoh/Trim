@@ -1,0 +1,13 @@
+{
+    "name": "Governorate",
+    "alias": "governorate",
+    "description": "",
+    "keywords": [],
+    "order": 0,
+    "providers": [
+        "Modules\\Governorate\\Providers\\GovernorateServiceProvider"
+    ],
+    "aliases": {},
+    "files": [],
+    "requires": []
+}

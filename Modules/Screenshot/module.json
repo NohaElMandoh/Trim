@@ -1,0 +1,13 @@
+{
+    "name": "Screenshot",
+    "alias": "screenshot",
+    "description": "",
+    "keywords": [],
+    "order": 0,
+    "providers": [
+        "Modules\\Screenshot\\Providers\\ScreenshotServiceProvider"
+    ],
+    "aliases": {},
+    "files": [],
+    "requires": []
+}

@@ -1,0 +1,13 @@
+{
+    "name": "Email",
+    "alias": "email",
+    "description": "",
+    "keywords": [],
+    "order": 0,
+    "providers": [
+        "Modules\\Email\\Providers\\EmailServiceProvider"
+    ],
+    "aliases": {},
+    "files": [],
+    "requires": []
+}

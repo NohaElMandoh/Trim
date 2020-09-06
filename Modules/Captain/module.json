@@ -1,0 +1,13 @@
+{
+    "name": "Captain",
+    "alias": "captain",
+    "description": "",
+    "keywords": [],
+    "order": 0,
+    "providers": [
+        "Modules\\Captain\\Providers\\CaptainServiceProvider"
+    ],
+    "aliases": {},
+    "files": [],
+    "requires": []
+}

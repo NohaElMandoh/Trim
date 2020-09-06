@@ -1,0 +1,13 @@
+{
+    "name": "Feature",
+    "alias": "feature",
+    "description": "",
+    "keywords": [],
+    "order": 0,
+    "providers": [
+        "Modules\\Feature\\Providers\\FeatureServiceProvider"
+    ],
+    "aliases": {},
+    "files": [],
+    "requires": []
+}

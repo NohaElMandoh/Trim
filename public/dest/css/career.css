@@ -1,0 +1,11 @@
+.career h1 {
+    margin: 2rem 0;
+    color: #2ba8e0;
+}
+
+.career .submitBtn {
+    background-color: #2ba8e0;
+    border-color: #2ba8e0;
+    margin: 2rem;
+    padding: 0.5rem 3rem;
+}

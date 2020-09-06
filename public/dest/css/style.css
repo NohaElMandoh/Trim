@@ -1,0 +1,269 @@
+ /* Start navbar */
+
+.navbar{
+	background-color: #2c73a8;
+	color: #FFF;
+	padding-bottom: 5%
+}
+.navbar img{
+	width: 55px;
+	height: 55px
+}
+.navbar span{
+	color: #FFF
+}
+.navbar li img{
+width: 23px;
+height: 23px;
+margin-right: 8px
+}
+.navbar .btn{
+	border-radius: 20px;
+	border: 1px solid #FFF;
+	width: 110px;
+	margin-left: 10px;
+	margin-bottom: 5px
+}
+/* End navbar */
+
+ /* Start Section2 */
+
+.sex_shap_sec{
+    position: relative;
+	margin-bottom: 5%
+}
+.sex_shap_sec img{
+	width: 350px;
+}
+.sex_shap_div{
+	 clip-path: polygon(50% 0%, 100% 0, 100% 57%, 79% 91%, 50% 100%, 21% 91%, 0 55%, 0 34%, 0 0);
+	background-color:#2c73a8;
+	height: 100%;
+	width: 100%;          
+    position: absolute;
+	top: 0;
+    left: 0;
+	margin-top: -50px
+}
+
+.text-col{
+	color: #FFF
+}
+.text-col .app-img{
+	width: 147px;
+	height: 120px;
+	margin-right: 80px
+}
+.text-col .googl-img{
+	width: 167px;
+	height: 60px
+}
+.text-col h1{
+	margin-bottom: 30px;
+	font-weight: 400
+}
+.text-col p{
+	    margin-bottom: 11px;
+    font-size: 20px;
+}
+.text-col span{
+	font-size: 10px;
+	font-weight: 100
+}
+
+/* End Section2 */
+
+/*start Section About App */
+
+.about-app{
+	margin-top: 5%;
+	margin-bottom: 5%;
+	overflow: hidden
+}
+.about-app .right-col h2{
+	color: #2c73a8;
+	margin-bottom: 20px
+}
+.about-app .right-col p{
+	font-size: 17px;
+	color: #868484
+}
+.about-app .left-col .top-img{
+	width: 200px;
+	height: 195px;
+	clip-path: polygon(50% 0%, 80% 10%, 100% 35%, 100% 70%, 80% 90%, 50% 100%, 20% 90%, 0% 70%, 0% 35%, 20% 10%);
+	background-color: #2c73a8;
+	position: relative;
+	z-index: 1
+	
+}
+.about-app .left-col .border-img{
+	width: 200px;
+	height: 195px;
+	background-color: #FFF;
+	position: absolute;
+	right: 100px;
+    z-index: 0;
+}
+
+/*End Section About App */
+
+
+/*start Section About features */
+.App-features{
+	width: 100%;
+	margin-top: 5%;
+	margin-bottom: 5%;
+	overflow: hidden;
+}
+.App-features{
+	margin-bottom: 5%;
+	margin-top: 5%
+}
+.App-features .right-col-features img{
+	width: 30px;
+	height: 30px;
+	margin: 10px;
+	margin-left: 0;
+	opacity: .5
+}
+.App-features span{
+	color: #6a7274;
+}
+.App-features h2{
+	color: #a4aeb1;
+	font-weight: 400;
+    font-size: 35px;
+	
+}
+.App-features p{
+	color: #a4aeb1;
+}
+.App-features .left-col-img{
+	margin-right: 10%
+}
+.App-features .left-col-img img{
+	width: 100%;
+	height: 100%
+}
+
+/*End Section About features */
+
+
+/*start Section Delivery Men */
+
+.Delivery-Men{
+	min-height: 300px;
+	background-color:  #771f5d;
+	margin-top: 5%;
+	margin-bottom: 5%
+}
+.Delivery-Men .Delivery-row {
+	padding-top: 50px
+}
+.Delivery-Men .Delivery-right-col{
+	    padding-top: 7%;
+}
+.Delivery-Men h3{
+	color: #FFF
+}
+ .Delivery-Men p{
+	font-size: 25px;
+	color: #acb4b7
+}
+.Delivery-Men .app-img{
+	width: 147px;
+    height: 120px;
+	margin-right: 80px
+}
+.Delivery-Men .google-img{
+	    width: 167px;
+    height: 60px;
+}
+.Delivery-Men .Delivery-Men-img{
+	margin-right: 10%
+}
+.Delivery-Men .Delivery-Men-img img{
+	width: 100%;
+	height: 100%
+}
+
+/*End Section Delivery Men */
+
+/*  Start Section  Screen shots   */
+
+.Screen-shots{
+	margin-top: 5%;
+	margin-bottom: 5%
+}
+.Screen-shots h2{
+	color: #2c73a8;
+    font-weight: 400;
+    font-size: 40px
+}
+.Screen-shots p{
+	font-size: 25px;
+	color: #9a9a9a;
+	margin-bottom: 30px
+}
+.Screen-shots .owl-carousel{
+	background-color: #f7f7f7;
+	padding-left: 70px;
+	padding-top: 30px;
+	border-radius: 7px;
+	    direction: ltr;
+}
+.Screen-shots .owl-carousel img{
+	width: 252px;
+    height: 480px;
+    border-radius: 20px;
+}
+
+/*  End Section  Screen shots   */
+
+
+/*  Start footer   */
+
+.footer{
+	background-color: #771f5d;
+	min-height: 140px;
+	position: relative;
+	padding-top: 50px;
+	padding-left: 60px;
+	color: #FFF;
+	margin-top: 5%;
+	padding-bottom: 3%;
+	  overflow: hidden
+}
+.footer h4{
+	font-weight: 300;
+    padding-bottom: 20px;
+}
+.footer img{
+	width: 30px;
+	height: 30px;
+	margin-right: 35px;
+	margin-bottom: 20px
+}
+.footer .follow-us{
+	width: 50%;
+	
+}
+.footer .contact-us
+{
+	clip-path: polygon(11% 0, 100% 0%, 100% 100%, 0% 100%);
+	background-color: #2c73a8;
+	width: 50%;
+	height: 100%;
+	position: absolute;
+	top: 0;
+	right: 0;
+	padding-top: 50px;
+	padding-left: 60px;
+  
+}
+.owl-theme .owl-dots .owl-dot{
+	margin-top: 25px
+}
+
+/*  End footer   */

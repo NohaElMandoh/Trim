@@ -1,0 +1,19 @@
+{
+    "Category": true,
+    "Captain": true,
+    "Address": true,
+    "Social": true,
+    "Phone": true,
+    "Email": true,
+    "Product": true,
+    "Offer": true,
+    "Status": true,
+    "Order": true,
+    "Coupon": true,
+    "Feature": true,
+    "Screenshot": true,
+    "Governorate": true,
+    "City": true,
+    "Salon": true,
+    "Branch": true
+}

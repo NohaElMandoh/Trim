@@ -1,0 +1,98 @@
+@extends('dashboard.layouts.app')
+@section('title', __('Editing').' '.ucfirst(__('branch')))
+@section('content')
+<form role="form" class="form-horizontal" method="POST" action="{{ route('branches.update', $row->id) }}">
+    @csrf
+    @method('PUT')
+    <div class="form-body">
+        <div class="form-group form-md-line-input">
+            <label class="col-md-2 control-label">{{ ucfirst(__('salon')) }}</label>
+            <div class="col-md-10">
+                <select class="js-example-basic-single js-states form-control" id="user_id" name="user_id">
+                    @foreach(\App\User::role('salon')->latest()->get() as $salon)
+                    <option value="{{ $salon->id }}" {{ old('user_id') == $salon->id || $row->user_id == $salon->id }}>{{ $salon->name }}</option>
+                    @endforeach
+                </select>
+                <div class="form-control-focus"> </div>
+            </div>
+        </div>
+        @component('input_trans', ['type' => 'text', 'label' => 'Address', 'required' => true, 'model' => $row])
+            address
+        @endcomponent
+        <div class="form-group form-md-line-input">
+            <label for="search" class="col-md-2 control-label">{{ __('Search') }}</label>
+            <div class="col-md-10">
+                <input id="search"  placeholder="{{ __('Search') }}" class="form-control">
+                <div class="form-control-focus"> </div>
+            </div>
+        </div>
+        <input type="text" style="display: none" name="lat" id="lat" value="{{ $row->lat }}">
+        <input type="text" style="display: none" name="lng" id="lng" value="{{ $row->lng }}">
+        <div class="form-group">
+            <div id="map-canvas" class="form-control"></div>
+        </div>
+    </div>
+    <div class="form-actions">
+        <div class="row">
+            <div class="col-md-offset-2 col-md-10">
+                <button type="rest" class="btn btn-default">{{ __('Cancel')}}</button>
+                <button type="submit" class="btn btn-primary">{{ __('Submit')}}</button>
+            </div>
+        </div>
+    </div>
+</form>
+@endsection
+
+@section('css')
+<style>
+    #map-canvas{
+        height: 600px;
+    }
+</style>
+@endsection
+@section('js')
+<script type="text/javascript" src="https://maps.google.com/maps/api/js?key=AIzaSyA9UBKQHciVMSJZEoM640mtwKkTXavjrD4&libraries=places"></script>
+<script>
+var map = new google.maps.Map(document.getElementById('map-canvas'), {
+    center:{
+        lat: {{ $row->lat }},
+        lng: {{ $row->lng }}
+    },
+    zoom: 15
+});
+var marker = new google.maps.Marker({
+    position:{
+        lat: {{ $row->lat }},
+        lng: {{ $row->lng }}
+    },
+    map: map,
+    draggable: true
+});
+google.maps.event.addListener(marker, 'dragend', function (){
+    var lat = marker.getPosition().lat();
+    var lng = marker.getPosition().lng();
+    $("#lat").val(lat);
+    $("#lng").val(lng);
+});
+var branch  = new google.maps.places.SearchBox(document.getElementById('branch'));
+var searchBox  = new google.maps.places.SearchBox(document.getElementById('search'));
+google.maps.event.addListener(searchBox , 'places_changed' , function(){
+    var places = searchBox.getPlaces();
+    var bounds = new google.maps.LatLngBounds();
+     var i, place;
+     for (i = 0; place = places[i]; i++) {
+        bounds.extend(place.geometry.location)
+        marker.setPosition(place.geometry.location)
+     }
+     map.fitBounds(bounds);
+     map.setZoom(15);
+
+});
+google.maps.event.addListener(marker , 'position_changed' , function(){
+    var lat = marker.getPosition().lat();
+    var lng = marker.getPosition().lng();
+    $("#lat").val(lat);
+    $("#lng").val(lng);
+});
+</script>
+@endsection

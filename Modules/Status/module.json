@@ -1,0 +1,13 @@
+{
+    "name": "Status",
+    "alias": "status",
+    "description": "",
+    "keywords": [],
+    "order": 0,
+    "providers": [
+        "Modules\\Status\\Providers\\StatusServiceProvider"
+    ],
+    "aliases": {},
+    "files": [],
+    "requires": []
+}
