@@ -17,10 +17,10 @@
         @component('input_trans', ['type' => 'textarea', 'label' => 'Privacy', 'required' => false, 'model' => $site])
             privacy
         @endcomponent
-        @component('input_trans', ['type' => 'textarea', 'label' => 'How does OQ work ?', 'required' => false, 'model' => $site])
+        @component('input_trans', ['type' => 'textarea', 'label' => 'How does Trim work ?', 'required' => false, 'model' => $site])
             how_it_works
         @endcomponent
-        @component('input_trans', ['type' => 'textarea', 'label' => 'How to work in OQ ?', 'required' => false, 'model' => $site])
+        @component('input_trans', ['type' => 'textarea', 'label' => 'How to work in Trim ?', 'required' => false, 'model' => $site])
             work_in_oq
         @endcomponent
         @component('input', ['type' => 'number', 'label' => 'Point price', 'required' => true, 'value' => $site->point_price])

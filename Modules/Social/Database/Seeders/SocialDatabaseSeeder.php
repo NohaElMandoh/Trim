@@ -20,13 +20,13 @@ class SocialDatabaseSeeder extends Seeder
         Social::create([
             'order' => 1,
             'image' => 'facebook.png',
-            'url'   => 'https://facebook.com/oq'
+            'url'   => 'https://facebook.com/trim'
         ]);
 
         Social::create([
             'order' => 2,
             'image' => 'twitter.png',
-            'url'   => 'https://twitter.com/oq'
+            'url'   => 'https://twitter.com/trim'
         ]);
         // $this->call("OthersTableSeeder");
     }

@@ -59,6 +59,13 @@
 					<a class="nav-link" href="https://www.google.com.eg/maps/place/{{ $address->lat }}+{{ $address->lng }}" target="_blank"><img src="{{ asset('dest/img/pin.png')}}"><span>{{ $address->address }}</span></a>
 				</li>
                 @endif
+				@foreach(LaravelLocalization::getSupportedLocales() as $localeCode => $properties)
+				@if(App::getLocale() != $localeCode)
+				<li class="nav-item">
+					<a class="nav-link btn" hreflang="{{ $localeCode }}" href="{{ LaravelLocalization::getLocalizedURL($localeCode, null, [], true) }}"><span>{{ $properties['native'] }}</span></a>
+				</li>
+				@endif
+				@endforeach
 			</ul>
 		</div>
 	</nav>
