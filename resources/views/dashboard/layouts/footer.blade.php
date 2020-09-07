@@ -77,6 +77,8 @@
             $('#price_sidebar').hasClass('active') ||
             $('#word_sidebar').hasClass('active') || 
             $('#coupon_sidebar').hasClass('active')  ||
+            $('#course_sidebar').hasClass('active')  ||
+            $('#lesson_sidebar').hasClass('active')  ||
             $('#complaint_sidebar').hasClass('active') 
             ) {
             $('#app_management_sidebar').addClass('active');

@@ -16,5 +16,7 @@
     "City": true,
     "Salon": true,
     "Branch": true,
-    "Service": true
+    "Service": true,
+    "Course": true,
+    "Lesson": true
 }

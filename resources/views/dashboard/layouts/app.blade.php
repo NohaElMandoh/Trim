@@ -209,6 +209,12 @@
                                 @component('sidebar_item', ['icon' => 'fa fa-bullhorn', 'label' => 'coupon'])
                                     coupon
                                 @endcomponent
+                                @component('sidebar_item', ['icon' => 'fa fa-usd', 'label' => 'course'])
+                                    course
+                                @endcomponent
+                                @component('sidebar_item', ['icon' => 'fa fa-book', 'label' => 'lesson'])
+                                    lesson
+                                @endcomponent
                             </ul>
                         </li>
                         <li class="treeview" id="orders_sidebar">
