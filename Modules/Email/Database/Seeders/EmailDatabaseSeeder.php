@@ -18,7 +18,7 @@ class EmailDatabaseSeeder extends Seeder
         Model::unguard();
 
         Email::create([
-            'email'     => 'info@oq.com',
+            'email'     => 'info@trim.style',
             'order'     => 1
         ]);
         // $this->call("OthersTableSeeder");

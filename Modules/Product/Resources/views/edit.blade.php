@@ -8,28 +8,17 @@
         @component('input_trans', ['type' => 'text', 'label' => 'Name', 'required' => true, 'model' => $row])
             name
         @endcomponent
-        @component('input_image', ['width' => 128, 'height' => 128, 'label' => 'Image', 'src' => route('file_show', $row->image)])
+        @component('input_image', ['width' => 200, 'height' => 200, 'label' => 'Image', 'src' => route('file_show', $row->image)])
             image
         @endcomponent
         @component('input', ['label' => 'Price', 'type' => 'number', 'required' => true, 'value' => $row->price])
             price
         @endcomponent
-        {{-- <div class="form-group form-md-line-input">
-            <label class="col-md-2 control-label">{{ ucfirst(__('shop')) }}</label>
-            <div class="col-md-10">
-                <select class="js-example-basic-single js-states form-control" id="shop_id" name="shop_id">
-                    @foreach(\App\User::role('shop')->latest()->get() as $shop)
-                    <option value="{{ $shop->id }}" {{ old('shop_id') == $shop->id || $row->shop_id == $shop->id ? 'selected': '' }}>{{ $shop->name }}</option>
-                    @endforeach
-                </select>
-                <div class="form-control-focus"> </div>
-            </div>
-        </div> --}}
         <div class="form-group form-md-line-input">
             <label class="col-md-2 control-label">{{ ucfirst(__('category')) }}</label>
             <div class="col-md-10">
                 <select class="js-example-basic-single js-states form-control" id="category_id" name="category_id">
-                    @foreach(\Modules\Category\Entities\Category::where('is_shop', 0)->latest()->get() as $category)
+                    @foreach(\Modules\Category\Entities\Category::latest()->get() as $category)
                     <option value="{{ $category->id }}" {{ old('category_id') == $category->id || $category->id == $row->category_id ? 'selected': '' }}>{{ $category->name }}</option>
                     @endforeach
                 </select>

@@ -18,11 +18,11 @@ class AddressDatabaseSeeder extends Seeder
         Model::unguard();
 
         Address::create([
-            'address:en'    => 'Tolba ouda street, Zagazig, Egypt',
-            'address:ar'    => 'شارع طلبه عويضه ,الزقازيق, مصر',
+            'address:en'    => 'Cairo, Egypt',
+            'address:ar'    => 'القاهرة, مصر',
             'order'         => 1,
-            'lat'           => 30.58768,
-            'lng'           => 31.502
+            'lat'           => 30.033333,
+            'lng'           => 31.233334
         ]);
 
         // $this->call("OthersTableSeeder");

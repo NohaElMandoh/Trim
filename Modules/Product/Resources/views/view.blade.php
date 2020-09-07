@@ -14,10 +14,6 @@
     <div class="panel-body">{{ $row->price }}</div>
 </div>
 <div class="panel panel-default">
-    <div class="panel-heading">{{ __('Shop') }}</div>
-    <div class="panel-body">{{ $row->shop()->first()->name ?? '' }}</div>
-</div>
-<div class="panel panel-default">
     <div class="panel-heading">{{ __('Category') }}</div>
     <div class="panel-body">{{ $row->category()->first()->name ?? '' }}</div>
 </div>

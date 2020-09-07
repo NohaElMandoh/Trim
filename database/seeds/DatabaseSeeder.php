@@ -7,6 +7,7 @@ use Modules\Captain\Database\Seeders\CaptainDatabaseSeeder;
 use Modules\Category\Database\Seeders\CategoryDatabaseSeeder;
 use Modules\City\Database\Seeders\CityDatabaseSeeder;
 use Modules\Email\Database\Seeders\EmailDatabaseSeeder;
+use Modules\Feature\Database\Seeders\FeatureDatabaseSeeder;
 use Modules\Governorate\Database\Seeders\GovernorateDatabaseSeeder;
 use Modules\Offer\Database\Seeders\OfferDatabaseSeeder;
 use Modules\Phone\Database\Seeders\PhoneDatabaseSeeder;
@@ -25,6 +26,7 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
         $this->call([
+            FeatureDatabaseSeeder::class,
             GovernorateDatabaseSeeder::class,
             CityDatabaseSeeder::class,
             CategoryDatabaseSeeder::class,

@@ -18,7 +18,7 @@ class PhoneDatabaseSeeder extends Seeder
         Model::unguard();
 
         Phone::create([
-            'phone' => '01010101010',
+            'phone' => '01206533242',
             'order' => 1
         ]);
 
