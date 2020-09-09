@@ -15,28 +15,23 @@ class CreateOrdersTable extends Migration
     {
         Schema::create('orders', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->double('buy_lat')->nullable();
-            $table->double('buy_lng')->nullable();
-            $table->double('delivery_lat')->nullable();
-            $table->double('delivery_lng')->nullable();
+            $table->double('lat')->nullable();
+            $table->double('lng')->nullable();
             $table->unsignedBigInteger('user_id')->nullable();
             $table->foreign('user_id')->references('id')->on('users')->onUpdate('cascade')->onDelete('cascade');
-            $table->unsignedBigInteger('captain_id')->nullable();
-            $table->foreign('captain_id')->references('id')->on('users')->onUpdate('cascade')->onDelete('cascade');
+            $table->unsignedBigInteger('barber_id')->nullable();
+            $table->foreign('barber_id')->references('id')->on('users')->onUpdate('cascade')->onDelete('cascade');
             $table->unsignedBigInteger('status_id')->nullable();
             $table->foreign('status_id')->references('id')->on('statuses')->onUpdate('cascade')->onDelete('cascade');
-            $table->tinyInteger('shop_rate')->nullable();
-            $table->string('shop_review')->nullable();
-            $table->string('shop_review_image')->nullable();
-            $table->tinyInteger('captain_rate')->nullable();
-            $table->string('captain_review')->nullable();
-            $table->string('captain_review_image')->nullable();
+            $table->tinyInteger('rate')->nullable();
+            $table->string('review')->nullable();
+            $table->string('review_image')->nullable();
             $table->string('payment_method')->nullable();
-            $table->double('delivery_fee', 10, 2)->nullable();
             $table->string('payment_coupon')->nullable();
-            $table->string('shop_name')->nullable();
             $table->string('phone')->nullable();
-            $table->string('type')->default('oq')->nullable();
+            $table->string('address')->nullable();
+            $table->boolean('is_now')->default(0)->nullable();
+            $table->string('type')->default('salon')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

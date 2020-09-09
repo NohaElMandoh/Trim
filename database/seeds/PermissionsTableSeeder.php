@@ -39,7 +39,8 @@ class PermissionsTableSeeder extends Seeder
         Permission::create(['name' => 'setting.edit']);
 
         $orders = [
-            'salon_order', 'captain_order'
+            'salon_order', 'captain_order', 'children_order',
+            'product_order'
         ];
         foreach($orders as $order) {
             Permission::create(['name' => $order . '.status']);

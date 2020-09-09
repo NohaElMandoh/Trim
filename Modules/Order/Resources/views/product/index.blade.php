@@ -1,11 +1,11 @@
 @extends('dashboard.layouts.app')
-@section('title', __('Viewing').' '.ucfirst(__('OQ orders')))
+@section('title', __('Viewing').' '.ucfirst(__('Product orders')))
 @section('content')
 <div class="row">
     <div class="box">
         <div class="box-header">
-            @can('oq_order.create')
-                <a href="{{ route('oq_orders.create') }}"  class="btn btn-primary"> {{ __('Add New')}}
+            @can('product_order.create')
+                <a href="{{ route('product_orders.create') }}"  class="btn btn-primary"> {{ __('Add New')}}
                     <i class="fa fa-plus"></i>
                 </a>
             @endcan
@@ -16,8 +16,7 @@
                     <tr>
                         <th> {{ __('ID') }} </th>
                         <th> {{ __('User') }} </th>
-                        <th> {{ __('Shop') }} </th>
-                        <th> {{ __('Captain') }} </th>
+                        <th> {{ __('Status') }} </th>
                         <th> {{ __('Created at') }}  </th>
                         <th> {{ __('Actions')}} </th>
                     </tr>
@@ -27,8 +26,7 @@
                     <tr>
                         <td> {{ $row->id }} </td>
                         <td> {{ $row->user()->first()->name ?? '' }} </td>
-                        <td> {{ $row->shop()->first()->name ?? '' }} </td>
-                        <td> {{ $row->captain()->first()->name ?? '' }} </td>
+                        <td> {{ $row->status()->first()->name ?? '' }} </td>
                         <td> {{ $row->created_at }} </td>
                         <td>
                             <div class="btn-group">
@@ -36,25 +34,19 @@
                                     <i class="fa fa-angle-down"></i>
                                 </button>
                                 <ul class="dropdown-menu pull-left" order="menu">
-                                    @can('oq_order.view')
+                                    @can('product_order.view')
                                     <li>
-                                        <a href="{{ route('oq_orders.show', $row->id) }}">
+                                        <a href="{{ route('product_orders.show', $row->id) }}">
                                             <i class="fa fa-eye"></i> {{ __('View') }} </a>
                                     </li>
                                     @endcan
-                                    @can('oq_order.view')
+                                    @can('product_order.status')
                                     <li>
-                                        <a href="{{ route('oq_orders.messages', $row->id) }}">
-                                            <i class="fa fa-eye"></i> {{ __('View messages') }} </a>
-                                    </li>
-                                    @endcan
-                                    @can('oq_order.status')
-                                    <li>
-                                        <a href="{{ route('oq_orders.status', $row->id) }}">
+                                        <a href="{{ route('product_orders.status', $row->id) }}">
                                             <i class="fa fa-pencil-square-o"></i> {{ __('Change status') }} </a>
                                     </li>
                                     @endcan
-                                    @can('oq_order.delete')
+                                    @can('product_order.delete')
                                     <li>
                                         <a class="delete_btn" data-id="{{ $row->id }}" data-toggle="modal" data-target="#delete_modal">
                                             <i class="fa fa-trash"></i> {{ __('Delete') }} </a>
@@ -83,7 +75,7 @@
                 <h4 class="modal-title">{{ __('Are you sure you want to delete ?') }}</h4>
             </div>
             <div class="modal-footer">
-                <form id="delete_form" method="POST" action="{{ route('oq_orders.destroy', 0) }}">
+                <form id="delete_form" method="POST" action="{{ route('product_orders.destroy', 0) }}">
                     @csrf
                     @method('DELETE')
                     <button type="button" class="btn btn-default" data-dismiss="modal">{{ __('Close') }}</button>
@@ -123,7 +115,7 @@ $(document).ready(function () {
                 "url": "https://cdn.datatables.net/plug-ins/1.10.19/i18n/Arabic.json"
             },
             @endif
-            "order": [[ 4, "desc" ]],
+            "order": [[ 3, "desc" ]],
         } 
     );
     @endif

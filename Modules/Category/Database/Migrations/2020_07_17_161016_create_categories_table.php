@@ -17,6 +17,7 @@ class CreateCategoriesTable extends Migration
             $table->bigIncrements('id');
             $table->integer('order')->default(0)->nullable();
             $table->string('image')->nullable();
+            $table->boolean('for_offers')->default(0)->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

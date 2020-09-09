@@ -13,6 +13,9 @@
         @component('input', ['label' => 'Order', 'type' => 'number', 'required' => true])
             order
         @endcomponent
+         @component('checkbox', ['label' => 'For offers'])
+            for_offers
+        @endcomponent
     </div>
     <div class="form-actions">
         <div class="row">

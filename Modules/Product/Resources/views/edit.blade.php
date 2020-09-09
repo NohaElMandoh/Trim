@@ -18,7 +18,7 @@
             <label class="col-md-2 control-label">{{ ucfirst(__('category')) }}</label>
             <div class="col-md-10">
                 <select class="js-example-basic-single js-states form-control" id="category_id" name="category_id">
-                    @foreach(\Modules\Category\Entities\Category::latest()->get() as $category)
+                    @foreach(\Modules\Category\Entities\Category::where('for_offers', 0)->latest()->get() as $category)
                     <option value="{{ $category->id }}" {{ old('category_id') == $category->id || $category->id == $row->category_id ? 'selected': '' }}>{{ $category->name }}</option>
                     @endforeach
                 </select>

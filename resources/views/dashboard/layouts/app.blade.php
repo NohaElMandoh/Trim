@@ -225,21 +225,18 @@
                                 </span>
                             </a>
                             <ul class="treeview-menu" >
-                                @can("oq_order.view")                        
-                                <li id="oq_order_sidebar" @if(url()->current() == route('oq_orders.index')) class="active" @endif><a href="{{ route('oq_orders.index') }}"><i class="fa fa-shopping-cart"></i> <span>{{ __('OQ')}}</span></a></li>
+                                @can("salon_order.view")                        
+                                <li id="salon_order_sidebar" @if(url()->current() == route('salon_orders.index')) class="active" @endif><a href="{{ route('salon_orders.index') }}"><i class="fa fa-shopping-cart"></i> <span>{{ __('Salon')}}</span></a></li>
                                 @endcan 
-                                @can("anywhere_order.view")                        
-                                <li id="anywhere_order_sidebar" @if(url()->current() == route('anywhere_orders.index')) class="active" @endif><a href="{{ route('anywhere_orders.index') }}"><i class="fa fa-shopping-cart"></i> <span>{{ __('Any where')}}</span></a></li>
+                                @can("captain_order.view")                        
+                                <li id="captain_order_sidebar" @if(url()->current() == route('captain_orders.index')) class="active" @endif><a href="{{ route('captain_orders.index') }}"><i class="fa fa-shopping-cart"></i> <span>{{ __('Captain')}}</span></a></li>
                                 @endcan 
-                                @can("week_order.view")                        
-                                <li id="week_order_sidebar" @if(url()->current() == route('week_orders.index')) class="active" @endif><a href="{{ route('week_orders.index') }}"><i class="fa fa-shopping-cart"></i> <span>{{ __('Week')}}</span></a></li>
+                                @can("children_order.view")                        
+                                <li id="children_order_sidebar" @if(url()->current() == route('children_orders.index')) class="active" @endif><a href="{{ route('children_orders.index') }}"><i class="fa fa-shopping-cart"></i> <span>{{ __('Children')}}</span></a></li>
                                 @endcan
-                                @can("oneway_order.view")                        
-                                <li id="oneway_order_sidebar" @if(url()->current() == route('oneway_orders.index')) class="active" @endif><a href="{{ route('oneway_orders.index') }}"><i class="fa fa-shopping-cart"></i> <span>{{ __('One way')}}</span></a></li>
+                                @can("product_order.view")                        
+                                <li id="product_order_sidebar" @if(url()->current() == route('product_orders.index')) class="active" @endif><a href="{{ route('product_orders.index') }}"><i class="fa fa-shopping-cart"></i> <span>{{ __('Product')}}</span></a></li>
                                 @endcan  
-                                @can("moreway_order.view")                        
-                                <li id="moreway_order_sidebar" @if(url()->current() == route('moreway_orders.index')) class="active" @endif><a href="{{ route('moreway_orders.index') }}"><i class="fa fa-shopping-cart"></i> <span>{{ __('More way')}}</span></a></li>
-                                @endcan 
                             </ul>
                         </li>
                         <li class="treeview" id="contact_management_sidebar">

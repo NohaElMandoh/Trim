@@ -12,6 +12,6 @@ class Service extends Model implements TranslatableContract
     use Translatable, SoftDeletes;
     
     public $translatedAttributes = ['title', 'description'];
-    protected $fillable = ['price_type', 'gender', 'price', 'min_price', 'max_price'];
+    protected $fillable = ['price_type', 'gender', 'price', 'min_price', 'max_price', 'for_children'];
     protected $dates = ['deleted_at'];
 }

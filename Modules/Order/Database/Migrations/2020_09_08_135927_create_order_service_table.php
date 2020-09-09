@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateDeliveryLocationsTable extends Migration
+class CreateOrderServiceTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,16 +13,14 @@ class CreateDeliveryLocationsTable extends Migration
      */
     public function up()
     {
-        Schema::create('delivery_locations', function (Blueprint $table) {
-            $table->bigIncrements('id');
+        Schema::create('order_service', function (Blueprint $table) {
             $table->unsignedBigInteger('order_id')->nullable();
             $table->foreign('order_id')->references('id')->on('orders')->onUpdate('cascade')->onDelete('cascade');
-            $table->string('name')->nullable();
-            $table->string('phone')->nullable();
-            $table->double('lat')->nullable();
-            $table->double('lng')->nullable();
-            $table->timestamps();
-            $table->softDeletes();
+
+            $table->unsignedBigInteger('service_id')->nullable();
+            $table->foreign('service_id')->references('id')->on('services')->onUpdate('cascade')->onDelete('cascade');
+
+            $table->integer('qty')->nullable()->default(1);
         });
     }
 
@@ -33,6 +31,6 @@ class CreateDeliveryLocationsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('delivery_locations');
+        Schema::dropIfExists('order_service');
     }
 }

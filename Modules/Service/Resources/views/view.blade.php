@@ -32,6 +32,10 @@
     <div class="panel-heading">{{ __('Gender') }}</div>
     <div class="panel-body">{{ __(''.$row->gender) }}</div>
 </div>
+<div class="panel panel-default">
+    <div class="panel-heading">{{ __('For children') }}</div>
+    <div class="panel-body">{{ $row->for_children }}</div>
+</div>
 @endsection
 @section('css')
 

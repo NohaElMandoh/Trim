@@ -1,7 +1,7 @@
 @extends('dashboard.layouts.app')
-@section('title', __('Change status').' '.ucfirst(__('OQ')))
+@section('title', __('Change status').' '.ucfirst(__('Children')))
 @section('content')
-<form role="form" class="form-horizontal" method="POST" action="{{ route('oq_orders.status', $row->id) }}" enctype="multipart/form-data">
+<form role="form" class="form-horizontal" method="POST" action="{{ route('children_orders.status', $row->id) }}" enctype="multipart/form-data">
     @csrf
     <div class="form-body">
         <div class="form-group form-md-line-input">

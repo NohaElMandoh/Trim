@@ -1,5 +1,5 @@
 @extends('dashboard.layouts.app')
-@section('title', __('Messages').' '.ucfirst(__('Any where')))
+@section('title', __('Messages').' '.ucfirst(__('Captain')))
 @section('content')
 <div style="overflow: hidden">
 @foreach($row->messages()->oldest()->get() as $message)

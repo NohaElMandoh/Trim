@@ -12,6 +12,6 @@ class Category extends Model implements TranslatableContract
     use Translatable, SoftDeletes;
     
     public $translatedAttributes = ['name'];
-    protected $fillable = ['order', 'image'];
+    protected $fillable = ['order', 'image', 'for_offers'];
     protected $dates = ['deleted_at'];
 }

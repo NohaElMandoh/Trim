@@ -39,6 +39,9 @@
                 <div class="form-control-focus"> </div>
             </div>
         </div>
+        @component('checkbox', ['label' => 'For children'])
+            for_children
+        @endcomponent
     </div>
     <div class="form-actions">
         <div class="row">

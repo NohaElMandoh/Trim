@@ -20,6 +20,7 @@ class CreateServicesTable extends Migration
             $table->double('price', 10, 2)->nullable();
             $table->double('min_price', 10, 2)->nullable();
             $table->double('max_price', 10, 2)->nullable();
+            $table->boolean('for_children')->default(0)->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

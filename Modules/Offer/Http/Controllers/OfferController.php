@@ -51,6 +51,7 @@ class OfferController extends Controller
             'image'         => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'user_id'       => 'required|exists:users,id',
             'price'         => 'required|numeric',
+            'category_id'   => 'required|exists:categories,id'
         ]);
 
         $data   = $request->all();
@@ -99,6 +100,7 @@ class OfferController extends Controller
             'image'         => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'user_id'       => 'required|exists:users,id',
             'price'         => 'required|numeric',
+            'category_id'   => 'required|exists:categories,id'
         ]);
 
         $data   = $request->all();

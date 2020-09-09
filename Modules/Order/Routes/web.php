@@ -18,30 +18,27 @@ Route::group(
     ],
     function () {
         Route::group(['prefix' => 'dashboard', 'middleware' => ['auth', 'dashboard']], function () {
-            Route::get('oq_orders/{id}/messages', 'OqController@messages')->name('oq_orders.messages');
-            Route::get('oq_orders/{id}/status', 'OqController@status')->name('oq_orders.status');
-            Route::post('oq_orders/{id}/status', 'OqController@post_status');
-            Route::resource('oq_orders', 'OqController');
 
-            Route::get('anywhere_orders/{id}/messages', 'AnyWhereController@messages')->name('anywhere_orders.messages');
-            Route::get('anywhere_orders/{id}/status', 'AnyWhereController@status')->name('anywhere_orders.status');
-            Route::post('anywhere_orders/{id}/status', 'AnyWhereController@post_status');
-            Route::resource('anywhere_orders', 'AnyWhereController');
 
-            Route::get('week_orders/{id}/messages', 'WeekController@messages')->name('week_orders.messages');
-            Route::get('week_orders/{id}/status', 'WeekController@status')->name('week_orders.status');
-            Route::post('week_orders/{id}/status', 'WeekController@post_status');
-            Route::resource('week_orders', 'WeekController');
+            Route::get('salon_orders/{id}/messages', 'OqController@messages')->name('salon_orders.messages');
+            Route::get('salon_orders/{id}/status', 'OqController@status')->name('salon_orders.status');
+            Route::post('salon_orders/{id}/status', 'OqController@post_status');
+            Route::resource('salon_orders', 'SalonOrderController');
 
-            Route::get('oneway_orders/{id}/messages', 'OneWayController@messages')->name('oneway_orders.messages');
-            Route::get('oneway_orders/{id}/status', 'OneWayController@status')->name('oneway_orders.status');
-            Route::post('oneway_orders/{id}/status', 'OneWayController@post_status');
-            Route::resource('oneway_orders', 'OneWayController');
+            Route::get('captain_orders/{id}/messages', 'CaptainOrderController@messages')->name('captain_orders.messages');
+            Route::get('captain_orders/{id}/status', 'CaptainOrderController@status')->name('captain_orders.status');
+            Route::post('captain_orders/{id}/status', 'CaptainOrderController@post_status');
+            Route::resource('captain_orders', 'CaptainOrderController');
 
-            Route::get('moreway_orders/{id}/messages', 'MoreWayController@messages')->name('moreway_orders.messages');
-            Route::get('moreway_orders/{id}/status', 'MoreWayController@status')->name('moreway_orders.status');
-            Route::post('moreway_orders/{id}/status', 'MoreWayController@post_status');
-            Route::resource('moreway_orders', 'MoreWayController');
+            Route::get('children_orders/{id}/messages', 'ChildrenOrderController@messages')->name('children_orders.messages');
+            Route::get('children_orders/{id}/status', 'ChildrenOrderController@status')->name('children_orders.status');
+            Route::post('children_orders/{id}/status', 'ChildrenOrderController@post_status');
+            Route::resource('children_orders', 'ChildrenOrderController');
+
+            Route::get('product_orders/{id}/messages', 'ProductOrderController@messages')->name('product_orders.messages');
+            Route::get('product_orders/{id}/status', 'ProductOrderController@status')->name('product_orders.status');
+            Route::post('product_orders/{id}/status', 'ProductOrderController@post_status');
+            Route::resource('product_orders', 'ProductOrderController');
         });
     }
 );

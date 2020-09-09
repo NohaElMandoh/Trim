@@ -1,9 +1,9 @@
 @extends('dashboard.layouts.app')
-@section('title', __('Messages').' '.ucfirst(__('One way')))
+@section('title', __('Messages').' '.ucfirst(__('Children')))
 @section('content')
 <div style="overflow: hidden">
 @foreach($row->messages()->oldest()->get() as $message)
-<div class="panel panel-{{ $message->user_id == $row->shop_id ? 'default' : 'primary' }}" style="width: 60%; float: {{ $message->user_id == $row->shop_id ? 'left' : 'right' }}">
+<div class="panel panel-{{ $message->user_id == $row->user_id ? 'default' : 'primary' }}" style="width: 60%; float: {{ $message->user_id == $row->user_id ? 'left' : 'right' }}">
     <div class="panel-heading">{{ $message->user()->first()->name ?? '' }} {{ $message->created_at }}</div>
     <div class="panel-body">
         @if($message->type == 'text')

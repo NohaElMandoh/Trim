@@ -13,6 +13,10 @@
     <div class="panel-heading">{{ __('Order') }}</div>
     <div class="panel-body">{{ $row->order }}</div>
 </div>
+<div class="panel panel-default">
+    <div class="panel-heading">{{ __('For offers') }}</div>
+    <div class="panel-body">{{ $row->for_offers }}</div>
+</div>
 @endsection
 @section('css')
 

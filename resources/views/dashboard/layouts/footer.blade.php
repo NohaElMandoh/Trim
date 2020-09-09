@@ -88,11 +88,10 @@
         }
 
         if(
-            $('#oq_order_sidebar').hasClass('active') ||
-            $('#anywhere_order_sidebar').hasClass('active')  ||
-            $('#week_order_sidebar').hasClass('active')  ||
-            $('#oneway_order_sidebar').hasClass('active')  ||
-            $('#moreway_order_sidebar').hasClass('active') 
+            $('#salon_order_sidebar').hasClass('active') ||
+            $('#captain_order_sidebar').hasClass('active')  ||
+            $('#children_order_sidebar').hasClass('active')  ||
+            $('#product_order_sidebar').hasClass('active') 
             ) {
             $('#orders_sidebar').addClass('active');
         }

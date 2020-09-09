@@ -30,9 +30,20 @@
                 <div class="form-control-focus"> </div>
             </div>
         </div>
-        @component('checkbox', ['label' => 'Sponsored', 'value' => $row->is_sponsored])
+        <div class="form-group form-md-line-input">
+            <label class="col-md-2 control-label">{{ ucfirst(__('category')) }}</label>
+            <div class="col-md-10">
+                <select class="js-example-basic-single js-states form-control" id="category_id" name="category_id">
+                    @foreach(\Modules\Category\Entities\Category::where('for_offers', 1)->latest()->get() as $category)
+                    <option value="{{ $category->id }}" {{ old('category_id') == $category->id || $category->id == $row->category_id ? 'selected': '' }}>{{ $category->name }}</option>
+                    @endforeach
+                </select>
+                <div class="form-control-focus"> </div>
+            </div>
+        </div>
+        {{-- @component('checkbox', ['label' => 'Sponsored', 'value' => $row->is_sponsored])
             is_sponsored
-        @endcomponent
+        @endcomponent --}}
     </div>
     <div class="form-actions">
         <div class="row">
