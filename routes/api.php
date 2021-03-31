@@ -25,9 +25,12 @@ Route::group(['namespace' => 'Api'], function () {
     Route::post('register', 'UserController@register');
     Route::post('socialRegister', 'UserController@socialRegister');
     //reset password
+    
+    Route::post('resetPassword', 'UserController@resetPassword');
+
     Route::post('user/reset-password', 'UserController@sendResetLinkEmail');
     Route::post('user/new-password', 'UserController@newPassword');
-    Route::post('user/change-password', 'UserController@changePassword')->middleware('auth:api');
+ 
     ///token and notifications
     Route::post('user/token', 'UserController@add_token');
     Route::get('user/notifications', 'UserController@get_notifications')->middleware('auth:api');
@@ -39,6 +42,7 @@ Route::group(['namespace' => 'Api'], function () {
 
         Route::post('gender', 'UserController@gender');
         Route::get('logout', 'UserController@logout');
+        Route::post('user/change-password', 'UserController@changePassword');
         // main lists
         Route::get('mainLists', 'MainController@mainLists');
 
@@ -59,6 +63,7 @@ Route::group(['namespace' => 'Api'], function () {
         Route::get('user/info', 'UserController@info');
         Route::post('user/update-image', 'UserController@update_image');
         Route::post('user/update-info', 'UserController@update_info');
+        Route::post('user/profile', 'UserController@profile');
         ///////cart
         Route::post('add-item-to-cart', 'CartController@addItemToCart');
         Route::get('get-cart-items', 'CartController@cartItems');

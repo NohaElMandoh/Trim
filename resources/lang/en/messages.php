@@ -21,5 +21,8 @@ return [
     'Password changed successfuly' => 'Password changed successfuly',
     'Invalid token' => 'Invalid token',
     'We will contact you ASAP' => 'We will contact you ASAP',
-    'user does not exist'=>'user does not exist'
+    'user does not exist'=>'user does not exist',
+    'Try Again Later'=>'Try Again Later',
+    'this code not valid'=>'This Code Not Valid',
+    'user account not activated'=>'User Account Not Activated'
 ];

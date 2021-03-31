@@ -2,6 +2,7 @@
 
 namespace App\Notifications;
 
+use App\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
@@ -17,9 +18,11 @@ class activateuser extends Notification
      *
      * @return void
      */
-    public function __construct($code)
+
+    protected $user;
+    public function __construct(User $user)
     {
-        $code=$code;
+        $this->user = $user;
     }
 
     /**
@@ -42,7 +45,7 @@ class activateuser extends Notification
     public function toNexmo($notifiable)
     {
         return (new NexmoMessage)
-                    ->content('Your Code is '.$code);
+            ->content('Your Code is ' . $this->user->sms_token);
     }
 
     /**
