@@ -96,7 +96,7 @@ class UserController extends Controller
                 'is_active' => 0
             ]);
             if ($result > 0) {
-                Notification::send($user, new \App\Notifications\activateuser($user));
+                // Notification::send($user, new \App\Notifications\activateuser($user));
                 return response()->json(['success' => true, 'data' => ['user' => new UserResource($user)]], 200);
             } else return response()->json(['success' => false, 'message' => __('messages.Try Again Later')], 402);
         } else {
@@ -155,9 +155,10 @@ class UserController extends Controller
         } else {
             $data = $request->all();
             $data['sms_token'] = random_int(0, 9) . random_int(0, 9) . random_int(0, 9) . random_int(0, 9) . random_int(0, 9);
+         
             $user = User::create($data);
             $token = $user->createToken('Myapp');
-            Notification::send($user, new \App\Notifications\activateuser($user));
+            // Notification::send($user, new \App\Notifications\activateuser($user));
             return response()->json(['success' => true, 'data' => ['token' => $token->accessToken, 'user' => new UserResource($user)]], 200);
         }
     }
