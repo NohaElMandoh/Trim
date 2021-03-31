@@ -22,4 +22,8 @@ class Offer extends Model implements TranslatableContract
     public function category() {
         return $this->belongsTo('Modules\Category\Entities\Category');
     }
+    public function cart()
+    {
+        return $this->morphMany('App\Cart', 'item');
+    }
 }

@@ -8,6 +8,8 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Traits\HasRoles;
 use Laravel\Passport\HasApiTokens;
+use App\Models\LinkedSocialAccount;
+use Carbon\Carbon;
 
 class User extends Authenticatable
 {
@@ -23,10 +25,12 @@ class User extends Authenticatable
         'image', 'id_photo', 'commercial_register', 'is_active',
         'description', 'points', 'lat', 'lng',
         'city_id', 'governorate_id', 'sms_token', 'gender',
-        'cover', 'is_sponsored'
+        'cover', 'is_sponsored', 'provider', 'provider_id', 'provider_token', 'type','search'
     ];
+    protected $appends = ['rate', 'status', 'from', 'to', 'avaliable_dates'];
 
-    public static function days() {
+    public static function days()
+    {
         return [
             0 => __('Sunday'),
             1 => __('Monday'),
@@ -46,7 +50,10 @@ class User extends Authenticatable
     protected $hidden = [
         'password', 'remember_token',
     ];
-
+    public function linkedSocialAccounts()
+    {
+        return $this->hasMany(LinkedSocialAccount::class);
+    }
     public function offers()
     {
         return $this->hasMany('\Modules\Offer\Entities\Offer', 'shop_id');
@@ -87,7 +94,24 @@ class User extends Authenticatable
     {
         return $this->belongsToMany('Modules\Coupon\Entities\Coupon')->withPivot('usage');
     }
-
+    public function rates()
+    {
+        return $this->belongsTo('App\Rate', 'id', 'user_id');
+    }
+    public function rateSalon()
+    {
+        return $this->hasMany('App\Rate', 'salon_id');
+    }
+    public function getRateAttribute($value)
+    {
+        $sumRating = $this->rateSalon()->sum('rate');
+        $countRating = $this->rateSalon()->count();
+        $avgRating = 0;
+        if ($countRating > 0) {
+            $avgRating = round($sumRating / $countRating, 1);
+        }
+        return $avgRating;
+    }
     public function governorate()
     {
         return $this->belongsTo('Modules\Governorate\Entities\Governorate');
@@ -103,7 +127,111 @@ class User extends Authenticatable
         return $this->hasMany('Modules\Salon\Entities\WorkDay', 'user_id');
     }
 
-    public function services() {
-        return $this->belongsToMany('Modules\Service\Entities\Service');
+    public function services()
+    {
+        return $this->belongsToMany('Modules\Service\Entities\Service', 'service_user');
+    }
+    // public function cart ()
+    // {
+    //     return $this->hasMany('App\Cart');
+    // }
+    public function cart ()
+    {
+        return $this->belongsToMany('Modules\Product\Entities\Product', 'carts')->withPivot('price', 'quantity',  'id')->withTimestamps();
+    }
+    public function getStatusAttribute($value)
+    {
+        $d    = Carbon::now();
+        $currentDay = $d->format('l');
+        $now = Carbon::now()->toDateTimeString();
+
+        $days = $this->works()->pluck('day');
+        $daysNames = collect($this->days());
+        $daysAvaliable = $daysNames->only($days);
+        foreach ($daysAvaliable as $i => $day) {
+            if ($day == $currentDay) {
+                $workday = $this->works()->where('day', $i)->first();
+                if ($workday->from_date >= $now && $workday->to_date <= $now) {
+                    return 'مفتوح';
+                } else  return 'مغلق';
+            }
+        }
+        return 'مغلق';
+    }
+    public function getFromAttribute($value)
+    {
+        $d    = Carbon::now();
+        $currentDay = $d->format('l');
+        $now = Carbon::now()->toDateTimeString();
+        $from = "";
+        $days = $this->works()->pluck('day');
+        $daysNames = collect($this->days());
+        $daysAvaliable = $daysNames->only($days);
+        foreach ($daysAvaliable as $i => $day) {
+            if ($day == $currentDay) {
+                $workday = $this->works()->where('day', $i)->first();
+                if ($workday->from_date >= $now && $workday->to_date <= $now) {
+                    $from = $workday->from_date;
+                }
+            }
+        }
+        return $from;
+    }
+    public function getToAttribute($value)
+    {
+        $d    = Carbon::now();
+        $currentDay = $d->format('l');
+        $now = Carbon::now()->toDateTimeString();
+        $to = "";
+        $days = $this->works()->pluck('day');
+        $daysNames = collect($this->days());
+        $daysAvaliable = $daysNames->only($days);
+        foreach ($daysAvaliable as $i => $day) {
+            if ($day == $currentDay) {
+                $workday = $this->works()->where('day', $i)->first();
+                if ($workday->from_date >= $now && $workday->to_date <= $now) {
+                    $to = $workday->to_date;
+                }
+            }
+        }
+        return $to;
+    }
+    public function getAvaliableDatesAttribute($value)
+    {
+        $d    = Carbon::now();
+        $currentDay = $d->format('l');
+        $now = Carbon::now()->toDateTimeString();
+        $to = "";
+        $from = null;
+        $dates = [];
+        $days = $this->works()->pluck('day');
+        $daysNames = collect($this->days());
+        $daysAvaliable = $daysNames->only($days);
+        foreach ($daysAvaliable as $i => $day) {
+            if ($day == $currentDay) {
+                $workday = $this->works()->where('day', $i)->first();
+
+                if ($workday->from <= $now && $workday->to <= $now) {
+                    $to = $workday->to;
+                    $from = $workday->from;
+                    $from_date = Carbon::createFromFormat('H:i:s', $from);
+                    $to_date = Carbon::createFromFormat('H:i:s', $to);
+                    $diff = $to_date->diff($from_date);
+
+                    for ($i = $from_date; $i <= $to_date; $i->modify('+30 minute')) {
+                        array_push($dates, $i->format('g:i A'));
+                    }
+                }
+            }
+        }
+        //  $from_add=(new Carbon($from))->addMinutes(30);
+
+        // $text = $from_add->format('g:i A');
+        // $replace = str_replace('AM', 'ص', $text);
+        // $replace = str_replace('PM', 'م', $replace);
+        return $dates;
+    }
+    public function routeNotificationForNexmo(){
+        return $this->phone;
     }
 }

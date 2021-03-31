@@ -14,4 +14,13 @@ class Service extends Model implements TranslatableContract
     public $translatedAttributes = ['title', 'description'];
     protected $fillable = ['price_type', 'gender', 'price', 'min_price', 'max_price', 'for_children'];
     protected $dates = ['deleted_at'];
+
+    public function users() {
+        return $this->belongsToMany('App\User','service_user');
+    }
+
+    public function cart()
+    {
+        return $this->morphMany('App\Cart', 'item');
+    }
 }

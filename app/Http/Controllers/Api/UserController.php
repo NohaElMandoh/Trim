@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use App\Http\Resources\User as UserResource;
+use App\Http\Resources\UserResource;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Foundation\Auth\SendsPasswordResetEmails;
 use App\Token;
@@ -14,6 +14,7 @@ use League\Fractal\Manager;
 use League\Fractal\Pagination\IlluminatePaginatorAdapter;
 use League\Fractal\Resource\Collection;
 use App\NotificationTransformer;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\DB;
 
@@ -31,46 +32,120 @@ class UserController extends Controller
     public function login(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'phone' => ['required', 'string'],
+            'text' => ['required', 'string'],
             'password' => ['required', 'string'],
         ]);
         if ($validator->fails()) {
-            return response()->json(['errors' => $validator->errors(), 'success' => false], 401);
+            return response()->json(['errors' => $validator->errors(), 'success' => false], 400);
         }
-        if (Auth::attempt(['phone' => $request->phone, 'password' => $request->password, 'is_active' => 1])) {
+        if ((Auth::attempt(['phone' => $request->text, 'password' => $request->password, 'is_active' => 1])) ||
+            (Auth::attempt(['email' => $request->text, 'password' => $request->password, 'is_active' => 1]))
+        ) {
             if (auth()->user()->hasRole('captain')) {
                 return response()->json(['message' => __('messages.Please login from captain app'), 'success' => false], 401);
             }
             $token = auth()->user()->createToken('Myapp')->accessToken;
-            return response()->json(['data' => ['token' => $token, 'user' => new UserResource(User::find(auth()->id()))], 'success' => true], 200);
+            return response()->json(['success' => true, 'data' => ['token' => $token, 'user' => new UserResource(User::find(auth()->id()))]], 200);
         } else {
-            return response()->json(['message' => __('messages.UnAuthorised'), 'success' => false], 401);
+            return response()->json(['success' => false, 'message' => __('messages.UnAuthorised')], 401);
         }
     }
+    // getVerificationCode api
+    public function getVerificationCode(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'text' => ['required', 'string'],
+            'password' => ['required', 'string'],
+        ]);
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors(), 'success' => false], 400);
+        }
 
+        if ((Auth::attempt(['phone' => $request->text, 'password' => $request->password])) ||
+            (Auth::attempt(['email' => $request->text, 'password' => $request->password]))
+        ) {
+
+            $userCode = User::find(auth()->id())->sms_token;
+
+            return response()->json(['success' => true, 'data' => ['code' => $userCode, 'user' => new UserResource(User::find(auth()->id()))]], 200);
+        } else {
+            return response()->json(['success' => false, 'message' => __('messages.UnAuthorised')], 401);
+        }
+    }
+    // reset password api
+    public function resetPassword(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'text' => ['required', 'string'],
+        ]);
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors(), 'success' => false], 400);
+        }
+        $user = User::where('email', $request->text)->orWhere('phone', $request->text)->first();
+        if ($user) {
+
+            $sms_token = random_int(0, 9) . random_int(0, 9) . random_int(0, 9) . random_int(0, 9) . random_int(0, 9);
+             $user->update([
+                'sms_token'=>$sms_token
+            ]);
+
+            return response()->json(['success' => true, 'data' => ['user' => new UserResource($user)]], 200);
+        } else {
+            return response()->json(['success' => false, 'message' => __('messages.user does not exist')], 400);
+        }
+    }
     // Register api
     public function register(Request $request)
     {
         $validator = Validator::make($request->all(), [
             'name'      => 'required|string|max:255',
             'email'     => 'required|string|email|unique:users,email|max:255',
-            'phone'     => ['required', 'string', 'regex:/^(01)[0-9]{9}$/', 'unique:users,phone', 'min:11', 'max:11'],
-            'birth_date' => 'required|date',
-            'job'       => 'required|string|max:255',
-            'governorate_id'    => 'required|exists:governorates,id',
-            'city_id'           => 'required|exists:cities,id',
+            'phone'     => ['required', 'string',  'unique:users,phone', 'min:12', 'max:12'],
+            'gender' => 'required|string|max:255',
             'password'          => 'required|string|min:6|max:255|confirmed'
         ]);
         if ($validator->fails()) {
-            return response()->json(['errors' => $validator->errors(), 'success' => false], 401);
+            return response()->json(['errors' => $validator->errors(), 'success' => false], 400);
         }
         $data = $request->all();
         $data['password'] = bcrypt($request->password);
         $data['sms_token'] = random_int(0, 9) . random_int(0, 9) . random_int(0, 9) . random_int(0, 9) . random_int(0, 9);
-        User::create($data);
-        return response()->json(['data' => $data['sms_token'], 'success' => true], 200);
-    }
+        $user = User::create($data);
+        $token = $user->createToken('Myapp');
+        $code = $user->sms_token;
+        Notification::send($user, new \App\Notifications\activateuser($code));
 
+
+        return response()->json(['success' => true, 'data' => ['token' => $token, 'user' => new UserResource($user)]], 200);
+    }
+    // social register
+    public function socialRegister(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'name'      => 'required|string|max:255',
+            // 'email'     => 'required|string|email|unique:users,email|max:255',
+            'provider' => 'required', //facebook,gmail,...etc
+            'provider_id' => 'required', //SocialUserId
+            'provider_token' => 'required', // 'required',
+
+        ]);
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors(), 'success' => false], 400);
+        }
+        $user = User::where('provider_id', $request->provider_id)->first();
+        if ($user) {
+
+            $token = $user->createToken('Myapp')->accessToken;
+
+            return response()->json(['success' => true, 'data' => ['token' => $token, 'user' => new UserResource($user)]], 200);
+        } else {
+            $data = $request->all();
+            $data['sms_token'] = random_int(0, 9) . random_int(0, 9) . random_int(0, 9) . random_int(0, 9) . random_int(0, 9);
+            $user = User::create($data);
+            $token = $user->createToken('Myapp');
+            return response()->json(['success' => true, 'data' => ['token' => $token->accessToken, 'user' => new UserResource($user)]], 200);
+        }
+    }
     // Activate api
     public function activate(Request $request)
     {
@@ -78,7 +153,7 @@ class UserController extends Controller
             'sms_token'  => 'required|exists:users,sms_token'
         ]);
         if ($validator->fails()) {
-            return response()->json(['errors' => $validator->errors(), 'success' => false], 401);
+            return response()->json(['errors' => $validator->errors(), 'success' => false], 400);
         }
         $user   = User::where('sms_token', $request->sms_token)->firstOrFail();
         $user->is_active = 1;
@@ -87,7 +162,20 @@ class UserController extends Controller
         return response()->json(['data' => ['token' => $token, 'user' => new UserResource($user)], 'success' => true], 200);
     }
 
-
+    // Gender api
+    public function gender(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'gender'  => 'required'
+        ]);
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors(), 'success' => false], 400);
+        }
+        $user   = $request->user();
+        $user->gender = $request->gender;
+        $user->save();
+        return response()->json(['success' => true, 'data' => ['user' => new UserResource($user)]], 200);
+    }
     // Logout
     public function logout(Request $request)
     {
@@ -105,7 +193,7 @@ class UserController extends Controller
             'phone' => ['required', 'exists:users,phone'],
         ]);
         if ($validator->fails()) {
-            return response()->json(['errors' => $validator->errors(), 'success' => false], 401);
+            return response()->json(['errors' => $validator->errors(), 'success' => false], 400);
         }
         $token = random_int(0, 9) . random_int(0, 9) . random_int(0, 9) . random_int(0, 9) . random_int(0, 9);
         DB::table('password_resets')->insert(
@@ -125,7 +213,7 @@ class UserController extends Controller
             'token'     => 'required|exists:password_resets,token'
         ]);
         if ($validator->fails()) {
-            return response()->json(['errors' => $validator->errors(), 'success' => false], 401);
+            return response()->json(['errors' => $validator->errors(), 'success' => false], 400);
         }
         if ($token_row = DB::table('password_resets')->where('token', $request->token)->first()) {
             $user = User::where('phone', $token_row->phone)->latest()->first();
@@ -149,7 +237,7 @@ class UserController extends Controller
             'password'  => 'required|string|min:6|max:255|confirmed',
         ]);
         if ($validator->fails()) {
-            return response()->json(['errors' => $validator->errors(), 'success' => false], 401);
+            return response()->json(['errors' => $validator->errors(), 'success' => false], 400);
         }
         $user = auth()->user();
         $user->password = bcrypt($request->password);
@@ -161,7 +249,7 @@ class UserController extends Controller
     }
     public function info()
     {
-        return response()->json(['data' => new UserResource(User::find(auth()->id())), 'success' => true], 200);
+        return response()->json(['success' => true, 'data' => new UserResource(User::find(auth()->id()))], 200);
     }
 
     public function add_token(Request $request)
@@ -172,7 +260,7 @@ class UserController extends Controller
             'lang'  => 'required|in:ar,en'
         ]);
         if ($validator->fails()) {
-            return response()->json(['errors' => $validator->errors(), 'success' => false], 401);
+            return response()->json(['errors' => $validator->errors(), 'success' => false], 400);
         }
         $data = [
             'token'     => $request->token,
@@ -213,7 +301,7 @@ class UserController extends Controller
             'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
         if ($validator->fails()) {
-            return response()->json(['errors' => $validator->errors(), 'success' => false], 401);
+            return response()->json(['errors' => $validator->errors(), 'success' => false], 400);
         }
         $data = $request->all();
         $data['image'] = upload_image($request, 'image', 200, 200);
@@ -228,16 +316,23 @@ class UserController extends Controller
             'name'          => ['required', 'string', 'max:255'],
             'email'         => ['required', 'string', 'email', Rule::unique('users', 'email')->ignore(auth()->id()), 'max:255'],
             'phone'         => ['required', 'string', Rule::unique('users', 'phone')->ignore(auth()->id()), 'max:255'],
-            'birth_date'    => ['required', 'string', 'max:255'],
-            'job'           => ['required', 'string', 'max:255'],
-            'governorate_id' => ['required', 'exists:governorates,id'],
-            'city_id'       => ['required', 'exists:cities,id']
+
         ]);
         if ($validator->fails()) {
-            return response()->json(['errors' => $validator->errors(), 'success' => false], 401);
+            return response()->json(['errors' => $validator->errors(), 'success' => false], 400);
         }
+
         $data = $request->all();
+        $data['image']      = $request->hasFile('image') ? upload_image($request, 'image', 200, 200) : 'user.png';
+        $data['cover']      = $request->hasFile('cover') ? upload_image($request, 'cover', 200, 200) : 'user.png';
+
+        if ($request->has('password')) {
+
+            $data['password']   = bcrypt($request->password);
+        }
+
         auth()->user()->update($data);
-        return response()->json(['success' => true], 200);
+
+        return response()->json(['success' => true, 'data' => new UserResource(User::find(auth()->id()))], 200);
     }
 }

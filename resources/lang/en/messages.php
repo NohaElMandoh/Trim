@@ -21,4 +21,5 @@ return [
     'Password changed successfuly' => 'Password changed successfuly',
     'Invalid token' => 'Invalid token',
     'We will contact you ASAP' => 'We will contact you ASAP',
+    'user does not exist'=>'user does not exist'
 ];

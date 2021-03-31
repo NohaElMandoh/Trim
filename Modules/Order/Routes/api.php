@@ -30,9 +30,9 @@ Route::group(['middleware' => 'auth:api', 'prefix' => 'orders'], function () {
     Route::group(['prefix' => 'oq'], function () {
         Route::post('store', 'ApiOqController@store');
     });
-    Route::group(['prefix' => 'anywhere'], function () {
-        Route::post('store', 'ApiAnyWhereController@store');
-    });
+    // Route::group(['prefix' => 'anywhere'], function () {
+    //     Route::post('store', 'ApiAnyWhereController@store');
+    // });
     Route::group(['prefix' => 'week'], function () {
         Route::post('store', 'ApiWeekController@store');
     });

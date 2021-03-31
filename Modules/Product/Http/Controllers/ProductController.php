@@ -55,6 +55,9 @@ class ProductController extends Controller
 
         $data   = $request->all();
         $data['image']  = upload_image($request, 'image', 200, 200);
+        $data['shop_id']  = 1;
+
+
         Product::create($data);
 
         return redirect()->route('products.index')->with(['status' => 'success', 'message' => __('Stored successfully')]);

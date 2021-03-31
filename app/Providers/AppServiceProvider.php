@@ -5,9 +5,15 @@ namespace App\Providers;
 use App\Langman\Manager;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Filesystem\Filesystem;
+use App\Services\SocialUserResolver;
+use Coderello\SocialGrant\Resolvers\SocialUserResolverInterface;
+
 
 class AppServiceProvider extends ServiceProvider
 {
+    public $bindings = [
+        SocialUserResolverInterface::class => SocialUserResolver::class,
+    ];
     /**
      * Register any application services.
      *
@@ -22,6 +28,8 @@ class AppServiceProvider extends ServiceProvider
                 array_merge($this->app['config']['view.paths'], [$this->app['config']['modules.paths.modules']], [$this->app['path']])
             );
         });
+
+        
     }
 
     /**
