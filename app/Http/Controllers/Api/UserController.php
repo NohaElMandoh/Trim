@@ -120,9 +120,15 @@ class UserController extends Controller
         $data['password'] = bcrypt($request->password);
         $data['sms_token'] = random_int(0, 9) . random_int(0, 9) . random_int(0, 9) . random_int(0, 9) . random_int(0, 9);
         $data['phone'] = '2' . $request->phone;
-        $user = User::create($data);
+        $user = User::create([
+            'name'=>$request->name,
+            'email'=>$request->email,
+            'phone'=>$request->phone,
+            'gender'=>$request->gender,
+            'password'=> bcrypt($request->password)
+        ]);
         $token = $user->createToken('Myapp');
-        Notification::send($user, new \App\Notifications\activateuser($user));
+        // Notification::send($user, new \App\Notifications\activateuser($user));
         return response()->json(['success' => true, 'data' => ['token' => $token, 'user' => new UserResource($user)]], 200);
     }
     // social register
