@@ -116,16 +116,17 @@ class UserController extends Controller
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors(), 'success' => false], 400);
         }
-        $data = $request->all();
-        $data['password'] = bcrypt($request->password);
-        $data['sms_token'] = random_int(0, 9) . random_int(0, 9) . random_int(0, 9) . random_int(0, 9) . random_int(0, 9);
-        $data['phone'] = '2' . $request->phone;
+        // $data = $request->all();
+        // $data['password'] = bcrypt($request->password);
+        // $data['sms_token'] = random_int(0, 9) . random_int(0, 9) . random_int(0, 9) . random_int(0, 9) . random_int(0, 9);
+        // $data['phone'] = '2' . $request->phone;
         $user = User::create([
             'name'=>$request->name,
             'email'=>$request->email,
-            'phone'=>$request->phone,
+            'phone'=>'2' .$request->phone,
             'gender'=>$request->gender,
-            'password'=> bcrypt($request->password)
+            'password'=> bcrypt($request->password),
+            'sms_token'=>random_int(0, 9) . random_int(0, 9) . random_int(0, 9) . random_int(0, 9) . random_int(0, 9),
         ]);
         $token = $user->createToken('Myapp');
         // Notification::send($user, new \App\Notifications\activateuser($user));
