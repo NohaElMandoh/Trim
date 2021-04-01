@@ -97,12 +97,12 @@ class UserController extends Controller
                 'is_active' => 0
             ]);
             if ($result > 0) {
-                try {
+                // try {
                     Notification::send($user, new \App\Notifications\activateuser($user));
                
-                } catch (Throwable $e) {
-                    info('nexmo message not sent');
-                }
+                // } catch (Throwable $e) {
+                //     info('nexmo message not sent');
+                // }
                
                 return response()->json(['success' => true, 'data' => ['user' => new UserResource($user)]], 200);
             } else return response()->json(['success' => false, 'message' => __('messages.Try Again Later')], 402);
@@ -127,18 +127,18 @@ class UserController extends Controller
         $user = User::create([
             'name'=>$request->name,
             'email'=>$request->email,
-            'phone'=>'2' .$request->phone,
+            'phone'=>'+2' .$request->phone,
             'gender'=>$request->gender,
             'password'=> bcrypt($request->password),
             'sms_token'=>random_int(0, 9) . random_int(0, 9) . random_int(0, 9) . random_int(0, 9) . random_int(0, 9),
         ]);
         $token = $user->createToken('Myapp');
-        try {
+        // try {
             Notification::send($user, new \App\Notifications\activateuser($user));
        
-        } catch (Throwable $e) {
-            info('nexmo message not sent');
-        }
+        // } catch (Throwable $e) {
+        //     info('nexmo message not sent');
+        // }
         return response()->json(['success' => true, 'data' => ['token' => $token, 'user' => new UserResource($user)]], 200);
     }
     // social register
@@ -167,12 +167,12 @@ class UserController extends Controller
          
             $user = User::create($data);
             $token = $user->createToken('Myapp');
-            try {
+            // try {
                 Notification::send($user, new \App\Notifications\activateuser($user));
            
-            } catch (Throwable $e) {
-                info('nexmo message not sent');
-            }
+            // } catch (Throwable $e) {
+            //     info('nexmo message not sent');
+            // }
             return response()->json(['success' => true, 'data' => ['token' => $token->accessToken, 'user' => new UserResource($user)]], 200);
         }
     }
