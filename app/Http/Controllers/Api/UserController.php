@@ -17,6 +17,7 @@ use App\NotificationTransformer;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\DB;
+use Throwable;
 
 class UserController extends Controller
 {
@@ -96,7 +97,14 @@ class UserController extends Controller
                 'is_active' => 0
             ]);
             if ($result > 0) {
-                // Notification::send($user, new \App\Notifications\activateuser($user));
+                try {
+                    Notification::send($user, new \App\Notifications\activateuser($user));
+                } catch (Throwable $e) {
+                    report($e);
+            
+                    return response()->json(['success' => false, 'message' => __('messages.Try Again Later')], 402);
+                }
+               
                 return response()->json(['success' => true, 'data' => ['user' => new UserResource($user)]], 200);
             } else return response()->json(['success' => false, 'message' => __('messages.Try Again Later')], 402);
         } else {
@@ -129,6 +137,13 @@ class UserController extends Controller
             'sms_token'=>random_int(0, 9) . random_int(0, 9) . random_int(0, 9) . random_int(0, 9) . random_int(0, 9),
         ]);
         $token = $user->createToken('Myapp');
+        try {
+            Notification::send($user, new \App\Notifications\activateuser($user));
+        } catch (Throwable $e) {
+            report($e);
+    
+            return response()->json(['success' => false, 'message' => __('messages.Try Again Later')], 402);
+        }
         // Notification::send($user, new \App\Notifications\activateuser($user));
         return response()->json(['success' => true, 'data' => ['token' => $token, 'user' => new UserResource($user)]], 200);
     }
