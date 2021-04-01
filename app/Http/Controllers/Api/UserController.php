@@ -99,10 +99,9 @@ class UserController extends Controller
             if ($result > 0) {
                 try {
                     Notification::send($user, new \App\Notifications\activateuser($user));
+               
                 } catch (Throwable $e) {
-                    report($e);
-            
-                    return response()->json(['success' => false, 'message' => __('messages.Try Again Later')], 402);
+                    info('nexmo message not sent');
                 }
                
                 return response()->json(['success' => true, 'data' => ['user' => new UserResource($user)]], 200);
@@ -124,10 +123,7 @@ class UserController extends Controller
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors(), 'success' => false], 400);
         }
-        // $data = $request->all();
-        // $data['password'] = bcrypt($request->password);
-        // $data['sms_token'] = random_int(0, 9) . random_int(0, 9) . random_int(0, 9) . random_int(0, 9) . random_int(0, 9);
-        // $data['phone'] = '2' . $request->phone;
+     
         $user = User::create([
             'name'=>$request->name,
             'email'=>$request->email,
@@ -139,12 +135,10 @@ class UserController extends Controller
         $token = $user->createToken('Myapp');
         try {
             Notification::send($user, new \App\Notifications\activateuser($user));
+       
         } catch (Throwable $e) {
-            report($e);
-    
-            return response()->json(['success' => false, 'message' => __('messages.Try Again Later')], 402);
+            info('nexmo message not sent');
         }
-        // Notification::send($user, new \App\Notifications\activateuser($user));
         return response()->json(['success' => true, 'data' => ['token' => $token, 'user' => new UserResource($user)]], 200);
     }
     // social register
@@ -173,7 +167,12 @@ class UserController extends Controller
          
             $user = User::create($data);
             $token = $user->createToken('Myapp');
-            // Notification::send($user, new \App\Notifications\activateuser($user));
+            try {
+                Notification::send($user, new \App\Notifications\activateuser($user));
+           
+            } catch (Throwable $e) {
+                info('nexmo message not sent');
+            }
             return response()->json(['success' => true, 'data' => ['token' => $token->accessToken, 'user' => new UserResource($user)]], 200);
         }
     }
