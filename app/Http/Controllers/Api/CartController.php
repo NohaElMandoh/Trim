@@ -34,7 +34,7 @@ class CartController extends Controller
     public function addItemToCart(Request $request)
     {
         $validation = validator()->make($request->all(), [
-            'product_id' => 'required',
+            'item_id' => 'required',
             'quantity' => 'required',
             'type' => 'required',
         ]);
@@ -45,15 +45,15 @@ class CartController extends Controller
         }
 
         if ($request->has('type')) {
-            if ($request->has('product_id')) {
+            if ($request->has('item_id')) {
                 if ($request['type'] == 'service') {
-                    $item = Service::find($request->product_id);
+                    $item = Service::find($request->item_id);
                 }
                 if ($request['type'] == 'offer') {
-                    $item = Offer::find($request->product_id);
+                    $item = Offer::find($request->item_id);
                 }
                 if ($request['type'] == 'product') {
-                    $item = Product::find($request->product_id);
+                    $item = Product::find($request->item_id);
                 }
             } else return response()->json(['errors' => 'لم يتم اختيار خدمة', 'success' => false], 401);
         } else return response()->json(['errors' => 'لم يتم تحديد نوع الخدمة', 'success' => false], 401);

@@ -24,5 +24,6 @@ return [
     'user does not exist'=>'user does not exist',
     'Try Again Later'=>'Try Again Later',
     'this code not valid'=>'This Code Not Valid',
-    'user account not activated'=>'User Account Not Activated'
+    'user account not activated'=>'User Account Not Activated',
+    'coupone not avaliable'=>'Coupone Not Avaliable'
 ];

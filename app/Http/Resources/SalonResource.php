@@ -35,7 +35,7 @@ class SalonResource extends JsonResource
             'status' => $this->status,
             'from' => $this->from,
             'to' => $this->to,
-            'avaliable_dates'=>$this->avaliable_dates,
+            // 'avaliable_dates'=>$this->avaliable_dates,
             'services' => ServiceResource::collection($this->services),
             'rates' => RateResource::collection($this->rateSalon),
             // 'rates' =>$this->rateSalon

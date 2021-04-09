@@ -12,6 +12,7 @@ use Carbon\Carbon;
 use DateTime;
 use Modules\City\Entities\City;
 use Modules\Governorate\Entities\Governorate;
+use Modules\Order\Entities\Order;
 
 class SalonController extends Controller
 {
@@ -72,8 +73,8 @@ class SalonController extends Controller
         $salon = User::find($request->id);
         $date = strtotime($request->date);
 
-        $searchDay = (new Carbon($date))->format('l');
-
+        $searchDay = (new Carbon($request->date))->format('l');
+    
         $now = Carbon::now()->toDateTimeString();
         $to = "";
         $from = null;
@@ -81,32 +82,37 @@ class SalonController extends Controller
         $days = $salon->works()->pluck('day');
         $daysNames = collect($salon->days());
         $daysAvaliable = $daysNames->only($days);
+
         foreach ($daysAvaliable as $i => $day) {
 
             if ($day == $searchDay) {
                 $workday = $salon->works()->where('day', $i)->first();
 
-                if ($workday->from <= $now && $workday->to <= $now) {
-                    $to = $workday->to;
-                    $from = $workday->from;
-                    $from_date = Carbon::createFromFormat('H:i:s', $from);
-                    $to_date = Carbon::createFromFormat('H:i:s', $to);
-                    $diff = $to_date->diff($from_date);
+                // if ($workday->from <= $now && $workday->to <= $now) {
+                $to = $workday->to;
+                $from = $workday->from;
+                $from_date = Carbon::createFromFormat('H:i:s', $from);
+                $to_date = Carbon::createFromFormat('H:i:s', $to);
+                $diff = $to_date->diff($from_date);
 
-                    for ($i = $from_date; $i <= $to_date; $i->modify('+30 minute')) {
+                for ($i = $from_date; $i <= $to_date; $i->modify('+30 minute')) {
 
-                        ////////check if reserved or not
-                        ///////code
-
-                        ////////////////////////////
-                        array_push($dates, $i->format('g:i A'));
-                    }
+                    ////////check if timeAvaliable or not
+                    if( ! ($this-> timeAvaliable($salon->id,$i->format('g:i A'),$request->date)))
+                    array_push($dates, $i->format('g:i A'));
                 }
+                // }
             }
         }
-
-
-
         return response()->json(['success' => true, 'data' => $dates], 200);
+    }
+    public function timeAvaliable($barber_id, $time, $day)
+    {
+        $order = Order::where([['barber_id', $barber_id],['reservation_day', $day],['reservation_time',$time]
+        ])->first();
+        if($order)
+        return true;
+        else
+        return false;
     }
 }

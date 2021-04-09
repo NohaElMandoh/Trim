@@ -11,7 +11,7 @@ class Order extends Model
         'lat', 'lng', 'user_id', 'barber_id',
         'status_id', 'rate', 'review', 'review_image',
         'payment_method', 'payment_coupon', 'phone',
-        'address', 'is_now', 'type', 'work_day_id'
+        'address', 'is_now', 'type', 'work_day_id','cost','discount','total','reservation_time','reservation_day','approve'
     ];
     use SoftDeletes;
     protected $dates = ['deleted_at'];
@@ -37,7 +37,7 @@ class Order extends Model
     }
 
     public function services() {
-        return $this->belongsToMany('Modules\Service\Entities\Service')->withPivot('qty');
+        return $this->belongsToMany('Modules\Service\Entities\Service')->withPivot('qty','price');
     }
 
     public function offers() {

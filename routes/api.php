@@ -25,12 +25,12 @@ Route::group(['namespace' => 'Api'], function () {
     Route::post('register', 'UserController@register');
     Route::post('socialRegister', 'UserController@socialRegister');
     //reset password
-    
+
     Route::post('resetPassword', 'UserController@resetPassword');
 
     Route::post('user/reset-password', 'UserController@sendResetLinkEmail');
     Route::post('user/new-password', 'UserController@newPassword');
- 
+
     ///token and notifications
     Route::post('user/token', 'UserController@add_token');
     Route::get('user/notifications', 'UserController@get_notifications')->middleware('auth:api');
@@ -69,7 +69,19 @@ Route::group(['namespace' => 'Api'], function () {
         Route::get('get-cart-items', 'CartController@cartItems');
         Route::post('update-cart-item', 'CartController@updateCartItem');
         Route::post('delete-Cart-Item', 'CartController@deleteCartItem');
-        Route::post('delete-all-cart-items','CartController@deleteAllCartItems');
+        Route::post('delete-all-cart-items', 'CartController@deleteAllCartItems');
+        /////////////order apis
+
+        // ---------add service order
+        Route::post('newOrderWithService', 'OrderController@newOrderWithService');
+        Route::post('updateOrder', 'OrderController@updateOrder');
+        Route::get('myOrders', 'OrderController@myOrders');
+        Route::post('order', 'OrderController@order');
+        Route::post('approveOrder', 'OrderController@approveOrder');
+
+        // --------get coupone details
+        Route::post('getCoupone', 'OrderController@getCoupone');
+
         ///product
         Route::post('allCategories', 'ProductsController@allCategories');
         Route::post('products', 'ProductsController@products');
