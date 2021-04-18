@@ -402,4 +402,33 @@ class UserController extends Controller
 
         return response()->json(['success' => true, 'data' => new UserResource(User::find(auth()->id()))], 200);
     }
+
+     public function sms(Request $request)
+    {
+       
+        // $curl = curl_init();
+        
+        // curl_setopt_array($curl, array(
+        //     CURLOPT_URL => "https://api.sms.to/sms/send",
+        //     CURLOPT_RETURNTRANSFER => true,
+        //     CURLOPT_ENCODING => "",
+        //     CURLOPT_MAXREDIRS => 10,
+        //     CURLOPT_TIMEOUT => 0,
+        //     CURLOPT_FOLLOWLOCATION => true,
+        //     CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+        //     CURLOPT_CUSTOMREQUEST => "POST",
+        //     CURLOPT_POSTFIELDS =>"{\n    \"message\": \"This is a test message\",\n    \"to\": \"+201224201414\",\n    \"sender_id\": \"SMS.to\"    \n}",
+        //     CURLOPT_HTTPHEADER => array(
+        //             "Content-Type: application/json",
+        //             "Accept: application/json",
+        //             "Authorization: Bearer <eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiMTE1ODdjZmY2NjM1NmVmMmIwNzFmYzY3NjgzZWY4NDI1YWE5ZjVhZWJiNTdmMTNiNWJkN2EwMDE3ZTVhOTM4NTkwMWQ2ZmI4ZDZjNWI4MjciLCJpYXQiOjE2MTczNTA0NTYuMDIwNDE3LCJuYmYiOjE2MTczNTA0NTYuMDIwNDI1LCJleHAiOjE2NDg4ODY0NTYuMDA4OTI5LCJzdWIiOiIyOCIsInNjb3BlcyI6W119.k_ztekHwC-to0hGdNnksmvHcTyHI7dY7evX0cWC_W75VW2l5SEXP-LKiycN7hl0zI0OScsq49_elLRPIxWDsYIwvLS6n0TkPMzG2DGxmnjeEQW3hOyKSpF2ZdQhYYkbm3TrT7RRcexjfq9-_bmVJa40hPm-0Rx57tz6v5606ncSYhUf4DBvFNzdX4baXPOi5qA0FYf6gOeBvNNCFvMS3F2Dx2VhHDng8kIDtFNZ2lrHz3o0jDz7zeSpQpah2NwazwJi4HEKcNMx1qRRA-vY8pEBGFEfXU9jAaZrPm017V8vrNEgmwctzvn_bzczAyXogV8tu0D1h-SaDNTrX4rozc46zMFeEj3T13lGKs1yWQOdWLjUu1LDm741QaYT5Quz4sFVVx5xDb-88hYkgbC-z8xmdFsZFpMBdTuuDFZZ-r5B_90z5b0nySKgZyE4XdD0jUK5q6JCZ7kV2lRpiWQanNe0MHNl50HmpwZfW1M5RN5IFXvdBgc0YaXeyQDc_4TiIlS8AZpOB0TuHh-WANp2VKh1_7zvRswfsPUUr7KhIaOZqU1XJqf-h1afINBkKLZKXZ9vbGTzINvloHQG8PWHvP_i8Qji2TIC3xBPJtDDaXpoE26wa4zFOW2v85qojGMtH-18I6000ukXV-4YACK9aulgCuopL25fm9iREK44HJWg
+        //             >"
+        //         ),
+        // ));
+        
+        // $response = curl_exec($curl);
+        
+        // curl_close($curl);
+        // echo $response;
+    }
 }

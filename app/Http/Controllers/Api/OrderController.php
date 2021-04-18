@@ -27,6 +27,7 @@ use Modules\Offer\Entities\Offer;
 use Modules\Order\Entities\Order;
 use Modules\Product\Entities\Product;
 use Modules\Service\Entities\Service;
+use Modules\Status\Entities\Status;
 
 class OrderController extends Controller
 {
@@ -40,7 +41,7 @@ class OrderController extends Controller
             'barber_id' => 'required',
             'barber_type' => 'required', ///salon ,person
             'reservation_day' => 'required',
-            'reservation_time' => 'required',
+            // 'reservation_time' => 'required',
         ]);
 
         if ($validation->fails()) {
@@ -266,23 +267,23 @@ class OrderController extends Controller
     {
         $validation = validator()->make($request->all(), [
             'order_id' => 'required',
-            'reason_id'=>'required',
+            'reason'=>'required',
 
         ]);
 
         if ($validation->fails()) {
             $data = $validation->errors();
-            return response()->json(['errors' => $data, 'success' => false], 401);
+            return response()->json(['errors' => $data, 'success' => false], 402);
         }
-        $item = Cart::where('user_id', $request->user()->id)
-            ->where('id', $request->row_id)->first();
-
-        if ($item) {
-            DB::table('carts')
-                ->where('user_id', $request->user()->id)
-                ->where('id', $request->row_id)
-                ->delete();
-            return response()->json(['success' => true, 'data' => 'تم ألحذف'], 200);
-        } else  response()->json(['success' => false, 'data' => 'المنتج غير موجود'], 401);
+        $cancelStatus=Status::where('slug','cancelled')->first();
+        $order =Order::find($request->order_id)->first();
+        $order->update([
+            'status_id' =>$cancelStatus->id,
+            'cancel_reason'=>$request->reason
+        ]);
+        if ($order)
+        return response()->json(['success' => true, 'data' =>new  OrderResource($order)], 200);
+    else
+        return response()->json(['success' => false, 'message' => __('messages.Try Again Later')], 400);
     }
 }

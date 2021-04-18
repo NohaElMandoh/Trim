@@ -24,10 +24,11 @@ class OfferResource extends JsonResource
             'description_ar' =>  $this->translate('ar')->description,
             'description_en'=>$this->description,
             'price' => $this->price,
-            // 'image' => route('file_show', $this->image),
-            'salon' => new UserResource($this->user) ,
-            'category' => $this->category,
-           
+            'image' => route('file_show', $this->image),
+            'salon' => $this->user->name ,
+            'is_sponsored'=>$this-> is_sponsored, 
+            'category_ar' => $this->category->translate('ar')->name,
+            'category_en' => $this->category->translate('en')->name,
         ];
     }
 }

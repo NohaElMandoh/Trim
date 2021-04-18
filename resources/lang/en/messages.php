@@ -25,5 +25,8 @@ return [
     'Try Again Later'=>'Try Again Later',
     'this code not valid'=>'This Code Not Valid',
     'user account not activated'=>'User Account Not Activated',
-    'coupone not avaliable'=>'Coupone Not Avaliable'
+    'coupone not avaliable'=>'Coupone Not Avaliable',
+    'salon not exist'=>'Salon Not Exist',
+    'open'=>"Open",
+    'closed'=>"Closed",
 ];

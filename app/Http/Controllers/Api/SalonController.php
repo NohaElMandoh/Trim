@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Favorite;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\CityResource;
 use App\Http\Resources\GovernorateResource;
 use Illuminate\Http\Request;
 use App\User;
 use App\Http\Resources\SalonResource;
+use App\Rate;
 use Carbon\Carbon;
 use DateTime;
 use Modules\City\Entities\City;
@@ -26,14 +28,25 @@ class SalonController extends Controller
             $salons = User::role('salon')->where('type', 'salon')->where('governorate_id', $governorate_id)->paginate(10);
         } else   $salons = User::role('salon')->where('type', 'salon')->paginate(10);
 
-        return response()->json(['data' => SalonResource::collection($salons), 'success' => true], 200);
+        return response()->json(['success' => true,'data' => SalonResource::collection($salons)], 200);
     }
     public function salon(Request $request)
     {
-        $salon = User::where('id', $request->id)->first();
+        $validation = validator()->make($request->all(), [
+            'salon_id' => 'required',
+         
+        ]);
+
+        if ($validation->fails()) {
+            $data = $validation->errors();
+            return response()->json([ 'success' => false,'errors' => $data], 402);
+        }
+        $salon = User::role('salon')->where('id', $request->salon_id)->first();
+        if($salon){
         $search = ($salon->search) + 1;
         $salon->update(['search' => $search]);
-        return response()->json(['data' => new SalonResource($salon), 'success' => true], 200);
+        return response()->json(['success' => true,'data' => new SalonResource($salon)], 200);
+        }else   return response()->json(['success' => false, 'message' => __('messages.salon not exist')], 400);
     }
     public function allPersons(Request $request)
     {
@@ -45,18 +58,74 @@ class SalonController extends Controller
             $salons = User::role('salon')->where('type', 'person')->where('governorate_id', $governorate_id)->paginate(10);
         } else   $salons = User::role('salon')->where('type', 'person')->paginate(10);
 
-        return response()->json(['data' => SalonResource::collection($salons), 'success' => true], 200);
+        return response()->json(['success' => true,'data' => SalonResource::collection($salons)], 200);
     }
     public function rateSalon(Request $request)
     {
-        $data = [
-            'comment'     => $request->comment,
-            'rate'      => $request->rate,
-            'salon_id'      => $request->salon_id,
-            'user_id' => auth()->user()->id
-        ];
-        $rate = auth()->user()->rates()->create($data);
+        $validation = validator()->make($request->all(), [
+            'salon_id' => 'required',
+            'rate'  =>'required| in:1,2,3,4,5'
+           
+
+        ]);
+
+        if ($validation->fails()) {
+            $data = $validation->errors();
+            return response()->json(['errors' => $data, 'success' => false], 402);
+        }
+        $rate = Rate::where('user_id', auth()->user()->id)->where('salon_id', $request->salon_id)->first();
+        if ($rate) {
+            $data = [
+                'comment'     => $request->comment,
+                'rate'      => $request->rate,
+                'salon_id'      => $request->salon_id,
+                'user_id' => auth()->user()->id
+            ];
+    
+            
+           auth()->user()->rates()->update($data);
+        } else {
+            $data = [
+                'comment'     => $request->comment,
+                'rate'      => $request->rate,
+                'salon_id'      => $request->salon_id,
+                'user_id' => auth()->user()->id
+            ];
+    
+            
+            $rate = auth()->user()->rates()->create($data);
+        }
+     
         return response()->json(['success' => true, 'data' => $rate], 200);
+    }
+    public function addToFavorities(Request $request)
+    {
+        $validation = validator()->make($request->all(), [
+            'salon_id' => 'required',
+
+        ]);
+
+        if ($validation->fails()) {
+            $data = $validation->errors();
+            return response()->json(['errors' => $data, 'success' => false], 402);
+        }
+        $fav = Favorite::where('user_id', auth()->user()->id)->where('salon_id', $request->salon_id)->first();
+        if ($fav) {
+            if ($fav->is_fav == 1)
+                $fav->update(['is_fav' => 0]);
+            else
+                $fav->update(['is_fav' => 1]);
+        } else {
+            $data = [
+
+                'salon_id'      => $request->salon_id,
+                'user_id' => auth()->user()->id,
+                'is_fav' => 1
+            ];
+            $fav = auth()->user()->favorities()->create($data);
+        }
+
+        return response()->json(['success' => true, 'data' => $fav], 200);
     }
     public function governorates()
     {
@@ -74,7 +143,7 @@ class SalonController extends Controller
         $date = strtotime($request->date);
 
         $searchDay = (new Carbon($request->date))->format('l');
-    
+
         $now = Carbon::now()->toDateTimeString();
         $to = "";
         $from = null;
@@ -98,8 +167,8 @@ class SalonController extends Controller
                 for ($i = $from_date; $i <= $to_date; $i->modify('+30 minute')) {
 
                     ////////check if timeAvaliable or not
-                    if( ! ($this-> timeAvaliable($salon->id,$i->format('g:i A'),$request->date)))
-                    array_push($dates, $i->format('g:i A'));
+                    if (!($this->timeAvaliable($salon->id, $i->format('g:i A'), $request->date)))
+                        array_push($dates, $i->format('g:i A'));
                 }
                 // }
             }
@@ -108,11 +177,12 @@ class SalonController extends Controller
     }
     public function timeAvaliable($barber_id, $time, $day)
     {
-        $order = Order::where([['barber_id', $barber_id],['reservation_day', $day],['reservation_time',$time]
+        $order = Order::where([
+            ['barber_id', $barber_id], ['reservation_day', $day], ['reservation_time', $time]
         ])->first();
-        if($order)
-        return true;
+        if ($order)
+            return true;
         else
-        return false;
+            return false;
     }
 }

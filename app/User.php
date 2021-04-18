@@ -101,9 +101,17 @@ class User extends Authenticatable
     {
         return $this->belongsTo('App\Rate', 'id', 'user_id');
     }
+    public function favorities()
+    {
+        return $this->belongsTo('App\Favorite', 'id', 'user_id');
+    }
     public function rateSalon()
     {
         return $this->hasMany('App\Rate', 'salon_id');
+    }
+    public function is_favorite()
+    {
+        return $this->belongsTo('App\Favorite', 'id', 'salon_id');
     }
     public function getRateAttribute($value)
     {
@@ -155,11 +163,11 @@ class User extends Authenticatable
             if ($day == $currentDay) {
                 $workday = $this->works()->where('day', $i)->first();
                 if ($workday->from_date >= $now && $workday->to_date <= $now) {
-                    return 'مفتوح';
-                } else  return 'مغلق';
+                    return __('messages.open');
+                } else  return __('messages.closed');
             }
         }
-        return 'مغلق';
+        return __('messages.closed');
     }
     public function getFromAttribute($value)
     {

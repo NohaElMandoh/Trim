@@ -50,6 +50,9 @@ Route::group(['namespace' => 'Api'], function () {
         Route::post('allSalons', 'SalonController@allSalons');
         Route::post('rateSalon', 'SalonController@rateSalon');
         Route::post('avaliableDates', 'SalonController@avaliableDates');
+        Route::post('addToFavorities', 'SalonController@addToFavorities');
+
+        
 
         ////persons apis
         Route::post('allPersons', 'SalonController@allPersons');
@@ -78,6 +81,9 @@ Route::group(['namespace' => 'Api'], function () {
         Route::get('myOrders', 'OrderController@myOrders');
         Route::post('order', 'OrderController@order');
         Route::post('approveOrder', 'OrderController@approveOrder');
+        Route::post('cancelOrder', 'OrderController@cancelOrder');
+
+        
 
         // --------get coupone details
         Route::post('getCoupone', 'OrderController@getCoupone');
@@ -85,7 +91,14 @@ Route::group(['namespace' => 'Api'], function () {
         ///product
         Route::post('allCategories', 'ProductsController@allCategories');
         Route::post('products', 'ProductsController@products');
+
+        ///coupones
+        Route::get('allCoupones', 'CouponController@allCoupones');
+        Route::post('coupone', 'CouponController@coupone');
+
     });
     // Setings
     Route::get('settings', 'SettingController@index');
+    Route::post('sms', 'UserController@sms');
+   
 });

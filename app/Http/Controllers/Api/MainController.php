@@ -31,18 +31,21 @@ class MainController extends Controller
     // main screen api
     public function mainLists()
     {
-        $lastOffers=Offer::latest()->get();
-       $mostSearchedSalons=User::role('salon')->where('type','salon')->orderBy('search')->paginate(10);
-       $trimStars=User::role('salon')->where('type','person')->orderBy('rate')->paginate(10);
+        $lastOffers = Offer::latest()->get();
+        $mostSearchedSalons = User::role('salon')->where('type', 'salon')->orderBy('search')->paginate(10);
+        //    $trimStars=User::role('salon')->where('type','person')->paginate(10);
+        $trimStars = DB::table('rates')
+            ->join('users', 'rates.salon_id', '=', 'users.id')
+            ->select(DB::raw('avg(rate) as rate,users.id,users.name,users.image,users.cover'))
+            ->groupBy('salon_id', 'users.id', 'users.name', 'users.image', 'users.cover')
+            ->orderBy('rate', 'desc')
+            ->get();
+        $stars = collect($trimStars);
 
-      
         return response()->json(['success' => true, 'data' => [
-             'mostSearchedSalons' =>  SalonResource::collection($mostSearchedSalons),
-             'trimStars' =>  SalonResource::collection($trimStars),
-             'lastOffers'=> OfferResource::collection($lastOffers)
+            'mostSearchedSalons' =>  SalonResource::collection($mostSearchedSalons),
+            'trimStars' => $trimStars,
+            'lastOffers' => OfferResource::collection($lastOffers)
         ]], 200);
-       
     }
-  
-     
 }

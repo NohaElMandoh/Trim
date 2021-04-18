@@ -28,6 +28,7 @@ class OrderResource extends JsonResource
             'status_id' => $this->status_id,
             'status_ar' => $this->status->translate('ar')->name,
             'status_en' => $this->status->translate('en')->name,
+            'cancel_reason'=> $this->cancel_reason,
             'approve'=>$this->approve,
             'rate' =>  $this->rate,
             'review' => $this->review,

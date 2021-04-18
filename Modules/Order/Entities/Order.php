@@ -11,7 +11,7 @@ class Order extends Model
         'lat', 'lng', 'user_id', 'barber_id',
         'status_id', 'rate', 'review', 'review_image',
         'payment_method', 'payment_coupon', 'phone',
-        'address', 'is_now', 'type', 'work_day_id','cost','discount','total','reservation_time','reservation_day','approve'
+        'address', 'is_now', 'type', 'work_day_id','cost','discount','total','reservation_time','reservation_day','approve','cancel_reason'
     ];
     use SoftDeletes;
     protected $dates = ['deleted_at'];
