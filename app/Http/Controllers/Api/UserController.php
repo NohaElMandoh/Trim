@@ -39,7 +39,8 @@ class UserController extends Controller
         if ($validator->fails()) {
             return response()->json(['success' => false, 'errors' => $validator->errors()], 402);
         }
-        if ((Auth::attempt(['phone' => $request->text, 'password' => $request->password])) ||
+        $req_phone = '+2' . $request->text;
+        if ((Auth::attempt(['phone' => $req_phone, 'password' => $request->password])) ||
             (Auth::attempt(['email' => $request->text, 'password' => $request->password]))
         ) {
             if (auth()->user()->is_active == 0) {
@@ -49,6 +50,7 @@ class UserController extends Controller
                     return response()->json(['success' => false, 'message' => __('messages.Please login from captain app')], 401);
                 }
                 $token = auth()->user()->createToken('Myapp')->accessToken;
+            
                 return response()->json(['success' => true, 'data' => ['token' => $token, 'user' => new UserResource(User::find(auth()->id()))]], 200);
             }
         } else {
@@ -65,7 +67,8 @@ class UserController extends Controller
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors(), 'success' => false], 400);
         }
-
+        $user = User::where('email', $request->text)->first();
+        return $user;
         if ((Auth::attempt(['phone' => $request->text, 'password' => $request->password])) ||
             (Auth::attempt(['email' => $request->text, 'password' => $request->password]))
         ) {
@@ -101,12 +104,12 @@ class UserController extends Controller
             if ($result > 0) {
                 // try {
                 // Notification::send($user, new \App\Notifications\activateuser($user));
-                $smsstatus = $this->send($user->phone, $user->sms_token);
+                $smsstatus = $this->send($user->phone, $user->sms_token);  
                 // } catch (Throwable $e) {
                 //     info('nexmo message not sent');
                 // }
-
-                return response()->json(['success' => true, 'data' => ['user' => new UserResource($user), 'smsStatus' => $smsstatus]], 200);
+                $token = $user->createToken('Myapp')->accessToken;
+                return response()->json(['success' => true, 'data' => ['token' => $token, 'user' => new UserResource($user), 'smsStatus' => $smsstatus]], 200);
             } else return response()->json(['success' => false, 'message' => __('messages.Try Again Later')], 400);
         } else {
             return response()->json(['success' => false, 'message' => __('messages.user does not exist')], 400);
@@ -137,6 +140,7 @@ class UserController extends Controller
         $token = $user->createToken('Myapp');
         $smsstatus = $this->send($user->phone, $user->sms_token);
 
+        $smsstatus = "";
         return response()->json(['success' => true, 'data' => ['token' => $token, 'user' => new UserResource($user), 'sms status' => $smsstatus]], 200);
     }
     // social register
@@ -182,6 +186,7 @@ class UserController extends Controller
         if ($user->sms_token == $request->sms_token) {
             $user->is_active = 1;
             $user->save();
+            $request->user()->token()->revoke();
             $token = $user->createToken('Myapp')->accessToken;
             return response()->json(['data' => ['success' => true, 'token' => $token, 'user' => new UserResource($user)]], 200);
         } else
@@ -302,8 +307,6 @@ class UserController extends Controller
         } else {
             $token->update($data);
         }
-
-
         return response()->json(['success' => true], 200);
     }
 
@@ -385,8 +388,8 @@ class UserController extends Controller
             $request->user()->update($request->only('email'));
         }
         if ($request->has('phone')) {
-            $phone='+2'.$request->phone;
-            $request->user()->update(['phone'=>$phone]);
+            $phone = '+2' . $request->phone;
+            $request->user()->update(['phone' => $phone]);
         }
 
         if ($request->has('image')) {
