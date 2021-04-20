@@ -50,7 +50,7 @@ class UserController extends Controller
                     return response()->json(['success' => false, 'message' => __('messages.Please login from captain app')], 401);
                 }
                 $token = auth()->user()->createToken('Myapp')->accessToken;
-            
+
                 return response()->json(['success' => true, 'data' => ['token' => $token, 'user' => new UserResource(User::find(auth()->id()))]], 200);
             }
         } else {
@@ -104,7 +104,7 @@ class UserController extends Controller
             if ($result > 0) {
                 // try {
                 // Notification::send($user, new \App\Notifications\activateuser($user));
-                $smsstatus = $this->send($user->phone, $user->sms_token);  
+                $smsstatus = $this->send($user->phone, $user->sms_token);
                 // } catch (Throwable $e) {
                 //     info('nexmo message not sent');
                 // }
@@ -122,7 +122,7 @@ class UserController extends Controller
             'name'      => 'required|string|max:255',
             'email'     => 'required|string|email|unique:users,email|max:255',
             'phone'     => ['required', 'string',  'unique:users,phone', 'min:11', 'max:11'],
-            'gender' => 'required|string|max:255',
+            'gender' => ['required', 'string', 'max:255', 'in:male,female'],
             'password'          => 'required|string|min:6|max:255|confirmed'
         ]);
         if ($validator->fails()) {
@@ -197,7 +197,7 @@ class UserController extends Controller
     public function gender(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'gender'  => 'required'
+            'gender'  => ['required', 'in:male,female']
         ]);
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors(), 'success' => false], 402);

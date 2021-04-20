@@ -25,9 +25,9 @@ class ServiceResource extends JsonResource
             'min_price' => $this->min_price,
             'max_price' => $this->max_price,
             'for_children' => $this->for_children,
-            'title'=>$this->title,
+            'title_en'=>$this->title,
             'title_ar' =>  $this->translate('ar')->title,
-            'description'=>$this->description,
+            'description_en'=>$this->description,
             'description_ar' =>  $this->translate('ar')->description,
           
 
