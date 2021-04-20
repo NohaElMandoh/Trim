@@ -13,14 +13,14 @@ class CreateRatesTable extends Migration
      */
     public function up()
     {
-        Schema::create('rates', function (Blueprint $table) {
+        // Schema::create('rates', function (Blueprint $table) {
             // $table->increments('id');
 			// $table->timestamps();
 			// $table->text('comment')->nullable();
 			// $table->enum('rate', array('1', '2', '3', '4', '5'));
 			// $table->integer('salon_id')->nullable();
 			// $table->integer('user_id');
-        });
+        // });
     }
 
     /**
