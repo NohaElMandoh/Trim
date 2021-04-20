@@ -36,13 +36,14 @@ Route::group(['namespace' => 'Api'], function () {
     Route::get('user/notifications', 'UserController@get_notifications')->middleware('auth:api');
     Route::post('user/notifications/read', 'UserController@read_notification')->middleware('auth:api');
 
-    Route::post('user/activate', 'UserController@activate');
+    
 
     Route::group(['middleware' => 'auth:api'], function () {
 
         Route::post('gender', 'UserController@gender');
         Route::get('logout', 'UserController@logout');
         Route::post('user/change-password', 'UserController@changePassword');
+        Route::post('user/activate', 'UserController@activate');
         // main lists
         Route::get('mainLists', 'MainController@mainLists');
 

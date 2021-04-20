@@ -21,12 +21,13 @@ class UserResource extends JsonResource
             'phone' => $this->phone,
             'image' => route('file_show', $this->image),
             'cover' => route('file_show', $this->image),
-
-            // 'points' => $this->points,
-            // 'birth_date' => $this->birth_date,
-            // 'job' => $this->job,
-            // 'governorate_id' => (int) $this->governorate_id,
-            // 'city_id' => (int) $this->city_id,
+            'governorate_en' => (!empty($this->governorate->name)) ? $this->governorate->name : "",
+            'governorate_ar' => (!empty($this->governorate->name)) ? $this->governorate->translate('ar')->name : "",
+            'city_en' => (!empty($this->city->name)) ? $this->city->name : "",
+            'city_ar' => (!empty($this->city->name)) ? $this->city->translate('ar')->name : "",
+      
+            'birth_date' => $this->birth_date,
+      
             'gender'=>$this->gender,
         ];
     }

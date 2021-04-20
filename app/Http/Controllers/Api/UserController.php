@@ -37,7 +37,7 @@ class UserController extends Controller
             'password' => ['required', 'string'],
         ]);
         if ($validator->fails()) {
-            return response()->json(['errors' => $validator->errors(), 'success' => false], 400);
+            return response()->json(['success' => false, 'errors' => $validator->errors()], 402);
         }
         if ((Auth::attempt(['phone' => $request->text, 'password' => $request->password])) ||
             (Auth::attempt(['email' => $request->text, 'password' => $request->password]))
@@ -46,7 +46,7 @@ class UserController extends Controller
                 return response()->json(['success' => false, 'message' => __('messages.user account not activated')], 401);
             } else {
                 if (auth()->user()->hasRole('captain')) {
-                    return response()->json(['message' => __('messages.Please login from captain app'), 'success' => false], 401);
+                    return response()->json(['success' => false, 'message' => __('messages.Please login from captain app')], 401);
                 }
                 $token = auth()->user()->createToken('Myapp')->accessToken;
                 return response()->json(['success' => true, 'data' => ['token' => $token, 'user' => new UserResource(User::find(auth()->id()))]], 200);
@@ -84,7 +84,7 @@ class UserController extends Controller
             'text' => ['required', 'string'],
         ]);
         if ($validator->fails()) {
-            return response()->json(['errors' => $validator->errors(), 'success' => false], 400);
+            return response()->json([ 'success' => false,'errors' => $validator->errors()], 402);
         }
         $user = User::where('email', $request->text)->orWhere('phone', $request->text)->first();
 
@@ -98,16 +98,16 @@ class UserController extends Controller
             ]);
             if ($result > 0) {
                 // try {
-                    Notification::send($user, new \App\Notifications\activateuser($user));
-               
+                // Notification::send($user, new \App\Notifications\activateuser($user));
+                $smsstatus = $this->send($user->phone, $user->sms_token);
                 // } catch (Throwable $e) {
                 //     info('nexmo message not sent');
                 // }
-               
-                return response()->json(['success' => true, 'data' => ['user' => new UserResource($user)]], 200);
-            } else return response()->json(['success' => false, 'message' => __('messages.Try Again Later')], 402);
+
+                return response()->json(['success' => true, 'data' => ['user' => new UserResource($user), 'smsStatus' => $smsstatus]], 200);
+            } else return response()->json(['success' => false, 'message' => __('messages.Try Again Later')], 400);
         } else {
-            return response()->json(['success' => false, 'message' => __('messages.user does not exist')], 402);
+            return response()->json(['success' => false, 'message' => __('messages.user does not exist')], 400);
         }
     }
     // Register api
@@ -121,25 +121,21 @@ class UserController extends Controller
             'password'          => 'required|string|min:6|max:255|confirmed'
         ]);
         if ($validator->fails()) {
-            return response()->json(['errors' => $validator->errors(), 'success' => false], 400);
+            return response()->json(['success' => false, 'errors' => $validator->errors()], 402);
         }
-     
+
         $user = User::create([
-            'name'=>$request->name,
-            'email'=>$request->email,
-            'phone'=>'+2' .$request->phone,
-            'gender'=>$request->gender,
-            'password'=> bcrypt($request->password),
-            'sms_token'=>random_int(0, 9) . random_int(0, 9) . random_int(0, 9) . random_int(0, 9) . random_int(0, 9),
+            'name' => $request->name,
+            'email' => $request->email,
+            'phone' => '+2' . $request->phone,
+            'gender' => $request->gender,
+            'password' => bcrypt($request->password),
+            'sms_token' => random_int(0, 9) . random_int(0, 9) . random_int(0, 9) . random_int(0, 9) . random_int(0, 9),
         ]);
         $token = $user->createToken('Myapp');
-        // try {
-            Notification::send($user, new \App\Notifications\activateuser($user));
-       
-        // } catch (Throwable $e) {
-        //     info('nexmo message not sent');
-        // }
-        return response()->json(['success' => true, 'data' => ['token' => $token, 'user' => new UserResource($user)]], 200);
+        $smsstatus = $this->send($user->phone, $user->sms_token);
+
+        return response()->json(['success' => true, 'data' => ['token' => $token, 'user' => new UserResource($user), 'sms status' => $smsstatus]], 200);
     }
     // social register
     public function socialRegister(Request $request)
@@ -153,7 +149,7 @@ class UserController extends Controller
 
         ]);
         if ($validator->fails()) {
-            return response()->json(['errors' => $validator->errors(), 'success' => false], 400);
+            return response()->json(['success' => false,'errors' => $validator->errors()], 402);
         }
         $user = User::where('provider_id', $request->provider_id)->first();
         if ($user) {
@@ -164,16 +160,11 @@ class UserController extends Controller
         } else {
             $data = $request->all();
             $data['sms_token'] = random_int(0, 9) . random_int(0, 9) . random_int(0, 9) . random_int(0, 9) . random_int(0, 9);
-         
+
             $user = User::create($data);
             $token = $user->createToken('Myapp');
-            // try {
-                Notification::send($user, new \App\Notifications\activateuser($user));
-           
-            // } catch (Throwable $e) {
-            //     info('nexmo message not sent');
-            // }
-            return response()->json(['success' => true, 'data' => ['token' => $token->accessToken, 'user' => new UserResource($user)]], 200);
+            $smsstatus = $this->send($user->phone, $user->sms_token);
+            return response()->json(['success' => true, 'data' => ['token' => $token->accessToken, 'user' => new UserResource($user),'smsstatus'=>$smsstatus]], 200);
         }
     }
     // Activate api
@@ -183,16 +174,16 @@ class UserController extends Controller
             'sms_token'  => 'required|exists:users,sms_token'
         ]);
         if ($validator->fails()) {
-            return response()->json(['errors' => $validator->errors(), 'success' => false], 400);
+            return response()->json(['success' => false, 'errors' => $validator->errors()], 402);
         }
-        $user   = User::where('sms_token', $request->sms_token)->firstOrFail();
-        if ($user) {
+        $user = $request->user();
+        if ($user->sms_token == $request->sms_token) {
             $user->is_active = 1;
             $user->save();
             $token = $user->createToken('Myapp')->accessToken;
-            return response()->json(['data' => ['token' => $token, 'user' => new UserResource($user)], 'success' => true], 200);
+            return response()->json(['data' => ['success' => true, 'token' => $token, 'user' => new UserResource($user)]], 200);
         } else
-            return response()->json(['success' => false, 'message' => __('messages.this code not valid')], 402);
+            return response()->json(['success' => false, 'message' => __('messages.this code not valid')], 400);
     }
 
     // Gender api
@@ -202,7 +193,7 @@ class UserController extends Controller
             'gender'  => 'required'
         ]);
         if ($validator->fails()) {
-            return response()->json(['errors' => $validator->errors(), 'success' => false], 400);
+            return response()->json(['errors' => $validator->errors(), 'success' => false], 402);
         }
         $user   = $request->user();
         $user->gender = $request->gender;
@@ -270,15 +261,16 @@ class UserController extends Controller
             'password'  => 'required|string|min:6|max:255|confirmed',
         ]);
         if ($validator->fails()) {
-            return response()->json(['errors' => $validator->errors(), 'success' => false], 400);
+            return response()->json(['errors' => $validator->errors(), 'success' => false], 402);
         }
         $user = auth()->user();
         $user->password = bcrypt($request->password);
         $user->save();
-        return response()->json([
-            'success'   => true,
-            'message'   => __('messages.Password changed successfuly')
-        ]);
+        // return response()->json([
+        //     'success'   => true,
+        //     'message'   => __('messages.Password changed successfuly')
+        // ]);
+        return response()->json(['success' => true, 'data' => ['user' => new UserResource($user)]], 200);
     }
 
     public function info()
@@ -373,6 +365,16 @@ class UserController extends Controller
     public function profile(Request $request)
     {
 
+        $validator = Validator::make($request->all(), [
+        
+            'email'     => 'string|email|unique:users,email|max:255',
+            'phone'     => [ 'unique:users,phone', 'min:11', 'max:11'],
+           
+            'password'          => 'string|min:6|max:255|confirmed'
+        ]);
+        if ($validator->fails()) {
+            return response()->json(['success' => false, 'errors' => $validator->errors()], 402);
+        }
 
         if ($request->has('name')) {
             $request->user()->update($request->only('name'));
@@ -403,32 +405,53 @@ class UserController extends Controller
         return response()->json(['success' => true, 'data' => new UserResource(User::find(auth()->id()))], 200);
     }
 
-     public function sms(Request $request)
+    public function sms(Request $request)
     {
-       
-        // $curl = curl_init();
-        
-        // curl_setopt_array($curl, array(
-        //     CURLOPT_URL => "https://api.sms.to/sms/send",
-        //     CURLOPT_RETURNTRANSFER => true,
-        //     CURLOPT_ENCODING => "",
-        //     CURLOPT_MAXREDIRS => 10,
-        //     CURLOPT_TIMEOUT => 0,
-        //     CURLOPT_FOLLOWLOCATION => true,
-        //     CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-        //     CURLOPT_CUSTOMREQUEST => "POST",
-        //     CURLOPT_POSTFIELDS =>"{\n    \"message\": \"This is a test message\",\n    \"to\": \"+201224201414\",\n    \"sender_id\": \"SMS.to\"    \n}",
-        //     CURLOPT_HTTPHEADER => array(
-        //             "Content-Type: application/json",
-        //             "Accept: application/json",
-        //             "Authorization: Bearer <eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiMTE1ODdjZmY2NjM1NmVmMmIwNzFmYzY3NjgzZWY4NDI1YWE5ZjVhZWJiNTdmMTNiNWJkN2EwMDE3ZTVhOTM4NTkwMWQ2ZmI4ZDZjNWI4MjciLCJpYXQiOjE2MTczNTA0NTYuMDIwNDE3LCJuYmYiOjE2MTczNTA0NTYuMDIwNDI1LCJleHAiOjE2NDg4ODY0NTYuMDA4OTI5LCJzdWIiOiIyOCIsInNjb3BlcyI6W119.k_ztekHwC-to0hGdNnksmvHcTyHI7dY7evX0cWC_W75VW2l5SEXP-LKiycN7hl0zI0OScsq49_elLRPIxWDsYIwvLS6n0TkPMzG2DGxmnjeEQW3hOyKSpF2ZdQhYYkbm3TrT7RRcexjfq9-_bmVJa40hPm-0Rx57tz6v5606ncSYhUf4DBvFNzdX4baXPOi5qA0FYf6gOeBvNNCFvMS3F2Dx2VhHDng8kIDtFNZ2lrHz3o0jDz7zeSpQpah2NwazwJi4HEKcNMx1qRRA-vY8pEBGFEfXU9jAaZrPm017V8vrNEgmwctzvn_bzczAyXogV8tu0D1h-SaDNTrX4rozc46zMFeEj3T13lGKs1yWQOdWLjUu1LDm741QaYT5Quz4sFVVx5xDb-88hYkgbC-z8xmdFsZFpMBdTuuDFZZ-r5B_90z5b0nySKgZyE4XdD0jUK5q6JCZ7kV2lRpiWQanNe0MHNl50HmpwZfW1M5RN5IFXvdBgc0YaXeyQDc_4TiIlS8AZpOB0TuHh-WANp2VKh1_7zvRswfsPUUr7KhIaOZqU1XJqf-h1afINBkKLZKXZ9vbGTzINvloHQG8PWHvP_i8Qji2TIC3xBPJtDDaXpoE26wa4zFOW2v85qojGMtH-18I6000ukXV-4YACK9aulgCuopL25fm9iREK44HJWg
-        //             >"
-        //         ),
-        // ));
-        
-        // $response = curl_exec($curl);
-        
-        // curl_close($curl);
-        // echo $response;
+
+        return $this->send('201224201414', '123');
+    }
+    public function send($mobile, $code)
+    {
+
+        $result = $this->curl_request(
+            "https://smsmisr.com/api/v2/",
+            [
+                'username' => '9m41IUZP',
+                'password' => '6kPlUPMNgf',
+                'language' => 2,
+                'sender' => 'Beauty',
+                'mobile' =>  $mobile,
+                'message' => 'Your verification code is : ' . $code . ''
+            ],
+            [
+                'Content-Type: application/json',
+                'Accept: application/json',
+                'Accept-Language: en-US'
+            ]
+        );
+
+        $result = json_decode($result, true);
+        if (isset($result['code']) && in_array($result['code'], [1901, 6000])) return true;
+        return false;
+    }
+
+    private function curl_request($url, $fields, $headers = [])
+    {
+        $payload = json_encode($fields);
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_HEADER, false);
+        curl_setopt($ch, CURLINFO_HEADER_OUT, true);
+        curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+        curl_setopt($ch, CURLOPT_VERBOSE, true);
+        $result = curl_exec($ch);
+        curl_close($ch);
+        return $result;
     }
 }

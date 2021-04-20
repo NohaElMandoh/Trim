@@ -57,7 +57,7 @@ class OrderController extends Controller
             'payment_coupon' => $request->payment_coupon,
             'reservation_time' => $request->reservation_time,
             'reservation_day' => $request->reservation_day,
-            'status_id'=>1
+            'status_id' => 1
         ]);
         $cost = 0;
         $discount = 0;
@@ -115,7 +115,7 @@ class OrderController extends Controller
 
     public function myOrders(Request $request)
     {
-        $orders = $request->user()->orders()->where('approve',1)->get();
+        $orders = $request->user()->orders()->where('approve', 1)->get();
         if ($orders)
             return response()->json(['success' => true, 'data' => OrderResource::collection($orders)], 200);
         else
@@ -197,22 +197,20 @@ class OrderController extends Controller
                             'price' => $item->price,
                         ]
                     ];
-                   
+
                     $order->services()->attach($readyItem);
                 }
                 $cost = $order->services()->sum('order_service.price');
             }
-           
-           
+
+
             if ($request->has('payment_coupon')) {
                 $coupone = Coupon::where('code', $request->payment_coupon)->first();
                 ////check if avaliable
-                if ($coupone){
-                    if($coupone->price <=$cost){
+                if ($coupone) {
+                    if ($coupone->price <= $cost) {
                         $discount = $coupone->price;
-                    }
-                    else return response()->json(['success' => false, 'data' => 'الخصم اكبر من الاجمالى'], 400);
-                  
+                    } else return response()->json(['success' => false, 'data' => 'الخصم اكبر من الاجمالى'], 400);
                 }
             }
             $total = $cost - $discount;
@@ -230,16 +228,16 @@ class OrderController extends Controller
     {
         $validation = validator()->make($request->all(), [
             'order_id' => 'required',
-       
+
         ]);
 
         if ($validation->fails()) {
             $data = $validation->errors();
             return response()->json(['errors' => $data, 'success' => false], 402);
         }
-        $order =Order::find($request->order_id)->first();
+        $order = Order::find($request->order_id)->first();
         if ($order)
-            return response()->json(['success' => true, 'data' =>new  OrderResource($order)], 200);
+            return response()->json(['success' => true, 'data' => new  OrderResource($order)], 200);
         else
             return response()->json(['success' => false, 'message' => __('messages.Try Again Later')], 400);
     }
@@ -247,19 +245,19 @@ class OrderController extends Controller
     {
         $validation = validator()->make($request->all(), [
             'order_id' => 'required',
-       
+
         ]);
 
         if ($validation->fails()) {
             $data = $validation->errors();
             return response()->json(['errors' => $data, 'success' => false], 402);
         }
-        $order =Order::find($request->order_id)->first();
+        $order = Order::find($request->order_id)->first();
         $order->update([
             'approve' => 1,
         ]);
         if ($order)
-            return response()->json(['success' => true, 'data' =>new  OrderResource($order)], 200);
+            return response()->json(['success' => true, 'data' => new  OrderResource($order)], 200);
         else
             return response()->json(['success' => false, 'message' => __('messages.Try Again Later')], 400);
     }
@@ -267,7 +265,7 @@ class OrderController extends Controller
     {
         $validation = validator()->make($request->all(), [
             'order_id' => 'required',
-            'reason'=>'required',
+            'reason' => 'required',
 
         ]);
 
@@ -275,15 +273,15 @@ class OrderController extends Controller
             $data = $validation->errors();
             return response()->json(['errors' => $data, 'success' => false], 402);
         }
-        $cancelStatus=Status::where('slug','cancelled')->first();
-        $order =Order::find($request->order_id)->first();
+        $cancelStatus = Status::where('slug', 'cancelled')->first();
+        $order = Order::find($request->order_id)->first();
         $order->update([
-            'status_id' =>$cancelStatus->id,
-            'cancel_reason'=>$request->reason
+            'status_id' => $cancelStatus->id,
+            'cancel_reason' => $request->reason
         ]);
         if ($order)
-        return response()->json(['success' => true, 'data' =>new  OrderResource($order)], 200);
-    else
-        return response()->json(['success' => false, 'message' => __('messages.Try Again Later')], 400);
+            return response()->json(['success' => true, 'data' => new  OrderResource($order)], 200);
+        else
+            return response()->json(['success' => false, 'message' => __('messages.Try Again Later')], 400);
     }
 }
