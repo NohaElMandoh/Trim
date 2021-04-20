@@ -84,9 +84,11 @@ class UserController extends Controller
             'text' => ['required', 'string'],
         ]);
         if ($validator->fails()) {
-            return response()->json([ 'success' => false,'errors' => $validator->errors()], 402);
+            return response()->json(['success' => false, 'errors' => $validator->errors()], 402);
         }
-        $user = User::where('email', $request->text)->orWhere('phone', $request->text)->first();
+
+        $req_phone = '+2' . $request->text;
+        $user = User::where('email', $request->text)->orWhere('phone', $req_phone)->first();
 
         if ($user) {
 
@@ -149,7 +151,7 @@ class UserController extends Controller
 
         ]);
         if ($validator->fails()) {
-            return response()->json(['success' => false,'errors' => $validator->errors()], 402);
+            return response()->json(['success' => false, 'errors' => $validator->errors()], 402);
         }
         $user = User::where('provider_id', $request->provider_id)->first();
         if ($user) {
@@ -164,7 +166,7 @@ class UserController extends Controller
             $user = User::create($data);
             $token = $user->createToken('Myapp');
             $smsstatus = $this->send($user->phone, $user->sms_token);
-            return response()->json(['success' => true, 'data' => ['token' => $token->accessToken, 'user' => new UserResource($user),'smsstatus'=>$smsstatus]], 200);
+            return response()->json(['success' => true, 'data' => ['token' => $token->accessToken, 'user' => new UserResource($user), 'smsstatus' => $smsstatus]], 200);
         }
     }
     // Activate api
@@ -366,9 +368,9 @@ class UserController extends Controller
     {
 
         $validator = Validator::make($request->all(), [
-            'email' => ['string',Rule::unique('users')->ignore($request->user()->id)],
+            'email' => ['string', Rule::unique('users')->ignore($request->user()->id)],
             // 'email'     => 'string|email|unique:users,email|max:255'.$request->user()->id,
-            'phone' => ['string', 'min:11', 'max:11',Rule::unique('users')->ignore($request->user()->id)],
+            'phone' => ['string', 'min:11', 'max:11', Rule::unique('users')->ignore($request->user()->id)],
             // 'phone'     => [ 'unique:users,phone', 'min:11', 'max:11'],
             'password'          => 'string|min:6|max:255|confirmed'
         ]);
@@ -383,7 +385,8 @@ class UserController extends Controller
             $request->user()->update($request->only('email'));
         }
         if ($request->has('phone')) {
-            $request->user()->update($request->only('phone'));
+            $phone='+2'.$request->phone;
+            $request->user()->update(['phone'=>$phone]);
         }
 
         if ($request->has('image')) {
