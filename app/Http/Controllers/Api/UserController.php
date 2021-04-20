@@ -366,10 +366,10 @@ class UserController extends Controller
     {
 
         $validator = Validator::make($request->all(), [
-        
-            'email'     => 'string|email|unique:users,email|max:255',
-            'phone'     => [ 'unique:users,phone', 'min:11', 'max:11'],
-           
+            'email' => ['string',Rule::unique('users')->ignore($request->user()->id)],
+            // 'email'     => 'string|email|unique:users,email|max:255'.$request->user()->id,
+            'phone' => ['string', 'min:11', 'max:11',Rule::unique('users')->ignore($request->user()->id)],
+            // 'phone'     => [ 'unique:users,phone', 'min:11', 'max:11'],
             'password'          => 'string|min:6|max:255|confirmed'
         ]);
         if ($validator->fails()) {
