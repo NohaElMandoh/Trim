@@ -101,11 +101,11 @@ class User extends Authenticatable
     {
         return $this->belongsTo('App\Rate', 'id', 'user_id');
     }
-    // public function favorities()
-    // {
-    //     return $this->belongsTo('App\Favorite', 'id', 'user_id');
-    // }
     public function favorities()
+    {
+        return $this->belongsTo('App\Favorite', 'id', 'user_id');
+    }
+    public function favorities2()
     {
         return $this->belongsToMany('App\User', 'favorites','salon_id','user_id')->withpivot('is_fav')->withTimestamps();
     }
@@ -121,7 +121,7 @@ class User extends Authenticatable
 
     public function getIsFavAttribute($value)
     {
-        foreach($this->favorities as $fav)
+        foreach($this->favorities2 as $fav)
         {
             if(($fav->pivot->user_id ==Auth()->user()->id) && ($fav->pivot->is_fav =='1') )
             return true;
