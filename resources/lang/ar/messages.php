@@ -29,4 +29,8 @@ return [
     'salon not exist'=>'Salon Not Exist',
     'open'=>"مفتوح",
     'closed'=>"مغلق",
+    'addToFav'=>"Salon successfully added to favorite list",
+    'removeFromFav'=>"Salon successfully removed from favorite list",
+    
+    'salon not avaliable'=>'Salon Not Exist',
 ];

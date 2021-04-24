@@ -29,4 +29,7 @@ return [
     'salon not exist'=>'Salon Not Exist',
     'open'=>"Open",
     'closed'=>"Closed",
+    'addToFav'=>"Salon successfully added to favorite list",
+    'removeFromFav'=>"Salon successfully removed from favorite list",
+    'salon not avaliable'=>'Salon Not Exist',
 ];

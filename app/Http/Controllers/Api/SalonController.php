@@ -28,25 +28,25 @@ class SalonController extends Controller
             $salons = User::role('salon')->where('type', 'salon')->where('governorate_id', $governorate_id)->paginate(10);
         } else   $salons = User::role('salon')->where('type', 'salon')->paginate(10);
 
-        return response()->json(['success' => true,'data' => SalonResource::collection($salons)], 200);
+        return response()->json(['success' => true, 'data' => SalonResource::collection($salons)], 200);
     }
     public function salon(Request $request)
     {
         $validation = validator()->make($request->all(), [
             'salon_id' => 'required',
-         
+
         ]);
 
         if ($validation->fails()) {
             $data = $validation->errors();
-            return response()->json([ 'success' => false,'errors' => $data], 402);
+            return response()->json(['success' => false, 'errors' => $data], 402);
         }
         $salon = User::role('salon')->where('id', $request->salon_id)->first();
-        if($salon){
-        $search = ($salon->search) + 1;
-        $salon->update(['search' => $search]);
-        return response()->json(['success' => true,'data' => new SalonResource($salon)], 200);
-        }else   return response()->json(['success' => false, 'message' => __('messages.salon not exist')], 400);
+        if ($salon) {
+            $search = ($salon->search) + 1;
+            $salon->update(['search' => $search]);
+            return response()->json(['success' => true, 'data' => new SalonResource($salon)], 200);
+        } else   return response()->json(['success' => false, 'message' => __('messages.salon not exist')], 400);
     }
     public function allPersons(Request $request)
     {
@@ -58,14 +58,13 @@ class SalonController extends Controller
             $salons = User::role('salon')->where('type', 'person')->where('governorate_id', $governorate_id)->paginate(10);
         } else   $salons = User::role('salon')->where('type', 'person')->paginate(10);
 
-        return response()->json(['success' => true,'data' => SalonResource::collection($salons)], 200);
+        return response()->json(['success' => true, 'data' => SalonResource::collection($salons)], 200);
     }
     public function rateSalon(Request $request)
     {
         $validation = validator()->make($request->all(), [
             'salon_id' => 'required',
-            'rate'  =>'required| in:1,2,3,4,5'
-           
+            'rate'  => 'required| in:1,2,3,4,5'
 
         ]);
 
@@ -81,9 +80,10 @@ class SalonController extends Controller
                 'salon_id'      => $request->salon_id,
                 'user_id' => auth()->user()->id
             ];
-    
-            
-           auth()->user()->rates()->update($data);
+
+
+              auth()->user()->rates()->update($data);
+              $rate = Rate::where('user_id', auth()->user()->id)->where('salon_id', $request->salon_id)->first();
         } else {
             $data = [
                 'comment'     => $request->comment,
@@ -91,11 +91,11 @@ class SalonController extends Controller
                 'salon_id'      => $request->salon_id,
                 'user_id' => auth()->user()->id
             ];
-    
-            
+
+
             $rate = auth()->user()->rates()->create($data);
         }
-     
+
         return response()->json(['success' => true, 'data' => $rate], 200);
     }
     public function addToFavorities(Request $request)
@@ -109,12 +109,16 @@ class SalonController extends Controller
             $data = $validation->errors();
             return response()->json(['errors' => $data, 'success' => false], 402);
         }
+
         $fav = Favorite::where('user_id', auth()->user()->id)->where('salon_id', $request->salon_id)->first();
         if ($fav) {
-            if ($fav->is_fav == 1)
+            if ($fav->is_fav == 1) {
                 $fav->update(['is_fav' => 0]);
-            else
+                return response()->json(['success' => true, 'message' => __('messages.removeFromFav')], 200);
+            } else {
                 $fav->update(['is_fav' => 1]);
+                return response()->json(['success' => true, 'message' => __('messages.addToFav')], 200);
+            }
         } else {
             $data = [
 
@@ -123,9 +127,8 @@ class SalonController extends Controller
                 'is_fav' => 1
             ];
             $fav = auth()->user()->favorities()->create($data);
+            return response()->json(['success' => true, 'message' => __('messages.addToFav')], 200);
         }
-
-        return response()->json(['success' => true, 'data' => $fav], 200);
     }
     public function governorates()
     {
@@ -139,41 +142,53 @@ class SalonController extends Controller
     }
     public function avaliableDates(Request $request)
     {
-        $salon = User::find($request->id);
-        $date = strtotime($request->date);
+        $validation = validator()->make($request->all(), [
+            'id' => 'required',
+            'date' => 'required',
 
-        $searchDay = (new Carbon($request->date))->format('l');
+        ]);
 
-        $now = Carbon::now()->toDateTimeString();
-        $to = "";
-        $from = null;
-        $dates = [];
-        $days = $salon->works()->pluck('day');
-        $daysNames = collect($salon->days());
-        $daysAvaliable = $daysNames->only($days);
-
-        foreach ($daysAvaliable as $i => $day) {
-
-            if ($day == $searchDay) {
-                $workday = $salon->works()->where('day', $i)->first();
-
-                // if ($workday->from <= $now && $workday->to <= $now) {
-                $to = $workday->to;
-                $from = $workday->from;
-                $from_date = Carbon::createFromFormat('H:i:s', $from);
-                $to_date = Carbon::createFromFormat('H:i:s', $to);
-                $diff = $to_date->diff($from_date);
-
-                for ($i = $from_date; $i <= $to_date; $i->modify('+30 minute')) {
-
-                    ////////check if timeAvaliable or not
-                    if (!($this->timeAvaliable($salon->id, $i->format('g:i A'), $request->date)))
-                        array_push($dates, $i->format('g:i A'));
-                }
-                // }
-            }
+        if ($validation->fails()) {
+            $data = $validation->errors();
+            return response()->json(['errors' => $data, 'success' => false], 402);
         }
-        return response()->json(['success' => true, 'data' => $dates], 200);
+        $salon = User::find($request->id);
+        if($salon){ $date = strtotime($request->date);
+
+            $searchDay = (new Carbon($request->date))->format('l');
+    
+            $now = Carbon::now()->toDateTimeString();
+            $to = "";
+            $from = null;
+            $dates = [];
+            $days = $salon->works()->pluck('day');
+            $daysNames = collect($salon->days());
+            $daysAvaliable = $daysNames->only($days);
+    
+            foreach ($daysAvaliable as $i => $day) {
+    
+                if ($day == $searchDay) {
+                    $workday = $salon->works()->where('day', $i)->first();
+    
+                    // if ($workday->from <= $now && $workday->to <= $now) {
+                    $to = $workday->to;
+                    $from = $workday->from;
+                    $from_date = Carbon::createFromFormat('H:i:s', $from);
+                    $to_date = Carbon::createFromFormat('H:i:s', $to);
+                    $diff = $to_date->diff($from_date);
+    
+                    for ($i = $from_date; $i <= $to_date; $i->modify('+30 minute')) {
+    
+                        ////////check if timeAvaliable or not
+                        if (!($this->timeAvaliable($salon->id, $i->format('g:i A'), $request->date)))
+                            array_push($dates, $i->format('g:i A'));
+                    }
+                    // }
+                }
+            }
+            return response()->json(['success' => true, 'data' => $dates], 200);
+        }else return response()->json(['success' => false, 'message' => __('messages.salon not avaliable')], 400);
+       
     }
     public function timeAvaliable($barber_id, $time, $day)
     {

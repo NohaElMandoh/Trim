@@ -27,7 +27,7 @@ class User extends Authenticatable
         'city_id', 'governorate_id', 'sms_token', 'gender',
         'cover', 'is_sponsored', 'provider', 'provider_id', 'provider_token', 'type','search'
     ];
-    protected $appends = ['rate', 'status', 'from', 'to', 'avaliable_dates'];
+    protected $appends = ['rate', 'status', 'from', 'to', 'avaliable_dates','is_fav'];
 
     public static function days()
     {
@@ -101,17 +101,33 @@ class User extends Authenticatable
     {
         return $this->belongsTo('App\Rate', 'id', 'user_id');
     }
+    // public function favorities()
+    // {
+    //     return $this->belongsTo('App\Favorite', 'id', 'user_id');
+    // }
     public function favorities()
     {
-        return $this->belongsTo('App\Favorite', 'id', 'user_id');
+        return $this->belongsToMany('App\User', 'favorites','salon_id','user_id')->withpivot('is_fav')->withTimestamps();
     }
+    // public function favorities2()
+    // {
+    //     return $this->belongsToMany('App\User', 'favorites','user_id','salon_id')->withpivot('is_fav')->withTimestamps();
+    // }
     public function rateSalon()
     {
         return $this->hasMany('App\Rate', 'salon_id');
     }
-    public function is_favorite()
+    
+
+    public function getIsFavAttribute($value)
     {
-        return $this->belongsTo('App\Favorite', 'id', 'salon_id');
+        foreach($this->favorities as $fav)
+        {
+            if(($fav->pivot->user_id ==Auth()->user()->id) && ($fav->pivot->is_fav =='1') )
+            return true;
+        }
+        return false;
+       
     }
     public function getRateAttribute($value)
     {
