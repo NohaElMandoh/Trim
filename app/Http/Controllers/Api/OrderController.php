@@ -74,7 +74,7 @@ class OrderController extends Controller
                         ]
                     ];
                     $order->services()->attach($readyItem);
-                }
+                } else return response()->json(['success' => false, 'message' => __('messages.service not exist')], 400);
             }
 
             $cost = $order->services()->sum('order_service.price');
