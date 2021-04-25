@@ -263,7 +263,7 @@ class OrderController extends Controller
             $data = $validation->errors();
             return response()->json(['errors' => $data, 'success' => false], 402);
         }
-        $order = Order::find($request->order_id)->first();
+        $order = Order::find($request->order_id);
     
         if ($order){
             $order->update([
