@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers\Api\client;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\OfferResource;
@@ -48,23 +48,6 @@ class MainController extends Controller
             'lastOffers' => OfferResource::collection($lastOffers)
         ]], 200);
     }
-    public function offer(Request $request)
-    {
-        $validation = validator()->make($request->all(), [
-            'offer_id' => 'required',
-       
-        ]);
-
-        if ($validation->fails()) {
-            $data = $validation->errors();
-            return response()->json(['errors' => $data, 'success' => false], 402);
-        }
-
-        $offer=offer::where('id',$request->offer_id)->first();
-        if( $offer)
-        return response()->json(['success' => true, 'data' => new OfferResource($offer)], 200);
-        else
-        return response()->json(['success' => false, 'data' => 'no offer'], 400);
-    }
+  
 
 }

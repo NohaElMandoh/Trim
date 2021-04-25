@@ -16,7 +16,7 @@ use Illuminate\Support\Facades\Route;
 
 
 Route::group(['namespace' => 'Api'], function () {
-    Route::group(['prefix' => 'client'], function () {
+    Route::group(['prefix' => 'client','namespace' => 'client'], function () {
         ///login
         Route::post('login', 'UserController@login');
         Route::post('getVerificationCode', 'UserController@getVerificationCode');
@@ -102,8 +102,10 @@ Route::group(['namespace' => 'Api'], function () {
              ///salon details
              Route::post('offer', 'OfferController@offer');
         });
-        // Setings
-        Route::get('settings', 'SettingController@index');
         Route::post('sms', 'UserController@sms');
+        // Setings
+       
     });
+    Route::get('settings', 'SettingController@index');
+   
 });

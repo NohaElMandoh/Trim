@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers\Api\client;
 
 use App\Favorite;
 use App\Http\Controllers\Controller;
