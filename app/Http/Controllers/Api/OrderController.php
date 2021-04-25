@@ -124,7 +124,9 @@ class OrderController extends Controller
 
     public function myOrders(Request $request)
     {
-        $orders = $request->user()->orders()->where('approve', 1)->get();
+        // $orders = $request->user()->orders()->where('approve', 1)->get();
+
+        $orders = $request->user()->orders()->get();
         if ($orders)
             return response()->json(['success' => true, 'data' => OrderResource::collection($orders)], 200);
         else
