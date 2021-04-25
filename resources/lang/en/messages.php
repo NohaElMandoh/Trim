@@ -35,5 +35,9 @@ return [
     'Order Not Exist'=>'Order Not Exist',
     'offer not exist'=>'offer not exist',
     'service not exist'=>'Service Not Exist',
-    'discount greater than total'=>'Discount Greater Than Total'
+    'discount greater than total'=>'Discount Greater Than Total',
+    'select item '=>'Please Select An Item',
+    'type not selected'=>'Type Not Selected',
+    'product not exist '=>'Product Not Exist',
+    'all items deleted successfully'=>'All Items Deleted Successfully'
 ];

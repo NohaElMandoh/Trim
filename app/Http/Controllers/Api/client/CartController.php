@@ -36,12 +36,12 @@ class CartController extends Controller
         $validation = validator()->make($request->all(), [
             'item_id' => 'required',
             'quantity' => 'required',
-            'type' => 'required',
+            'type' => 'required|in:product,service,offer',
         ]);
 
         if ($validation->fails()) {
             $data = $validation->errors();
-            return response()->json(['errors' => $data, 'success' => false], 401);
+            return response()->json(['errors' => $data, 'success' => false], 402);
         }
 
         if ($request->has('type')) {
@@ -55,9 +55,9 @@ class CartController extends Controller
                 if ($request['type'] == 'product') {
                     $item = Product::find($request->item_id);
                 }
-            } else return response()->json(['errors' => 'لم يتم اختيار خدمة', 'success' => false], 401);
-        } else return response()->json(['errors' => 'لم يتم تحديد نوع الخدمة', 'success' => false], 401);
-
+            } else return response()->json(['success' => false, 'message' => __('messages.select item ')], 400);
+           
+        } else return response()->json(['success' => false, 'message' => __('messages.type not selected ')], 400);
         if ($item) {
             // $firstitem = Cart::where('user_id', $request->user()->id)->with('item.merchant')->first();
             // if ($firstitem) {
@@ -79,15 +79,6 @@ class CartController extends Controller
             // } else {
             $price = $item->price;
 
-            // $readyItem = [
-            //     'product_id' => $item->id,
-            //     'quantity' => $request->quantity,
-            //     'price' => $price,
-            //     'note' => $request->note,
-            //     'product_type' =>  get_class($item)
-
-            // ];
-            // $request->user()->cart()->create($readyItem);
             $readyItem = [
                 $item->id => [
                     'quantity' => $request->quantity,
@@ -95,17 +86,21 @@ class CartController extends Controller
                     'product_type' =>  get_class($item)
                 ]
             ];
-            $request->user()->cart()->attach($readyItem);
-            // }
+          $request->user()->cart()->attach($readyItem);
+
+          $item = Cart::where('user_id', $request->user()->id)->where('product_id',$item->id )->first();
+          
+            return response()->json(['success' => true, 'data' => new CartResource($item)], 200);
         } else {
-            return response()->json(['success' => false, 'errors' => 'المنتج غير موجود'], 200);
+            return response()->json(['success' => false, 'message' => __('messages.product not exist ')], 400);
         }
-        return response()->json(['success' => true, 'data' => $item], 200);
+   
     }
     public function cartItems(Request $request)
     {
         $items = Cart::where('user_id', $request->user()->id)->get();
-        return response()->json(['success' => true, 'data' => CartResource::collection($items)], 200);
+        
+        return response()->json(['success' => true, 'data' => CartResource::collection( $items)], 200);
     }
 
     public function updateCartItem(Request $request)
@@ -118,7 +113,7 @@ class CartController extends Controller
 
         if ($validation->fails()) {
             $data = $validation->errors();
-            return response()->json(['errors' => $data, 'success' => false], 401);
+            return response()->json(['errors' => $data, 'success' => false], 402);
         }
 
         if ($request->quantity == 0) {
@@ -135,8 +130,8 @@ class CartController extends Controller
             $item->update([
                 'quantity' => $request->quantity,
             ]);
-            return response()->json(['success' => true, 'data' => 'تم التحيث'], 200);
-        } else  response()->json(['success' => false, 'data' => 'المنتج غير موجود'], 401);
+            return response()->json(['success' => true, 'data' => __('messages.Product updated successfully')], 200);
+        } else  return response()->json(['success' => false, 'message' => __('messages.product not exist ')], 400);
     }
 
     public function deleteCartItem(Request $request)
@@ -148,7 +143,7 @@ class CartController extends Controller
 
         if ($validation->fails()) {
             $data = $validation->errors();
-            return response()->json(['errors' => $data, 'success' => false], 401);
+            return response()->json(['errors' => $data, 'success' => false], 402);
         }
         $item = Cart::where('user_id', $request->user()->id)
             ->where('id', $request->row_id)->first();
@@ -158,14 +153,18 @@ class CartController extends Controller
                 ->where('user_id', $request->user()->id)
                 ->where('id', $request->row_id)
                 ->delete();
-            return response()->json(['success' => true, 'data' => 'تم ألحذف'], 200);
-        } else  response()->json(['success' => false, 'data' => 'المنتج غير موجود'], 401);
+            return response()->json(['success' => true, 'data' => __('messages.Product deleted successfully')], 200);
+        } else   return response()->json(['success' => false, 'message' => __('messages.product not exist ')], 400);
+
+
+        
     }
 
     public function deleteAllCartItems(Request $request)
     {
         $request->user()->cart()->detach();
-        return response()->json(['success' => true, 'data' => 'تم ألحذف'], 200);
+        return response()->json(['success' => true, 'data' => __('messages.all items deleted successfully')], 200);
+        
     }
 
 }
