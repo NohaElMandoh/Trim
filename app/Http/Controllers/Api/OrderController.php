@@ -78,18 +78,22 @@ class OrderController extends Controller
             }
 
             $cost = $order->services()->sum('order_service.price');
+            $payment_coupon="";
             if ($request->has('payment_coupon')) {
                 $coupone = Coupon::where('code', $request->payment_coupon)->first();
                 ////check if avaliable
-                if ($coupone)
+                if ($coupone){
                     $discount = $coupone->price;
+                    $payment_coupon=$request->payment_coupon;
+                }
+                else  return response()->json(['success' => false, 'message' => __('messages.coupone not avaliable')], 400);
             }
             $total = $cost - $discount;
             $order->update([
                 'cost' => $cost,
                 'discount' => $discount,
                 'total' => $total,
-                'payment_coupon' => $request->payment_coupon,
+                'payment_coupon' => $payment_coupon,
 
             ]);
             if ($order)
