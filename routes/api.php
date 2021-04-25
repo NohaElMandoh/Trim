@@ -84,6 +84,9 @@ Route::group(['namespace' => 'Api'], function () {
             Route::post('order', 'OrderController@order');
             Route::post('approveOrder', 'OrderController@approveOrder');
             Route::post('cancelOrder', 'OrderController@cancelOrder');
+            Route::post('updateOrderPaymentMethod', 'OrderController@updateOrderPaymentMethod');
+
+            
 
 
 

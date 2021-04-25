@@ -48,6 +48,16 @@ class ProductsController extends Controller
     } 
     public function products(Request $request)
     {
+        $validation = validator()->make($request->all(), [
+            'category_id' => 'required',
+
+        ]);
+
+        if ($validation->fails()) {
+            $data = $validation->errors();
+            return response()->json(['errors' => $data, 'success' => false], 402);
+        }
+
         if ($request->has('name')) {
         $products = Product::where('category_id',$request->category_id)->whereTranslationLike('name', '%' . $request->name . '%')->orderBy('created_at', 'desc')->get();
         }

@@ -273,6 +273,28 @@ class OrderController extends Controller
          } else
             return response()->json(['success' => false, 'message' => __('messages.Order Not Exist')], 400);
     }
+    public function updateOrderPaymentMethod(Request $request)
+    {
+        $validation = validator()->make($request->all(), [
+            'order_id' => 'required',
+            'payment_method' => 'required|in:cash,visa,fawry', //cash ,visa,fawry
+
+        ]);
+
+        if ($validation->fails()) {
+            $data = $validation->errors();
+            return response()->json(['errors' => $data, 'success' => false], 402);
+        }
+        $order = Order::find($request->order_id);
+    
+        if ($order){
+            $order->update([
+                'payment_method' => $request->payment_method,
+            ]);
+            return response()->json(['success' => true, 'data' => new  OrderResource($order)], 200);
+         } else
+            return response()->json(['success' => false, 'message' => __('messages.Order Not Exist')], 400);
+    }
     public function cancelOrder(Request $request)
     {
         $validation = validator()->make($request->all(), [
