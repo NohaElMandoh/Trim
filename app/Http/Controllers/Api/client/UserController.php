@@ -321,6 +321,12 @@ class UserController extends Controller
 
     public function read_notification(Request $request)
     {
+        $validator = Validator::make($request->all(), [
+        'id'=>'required'
+        ]);
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors(), 'success' => false], 400);
+        }
         auth()->user()->notifications()->where('id', $request->id)->first()->markAsRead();
         return response()->json(['success' => true], 200);
     }

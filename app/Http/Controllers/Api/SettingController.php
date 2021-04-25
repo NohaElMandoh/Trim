@@ -13,4 +13,8 @@ class SettingController extends Controller
     {
         return response()->json(['data' => new SettingResource(Setting::firstOrFail()), 'success' => true], 200);
     }
+    public function clientSettings()
+    {
+        return response()->json(['data' => new SettingResource(Setting::firstOrFail()), 'success' => true], 200);
+    }
 }

@@ -106,9 +106,11 @@ Route::group(['namespace' => 'Api'], function () {
              Route::post('offer', 'OfferController@offer');
         });
         Route::post('sms', 'UserController@sms');
-        // Setings
+      
        
     });
+      // Setings
+    Route::get('clientSettings', 'SettingController@clientSettings');
     Route::get('settings', 'SettingController@index');
-   
+ 
 });
