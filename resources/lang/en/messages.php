@@ -32,4 +32,6 @@ return [
     'addToFav'=>"Salon successfully added to favorite list",
     'removeFromFav'=>"Salon successfully removed from favorite list",
     'salon not avaliable'=>'Salon Not Exist',
+    'Order Not Exist'=>'Order Not Exist',
+    'offer not exist'=>'offer not exist'
 ];

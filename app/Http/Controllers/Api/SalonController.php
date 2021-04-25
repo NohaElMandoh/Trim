@@ -126,7 +126,7 @@ class SalonController extends Controller
                 'user_id' => auth()->user()->id,
                 'is_fav' => 1
             ];
-            $fav = auth()->user()->favorities()->create($data);
+            $fav = auth()->user()->favorities2()->create($data);
             return response()->json(['success' => true, 'message' => __('messages.addToFav')], 200);
         }
     }

@@ -244,11 +244,11 @@ class OrderController extends Controller
             $data = $validation->errors();
             return response()->json(['errors' => $data, 'success' => false], 402);
         }
-        $order = Order::find($request->order_id)->first();
+        $order = Order::find($request->order_id);
         if ($order)
             return response()->json(['success' => true, 'data' => new  OrderResource($order)], 200);
         else
-            return response()->json(['success' => false, 'message' => __('messages.Try Again Later')], 400);
+            return response()->json(['success' => false, 'message' => __('messages.Order Not Exist')], 400);
     }
     public function approveOrder(Request $request)
     {
