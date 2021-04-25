@@ -271,7 +271,7 @@ class OrderController extends Controller
             ]);
             return response()->json(['success' => true, 'data' => new  OrderResource($order)], 200);
          } else
-            return response()->json(['success' => false, 'message' => __('messages.Try Again Later')], 400);
+            return response()->json(['success' => false, 'message' => __('messages.Order Not Exist')], 400);
     }
     public function cancelOrder(Request $request)
     {
