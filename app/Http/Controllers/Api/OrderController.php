@@ -128,9 +128,8 @@ class OrderController extends Controller
 
     public function myOrders(Request $request)
     {
-        // $orders = $request->user()->orders()->where('approve', 1)->get();
+        $orders = $request->user()->orders()->where('approve', 1)->get();
 
-        $orders = $request->user()->orders()->get();
         if ($orders)
             return response()->json(['success' => true, 'data' => OrderResource::collection($orders)], 200);
         else
@@ -169,15 +168,12 @@ class OrderController extends Controller
                 ]);
             }
             if ($request->has('payment_method')) {
+               
                 $order->update([
                     'payment_method' => $request->payment_method,
                 ]);
             }
-            if ($request->has('payment_coupon')) {
-                $order->update([
-                    'payment_coupon' => $request->payment_coupon,
-                ]);
-            }
+         
             if ($request->has('reservation_time')) {
                 $order->update([
                     'reservation_time' => $request->reservation_time,
@@ -225,8 +221,8 @@ class OrderController extends Controller
                 if ($coupone) {
                     if ($coupone->price <= $cost) {
                         $discount = $coupone->price;
-                    } else return response()->json(['success' => false, 'data' => 'الخصم اكبر من الاجمالى'], 400);
-                }
+                    } else return response()->json(['success' => false, 'message' =>  __('messages.discount greater than total')], 400);
+                }else return response()->json(['success' => false, 'message' => __('messages.coupone not avaliable')], 400);
             }
             $total = $cost - $discount;
             $order->update([
@@ -237,7 +233,7 @@ class OrderController extends Controller
             ]);
 
             return response()->json(['success' => true, 'data' => new OrderResource($order)], 200);
-        } else  return response()->json(['success' => false, 'data' => 'الطلب غير موجود'], 400);
+        } else    return response()->json(['success' => false, 'message' => __('messages.Order Not Exist')], 400);
     }
     public function order(Request $request)
     {
@@ -268,12 +264,13 @@ class OrderController extends Controller
             return response()->json(['errors' => $data, 'success' => false], 402);
         }
         $order = Order::find($request->order_id)->first();
-        $order->update([
-            'approve' => 1,
-        ]);
-        if ($order)
+    
+        if ($order){
+            $order->update([
+                'approve' => 1,
+            ]);
             return response()->json(['success' => true, 'data' => new  OrderResource($order)], 200);
-        else
+         } else
             return response()->json(['success' => false, 'message' => __('messages.Try Again Later')], 400);
     }
     public function cancelOrder(Request $request)
