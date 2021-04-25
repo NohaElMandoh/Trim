@@ -48,50 +48,55 @@ class OrderController extends Controller
             $data = $validation->errors();
             return response()->json(['errors' => $data, 'success' => false], 402);
         }
-        // 'cost','discount','total',
-        $order = $request->user()->orders()->create([
-            'barber_id' => $request->barber_id,
-            'address' => $request->address,
-            'phone' => $request->phone,
-            'payment_method' => $request->payment_method,
-            'payment_coupon' => $request->payment_coupon,
-            'reservation_time' => $request->reservation_time,
-            'reservation_day' => $request->reservation_day,
-            'status_id' => 1
-        ]);
-        $cost = 0;
-        $discount = 0;
-        $total = 0;
-        foreach ($request->services as $i) {
-            $item = Service::find($i['service_id']);
-            $readyItem = [
-                $i['service_id'] => [
-                    'qty' => $i['quantity'],
-                    'price' => $item->price,
-                ]
-            ];
-            $order->services()->attach($readyItem);
-        }
+        $barber = User::find($request->barber_id);
+        if ($barber) {
+            // 'cost','discount','total',
+            $order = $request->user()->orders()->create([
+                'barber_id' => $request->barber_id,
+                'address' => $request->address,
+                'phone' => $request->phone,
+                'payment_method' => $request->payment_method,
+                'payment_coupon' => $request->payment_coupon,
+                'reservation_time' => $request->reservation_time,
+                'reservation_day' => $request->reservation_day,
+                'status_id' => 1
+            ]);
+            $cost = 0;
+            $discount = 0;
+            $total = 0;
+            foreach ($request->services as $i) {
+                $item = Service::find($i['service_id']);
+                if ($item) {
+                    $readyItem = [
+                        $i['service_id'] => [
+                            'qty' => $i['quantity'],
+                            'price' => $item->price,
+                        ]
+                    ];
+                    $order->services()->attach($readyItem);
+                }
+            }
 
-        $cost = $order->services()->sum('order_service.price');
-        if ($request->has('payment_coupon')) {
-            $coupone = Coupon::where('code', $request->payment_coupon)->first();
-            ////check if avaliable
-            if ($coupone)
-                $discount = $coupone->price;
-        }
-        $total = $cost - $discount;
-        $order->update([
-            'cost' => $cost,
-            'discount' => $discount,
-            'total' => $total,
-            'payment_coupon' => $request->payment_coupon,
+            $cost = $order->services()->sum('order_service.price');
+            if ($request->has('payment_coupon')) {
+                $coupone = Coupon::where('code', $request->payment_coupon)->first();
+                ////check if avaliable
+                if ($coupone)
+                    $discount = $coupone->price;
+            }
+            $total = $cost - $discount;
+            $order->update([
+                'cost' => $cost,
+                'discount' => $discount,
+                'total' => $total,
+                'payment_coupon' => $request->payment_coupon,
 
-        ]);
-        if ($order)
-            return response()->json(['success' => true, 'data' => new OrderResource($order)], 200);
-        else
-            return response()->json(['success' => false, 'message' => __('messages.Try Again Later')], 400);
+            ]);
+            if ($order)
+                return response()->json(['success' => true, 'data' => new OrderResource($order)], 200);
+            else
+                return response()->json(['success' => false, 'message' => __('messages.Try Again Later')], 400);
+        } else  return response()->json(['success' => false, 'message' => __('messages.salon not exist')], 400);
     }
     public function  getCoupone(Request $request)
     {

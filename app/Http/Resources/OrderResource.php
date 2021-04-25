@@ -46,7 +46,7 @@ class OrderResource extends JsonResource
             'total'=> $this->total,
             'reservation_time'=> $this->reservation_time,
             'reservation_day'=> $this->reservation_day,
-            'created_at'=>$this->created_at,
+            'created_at'=>$this->created_at->toDateString().' '.$this->created_at->format('g:i A'),
             'services'=>ServiceResource::collection($this->services)
 
         ];

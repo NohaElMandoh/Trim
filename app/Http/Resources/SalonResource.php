@@ -39,6 +39,7 @@ class SalonResource extends JsonResource
             'services' => ServiceResource::collection($this->services),
             'rates' => RateResource::collection($this->rateSalon),
             'is_fav'=>$this->is_fav,
+            'type'=>$this->type
         ];
     }
 }
