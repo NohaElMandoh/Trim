@@ -22,11 +22,11 @@ class SalonController extends Controller
     {
         if ($request->has('name')) {
             $name = $request->name;
-            $salons = User::role('salon')->where('type', 'salon')->where('name', 'LIKE', '%' . $name . '%')->paginate(10);
+            $salons = User::role('salon')->where('name', 'LIKE', '%' . $name . '%')->paginate(10);
         } elseif ($request->has('governorate_id')) {
             $governorate_id = $request->governorate_id;
-            $salons = User::role('salon')->where('type', 'salon')->where('governorate_id', $governorate_id)->paginate(10);
-        } else   $salons = User::role('salon')->where('type', 'salon')->paginate(10);
+            $salons = User::role('salon')->where('governorate_id', $governorate_id)->paginate(10);
+        } else   $salons = User::role('salon')->paginate(10);
 
         return response()->json(['success' => true, 'data' => SalonResource::collection($salons)], 200);
     }
@@ -52,11 +52,11 @@ class SalonController extends Controller
     {
         if ($request->has('name')) {
             $name = $request->name;
-            $salons = User::role('salon')->where('type', 'person')->where('name', 'LIKE', '%' . $name . '%')->paginate(10);
+            $salons = User::role('captain')->where('name', 'LIKE', '%' . $name . '%')->paginate(10);
         } elseif ($request->has('governorate_id')) {
             $governorate_id = $request->governorate_id;
-            $salons = User::role('salon')->where('type', 'person')->where('governorate_id', $governorate_id)->paginate(10);
-        } else   $salons = User::role('salon')->where('type', 'person')->paginate(10);
+            $salons = User::role('captain')->where('governorate_id', $governorate_id)->paginate(10);
+        } else   $salons = User::role('captain')->paginate(10);
 
         return response()->json(['success' => true, 'data' => SalonResource::collection($salons)], 200);
     }

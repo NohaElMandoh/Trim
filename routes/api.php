@@ -86,12 +86,10 @@ Route::group(['namespace' => 'Api'], function () {
             Route::post('order', 'OrderController@order');
             Route::post('approveOrder', 'OrderController@approveOrder');
             Route::post('cancelOrder', 'OrderController@cancelOrder');
+            Route::post('confirmOrder', 'OrderController@confirmOrder');
             Route::post('updateOrderPaymentMethod', 'OrderController@updateOrderPaymentMethod');
-
+            Route::post('rateOrder', 'OrderController@rateOrder');
             
-
-
-
             // --------get coupone details
             Route::post('getCoupone', 'OrderController@getCoupone');
 

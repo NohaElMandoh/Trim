@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\client;
 
 use App\Cart;
+use App\Events\clientnotify;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\CartResource;
 use App\Http\Resources\CouponeResource;
@@ -273,7 +274,7 @@ class OrderController extends Controller
             'payment_coupon' => $payment_coupon,
 
         ]);
-
+        $request->user()->cart()->detach();
         if ($order)
             return response()->json(['success' => true, 'data' => new OrderResource($order)], 200);
         else
@@ -483,14 +484,120 @@ class OrderController extends Controller
             return response()->json(['errors' => $data, 'success' => false], 402);
         }
         $cancelStatus = Status::where('slug', 'cancelled')->first();
-        $order = Order::find($request->order_id)->first();
-        $order->update([
+        $order = Order::find($request->order_id);
+      if($order){  $order->update([
             'status_id' => $cancelStatus->id,
             'cancel_reason' => $request->reason
         ]);
+    }else return response()->json(['success' => false, 'message' => __('messages.Order Not Exist')], 400);
+        event(new clientnotify($order, 'your order cancelled'));
         if ($order)
             return response()->json(['success' => true, 'data' => new  OrderResource($order)], 200);
         else
             return response()->json(['success' => false, 'message' => __('messages.Try Again Later')], 400);
     }
+    public function confirmOrder(Request $request)
+    {
+        $validation = validator()->make($request->all(), [
+            'order_id' => 'required',
+        ]);
+
+        if ($validation->fails()) {
+            $data = $validation->errors();
+            return response()->json(['errors' => $data, 'success' => false], 402);
+        }
+        $deliveredStatus = Status::where('slug', 'delivered')->first();
+        $order = Order::find($request->order_id);
+        if($order){
+            $order->update([
+                'status_id' => $deliveredStatus->id
+            ]);
+        }else return response()->json(['success' => false, 'message' => __('messages.Order Not Exist')], 400);
+       
+        event(new clientnotify($order, 'Thank You'));
+        if ($order)
+            return response()->json(['success' => true, 'data' => new  OrderResource($order)], 200);
+        else
+            return response()->json(['success' => false, 'message' => __('messages.Try Again Later')], 400);
+    }
+    public function rateOrder(Request $request)
+    {
+        $validation = validator()->make($request->all(), [
+            'order_id' => 'required',
+            'rate'  => 'required| in:1,2,3,4,5'
+
+        ]);
+
+        if ($validation->fails()) {
+            $data = $validation->errors();
+            return response()->json(['errors' => $data, 'success' => false], 402);
+        }
+        $order = Order::find($request->order_id);
+        if ($order) {
+           $order->update(['rate'=>$request->rate,'review'=>$request->review]);
+        } 
+
+        return response()->json(['success' => true, 'data' => 'Done'], 200);
+    }
+    public function sendOrderNotification($mg1, $order, $client, $merchants_ids)
+    {
+        //notifiable_type,notifiable_id,data,read_at
+        $text = Auth()->user()->name . " {$mg1}";
+
+        $admin = User::where('email', 'admin@admin.com')->get();
+        $collection1 = collect($admin);
+        $client_notify = Client::where('id', $client->id)->get();
+        $ids[] = $merchants_ids;
+        $merchants = Merchant::whereIn('id', $ids)->get();
+
+
+        $merged = $collection1->merge($client_notify)->merge($merchants);
+        $merged_all = $merged->all();
+        event(new SomeEvent($order, $text, $merged_all));
+
+        // $tokens = $client->tokens()->where('token', '!=', '')->pluck('token')->toArray();
+        // $audience = ['include_player_ids' => $tokens];
+        // $contents = [
+        //     'en' => 'You have created New order  ',
+        //     'ar' => 'لقد قمت بعمل طلب جديد',
+        // ];
+        // // $send = notifyByOneSignal($audience , $contents , [
+        // //     'user_type' => 'merchant',
+        // //     'action' => 'new-order',
+        // //     'order_id' => $order->id,
+        // // ]);
+        // // $send = json_decode($send);
+        // // return $tokens;
+        // if (count($tokens)) {
+
+        //     $title = $mg1;
+        //     $body = $mg1;
+        //     $data = [
+        //         'action' => 'Notification',
+        //         'order' => 'Notification'
+        //     ];
+        //     $send = notifyByFirebase($title, $body, $tokens, $data);
+        //     info("firebase result: " . $send);
+        // }
+    }
+    // public function send_notification(Request $request)
+    // {
+    //     $request->validate([
+    //         'name'          => 'nullable|string|max:255',
+    //         'type'          => 'required|in:user_app,captain_app',
+    //         'title'         => 'required|string|max:255',
+    //         'description'   => 'nullable|string|max:255',
+    //     ]);
+        
+    //     if ($request->name) {
+    //         $tokens = Token::where('type', $request->type)->whereHas('user', function ($query) use($request) {
+    //             $query->where('name', 'LIKE', '%' . $request->name . '%');
+    //         })->get()->pluck('token');
+    //         send_notif($request->title, ['url' => '', 'event' => 'notification', 'notif_id' => ''], $request->description, $tokens);
+    //     } else {
+    //         $tokens = Token::where('type', $request->type)->get()->pluck('token');
+    //         send_notif($request->title, ['url' => '', 'event' => 'notification', 'notif_id' => ''], $request->description, $tokens);
+    //     }
+    //     return redirect()->route('dashboard')->with(['status' => 'success', 'message' => __('Notification sent')]);
+    // }
 }
