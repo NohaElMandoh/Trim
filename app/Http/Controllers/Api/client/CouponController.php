@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\client;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\CouponeResource;
+use App\Http\Resources\UserCouponeResource;
 use Illuminate\Http\Request;
 use League\Fractal\Manager;
 use Modules\Coupon\Entities\Coupon;
@@ -72,7 +73,19 @@ class CouponController extends Controller
                 $request->user()->coupons()->attach($readyItem);
             }
             $coupone =  $request->user()->coupons()->where('coupon_id', $coupone->id)->first();
-            return response()->json(['success' => true, 'data' => new CouponeResource($coupone),'usage'=> $coupone->pivot->usage], 200);
+            return response()->json(['success' => true, 'data' => new CouponeResource($coupone)], 200);
+        } else  return response()->json(['success' => false, 'message' => __('messages.coupone not avaliable')], 400);
+
+
+      
+    }
+    public function myCoupons(Request $request)
+    {
+      
+        $coupons = $request->user()->coupons;
+
+        if ($coupons) {
+            return response()->json(['success' => true, 'data' =>  CouponeResource::collection($coupons)], 200);
         } else  return response()->json(['success' => false, 'message' => __('messages.coupone not avaliable')], 400);
 
 
