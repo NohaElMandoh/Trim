@@ -29,6 +29,7 @@ class ServiceResource extends JsonResource
             'title_ar' =>  $this->translate('ar')->title,
             'description_en'=>$this->description,
             'description_ar' =>  $this->translate('ar')->description,
+            'qty'=>(!empty($this->pivot)) ?$this->pivot->qty:""
           
 
         ];

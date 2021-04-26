@@ -29,6 +29,7 @@ class OfferResource extends JsonResource
             'is_sponsored'=>$this-> is_sponsored, 
             'category_ar' => $this->category->translate('ar')->name,
             'category_en' => $this->category->translate('en')->name,
+            'qty'=>(!empty($this->pivot)) ?$this->pivot->qty:""
         ];
     }
 }

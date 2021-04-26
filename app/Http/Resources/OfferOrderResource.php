@@ -5,7 +5,7 @@ namespace App\Http\Resources;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Http\Resources\Json\ResourceCollection;
 
-class OrderResource extends JsonResource
+class OfferOrderResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -24,7 +24,7 @@ class OrderResource extends JsonResource
             'user_id' =>  $this->user_id,
             'user_name'=>$this->user->name,
             'barber_id' =>  $this->barber_id,
-            'barber_name'=>(!empty($this->barber))?$this->barber->name:"",
+            'barber_name'=>$this->barber->name,
             'status_id' => $this->status_id,
             'status_ar' => $this->status->translate('ar')->name,
             'status_en' => $this->status->translate('en')->name,
@@ -38,7 +38,7 @@ class OrderResource extends JsonResource
             'phone' => $this->phone,
             'address' => $this->address,
             'is_now' => $this->is_now,
-            'type' => $this->order_type,
+            'type' => $this->address,
             'is_now' => $this->is_now,
             'work_day_id'=> $this->work_day_id,
             'cost'=> $this->cost,
@@ -47,9 +47,7 @@ class OrderResource extends JsonResource
             'reservation_time'=> $this->reservation_time,
             'reservation_day'=> $this->reservation_day,
             'created_at'=>$this->created_at->toDateString().' '.$this->created_at->format('g:i A'),
-            'services'=>(!empty($this->services))?ServiceResource::collection($this->services):"",
-            'offers'=>(!empty($this->offers))?OfferResource::collection($this->offers):"",
-            'products'=>(!empty($this->products))?ProductResource::collection($this->products):"",
+            'items'=>OfferResource::collection($this->offers)
 
         ];
     }

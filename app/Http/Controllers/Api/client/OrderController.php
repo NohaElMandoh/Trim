@@ -6,6 +6,7 @@ use App\Cart;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\CartResource;
 use App\Http\Resources\CouponeResource;
+use App\Http\Resources\OfferOrderResource;
 use App\Http\Resources\OfferResource;
 use App\Http\Resources\OrderResource;
 use App\Http\Resources\SalonResource;
@@ -59,7 +60,9 @@ class OrderController extends Controller
                 'payment_coupon' => $request->payment_coupon,
                 'reservation_time' => $request->reservation_time,
                 'reservation_day' => $request->reservation_day,
-                'status_id' => 1
+                'status_id' => 1,
+                'order_type'=>'services'
+               
             ]);
             $cost = 0;
             $discount = 0;
@@ -71,13 +74,14 @@ class OrderController extends Controller
                         $i['service_id'] => [
                             'qty' => $i['quantity'],
                             'price' => $item->price,
+                            'total'=>$i['quantity'] * $item->price
                         ]
                     ];
                     $order->services()->attach($readyItem);
                 } else return response()->json(['success' => false, 'message' => __('messages.service not exist')], 400);
             }
 
-            $cost = $order->services()->sum('order_service.price');
+            $cost = $order->services()->sum('order_service.total');
             $payment_coupon = "";
             if ($request->has('payment_coupon')) {
                 $coupone = Coupon::where('code', $request->payment_coupon)->first();
@@ -106,6 +110,152 @@ class OrderController extends Controller
                 return response()->json(['success' => false, 'message' => __('messages.Try Again Later')], 400);
         } else  return response()->json(['success' => false, 'message' => __('messages.salon not exist')], 400);
     }
+    public function newOrderWithOffer(Request $request)
+    {
+        $validation = validator()->make($request->all(), [
+
+            'barber_id' => 'required',
+            'barber_type' => 'required', ///salon ,person
+            'reservation_day' => 'required',
+            'offer_id' => 'required',
+            'qty' => 'required',
+        ]);
+
+        if ($validation->fails()) {
+            $data = $validation->errors();
+            return response()->json(['errors' => $data, 'success' => false], 402);
+        }
+        $barber = User::find($request->barber_id);
+        if ($barber) {
+            // 'cost','discount','total',
+            $order = $request->user()->orders()->create([
+                'barber_id' => $request->barber_id,
+                'address' => $request->address,
+                'phone' => $request->phone,
+                'payment_method' => $request->payment_method,
+                'payment_coupon' => $request->payment_coupon,
+                'reservation_time' => $request->reservation_time,
+                'reservation_day' => $request->reservation_day,
+                'status_id' => 1,
+                'order_type'=>'offers'
+            ]);
+            $cost = 0;
+            $discount = 0;
+            $total = 0;
+
+            $offer = Offer::find($request->offer_id);
+            if ($offer) {
+                $readyItem = [
+                    $request->offer_id => [
+                        'qty' => $request->qty,
+                        'price' => $offer->price,
+                        'total'=> $request->qty * $offer->price
+                    ]
+                ];
+                $order->offers()->attach($readyItem);
+            } else return response()->json(['success' => false, 'message' => __('messages.offer not exist')], 400);
+
+
+
+            $cost = $order->offers()->sum('offer_order.total');
+            $payment_coupon = "";
+            if ($request->has('payment_coupon')) {
+                $coupone = Coupon::where('code', $request->payment_coupon)->first();
+                ////check if avaliable
+                if ($coupone) {
+                    $discount = $coupone->price;
+                    $payment_coupon = $request->payment_coupon;
+                } else  return response()->json(['success' => false, 'message' => __('messages.coupone not avaliable')], 400);
+            }
+
+            $total = $cost - $discount;
+            if ($total < 0) {
+                $total = 0;
+            }
+            $order->update([
+                'cost' => $cost,
+                'discount' => $discount,
+                'total' => $total,
+                'payment_coupon' => $payment_coupon,
+
+            ]);
+
+            if ($order)
+          
+                return response()->json(['success' => true, 'data' => new OrderResource($order)], 200);
+            else
+                return response()->json(['success' => false, 'message' => __('messages.Try Again Later')], 400);
+        } else  return response()->json(['success' => false, 'message' => __('messages.salon not exist')], 400);
+    }
+    public function newOrderWithProduct(Request $request)
+    {
+        $validation = validator()->make($request->all(), [
+            'products' => 'required|array',
+            'products.*.product_id' => 'required',
+            'products.*.quantity' => 'required',
+        ]);
+
+        if ($validation->fails()) {
+            $data = $validation->errors();
+            return response()->json(['errors' => $data, 'success' => false], 402);
+        }
+        // $barber = User::find($request->barber_id);
+        // if ($barber) {
+            // 'cost','discount','total',
+            $order = $request->user()->orders()->create([
+                'address' => $request->address,
+                'phone' => $request->phone,
+                'payment_method' => $request->payment_method,
+                'status_id' => 1,
+                'order_type'=>'products'
+               
+            ]);
+            $cost = 0;
+            $discount = 0;
+            $total = 0;
+            foreach ($request->products as $i) {
+                $item = Product::find($i['product_id']);
+                if ($item) {
+                    $readyItem = [
+                        $i['product_id'] => [
+                            'qty' => $i['quantity'],
+                            'price' => $item->price,
+                            'total'=>$i['quantity'] * $item->price
+                        ]
+                    ];
+                    $order->products()->attach($readyItem);
+                } else return response()->json(['success' => false, 'message' => __('messages.product not exist')], 400);
+            }
+
+            $cost = $order->products()->sum('order_product.total');
+            $payment_coupon = "";
+            if ($request->has('payment_coupon')) {
+                $coupone = Coupon::where('code', $request->payment_coupon)->first();
+                ////check if avaliable
+                if ($coupone) {
+                    $discount = $coupone->price;
+                    $payment_coupon = $request->payment_coupon;
+                } else  return response()->json(['success' => false, 'message' => __('messages.coupone not avaliable')], 400);
+            }
+
+            $total = $cost - $discount;
+            if ($total < 0) {
+                $total = 0;
+            }
+            $order->update([
+                'cost' => $cost,
+                'discount' => $discount,
+                'total' => $total,
+                'payment_coupon' => $payment_coupon,
+
+            ]);
+
+            if ($order)
+                return response()->json(['success' => true, 'data' => new OrderResource($order)], 200);
+            else
+                return response()->json(['success' => false, 'message' => __('messages.Try Again Later')], 400);
+        // } else  return response()->json(['success' => false, 'message' => __('messages.salon not exist')], 400);
+    }
     public function  getCoupone(Request $request)
     {
         $validation = validator()->make($request->all(), [
@@ -128,10 +278,13 @@ class OrderController extends Controller
 
     public function myOrders(Request $request)
     {
-        $orders = $request->user()->orders()->where('approve', 1)->get();
+        $orders = $request->user()->orders()->orderBy('created_at','desc')->get();
 
-        if ($orders)
+        if ($orders){
+           
             return response()->json(['success' => true, 'data' => OrderResource::collection($orders)], 200);
+
+        }
         else
             return response()->json(['success' => false, 'message' => __('messages.Try Again Later')], 400);
     }
@@ -168,12 +321,12 @@ class OrderController extends Controller
                 ]);
             }
             if ($request->has('payment_method')) {
-               
+
                 $order->update([
                     'payment_method' => $request->payment_method,
                 ]);
             }
-         
+
             if ($request->has('reservation_time')) {
                 $order->update([
                     'reservation_time' => $request->reservation_time,
@@ -222,7 +375,7 @@ class OrderController extends Controller
                     if ($coupone->price <= $cost) {
                         $discount = $coupone->price;
                     } else return response()->json(['success' => false, 'message' =>  __('messages.discount greater than total')], 400);
-                }else return response()->json(['success' => false, 'message' => __('messages.coupone not avaliable')], 400);
+                } else return response()->json(['success' => false, 'message' => __('messages.coupone not avaliable')], 400);
             }
             $total = $cost - $discount;
             $order->update([
@@ -264,13 +417,13 @@ class OrderController extends Controller
             return response()->json(['errors' => $data, 'success' => false], 402);
         }
         $order = Order::find($request->order_id);
-    
-        if ($order){
+
+        if ($order) {
             $order->update([
                 'approve' => 1,
             ]);
             return response()->json(['success' => true, 'data' => new  OrderResource($order)], 200);
-         } else
+        } else
             return response()->json(['success' => false, 'message' => __('messages.Order Not Exist')], 400);
     }
     public function updateOrderPaymentMethod(Request $request)
@@ -286,13 +439,13 @@ class OrderController extends Controller
             return response()->json(['errors' => $data, 'success' => false], 402);
         }
         $order = Order::find($request->order_id);
-    
-        if ($order){
+
+        if ($order) {
             $order->update([
                 'payment_method' => $request->payment_method,
             ]);
             return response()->json(['success' => true, 'data' => new  OrderResource($order)], 200);
-         } else
+        } else
             return response()->json(['success' => false, 'message' => __('messages.Order Not Exist')], 400);
     }
     public function cancelOrder(Request $request)

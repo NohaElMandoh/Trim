@@ -22,7 +22,8 @@ class ProductResource extends JsonResource
             'name_en' => $this->name,
             'name_ar' =>  $this->translate('ar')->name,
             'image'=>route('file_show',  $this->image),
-            'price'=>$this->price
+            'price'=>$this->price,
+            'qty'=>(!empty($this->pivot)) ?$this->pivot->qty:""
         ];
     }
 }

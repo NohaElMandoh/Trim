@@ -54,8 +54,6 @@ Route::group(['namespace' => 'Api'], function () {
             Route::post('avaliableDates', 'SalonController@avaliableDates');
             Route::post('addToFavorities', 'SalonController@addToFavorities');
 
-
-
             ////persons apis
             Route::post('allPersons', 'SalonController@allPersons');
             ///salon details
@@ -79,6 +77,10 @@ Route::group(['namespace' => 'Api'], function () {
 
             // ---------add service order
             Route::post('newOrderWithService', 'OrderController@newOrderWithService');
+            Route::post('newOrderWithOffer', 'OrderController@newOrderWithOffer');
+            Route::post('newOrderWithProduct', 'OrderController@newOrderWithProduct');
+
+
             Route::post('updateOrder', 'OrderController@updateOrder');
             Route::get('myOrders', 'OrderController@myOrders');
             Route::post('order', 'OrderController@order');
