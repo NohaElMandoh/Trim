@@ -96,8 +96,8 @@ class OrderController extends Controller
                             $discount = $coupone->price;
                             $payment_coupon = $request->payment_coupon;
                         } else return response()->json(['success' => false, 'message' => __('messages.cant use coupone')], 400);
-                    } else return response()->json(['success' => false, 'message' => __('messages.coupone not avaliable')], 400);
-                } else  return response()->json(['success' => false, 'message' => __('messages.coupone not in your list')], 400);
+                    } else return response()->json(['success' => false, 'message' => __('messages.coupone not in your list')], 400);
+                } else  return response()->json(['success' => false, 'message' => __('messages.coupone not avaliable')], 400);
             }
 
             $total = $cost - $discount;
@@ -180,8 +180,8 @@ class OrderController extends Controller
                             $discount = $coupone->price;
                             $payment_coupon = $request->payment_coupon;
                         } else return response()->json(['success' => false, 'message' => __('messages.cant use coupone')], 400);
-                    } else return response()->json(['success' => false, 'message' => __('messages.coupone not avaliable')], 400);
-                } else return response()->json(['success' => false, 'message' => __('messages.coupone not in your list')], 400);
+                    } else return response()->json(['success' => false, 'message' => __('messages.coupone not in your list')], 400);
+                } else  return response()->json(['success' => false, 'message' => __('messages.coupone not avaliable')], 400);
             }
 
             $total = $cost - $discount;
@@ -258,8 +258,8 @@ class OrderController extends Controller
                         $discount = $coupone->price;
                         $payment_coupon = $request->payment_coupon;
                     } else return response()->json(['success' => false, 'message' => __('messages.cant use coupone')], 400);
-                } else return response()->json(['success' => false, 'message' => __('messages.coupone not avaliable')], 400);
-            } else return response()->json(['success' => false, 'message' => __('messages.coupone not in your list')], 400);
+                } else return response()->json(['success' => false, 'message' => __('messages.coupone not in your list')], 400);
+            } else  return response()->json(['success' => false, 'message' => __('messages.coupone not avaliable')], 400);
         }
 
         $total = $cost - $discount;
