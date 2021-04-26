@@ -224,7 +224,7 @@ class OrderController extends Controller
                         ]
                     ];
                     $order->products()->attach($readyItem);
-                } else return response()->json(['success' => false, 'message' => __('messages.product not exist')], 400);
+                } else return response()->json(['success' => false, 'message' => __('messages.product not exist ')], 400);
             }
 
             $cost = $order->products()->sum('order_product.total');
