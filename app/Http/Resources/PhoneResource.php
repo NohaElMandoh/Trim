@@ -3,8 +3,9 @@
 namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Http\Resources\Json\ResourceCollection;
 
-class Setting extends JsonResource
+class PhoneResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -14,12 +15,14 @@ class Setting extends JsonResource
      */
     public function toArray($request)
     {
+       
         return [
-            'point_price' =>  $this->point_price,
-            'privacy' =>  $this->privacy,
-            'how_it_works' => $this->how_it_works,
-            'work_in_oq' => $this->work_in_oq,
             
+            'id' => $this->id,
+            'phone' => $this->phone,
+            
+          
+
         ];
     }
 }

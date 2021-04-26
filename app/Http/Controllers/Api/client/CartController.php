@@ -59,24 +59,7 @@ class CartController extends Controller
            
         } else return response()->json(['success' => false, 'message' => __('messages.type not selected ')], 400);
         if ($item) {
-            // $firstitem = Cart::where('user_id', $request->user()->id)->with('item.merchant')->first();
-            // if ($firstitem) {
-            //     if ($item->merchant_id != $firstitem->item->merchant_id)
-            //     return response()->json(['errors' => 'تم تغير مقدم الخدمة', 'success' => false], 401);
-            //     else {
-            //         $price = $item->price;
-
-            //         $readyItem = [
-            //             $item->id => [
-            //                 'quantity' => $request->quantity,
-            //                 'price' => $price,
-            //                 'note' => $request->note,
-            //                 'item_type' =>  get_class($item)
-            //             ]
-            //         ];
-            //         $request->user()->cart()->attach($readyItem);
-            //     }
-            // } else {
+        
             $price = $item->price;
 
             $readyItem = [

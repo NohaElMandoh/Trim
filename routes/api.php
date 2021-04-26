@@ -105,9 +105,6 @@ Route::group(['namespace' => 'Api'], function () {
             Route::post('winCoupone', 'CouponController@winCoupone');
             Route::get('myCoupons', 'CouponController@myCoupons');
 
-            
-
-            
             // --------offers------
              ///salon details
              Route::post('offer', 'OfferController@offer');
@@ -117,7 +114,7 @@ Route::group(['namespace' => 'Api'], function () {
        
     });
       // Setings
-    Route::get('clientSettings', 'SettingController@clientSettings');
+    Route::get('contacts', 'SettingController@contacts');
     Route::get('settings', 'SettingController@index');
  
 });
