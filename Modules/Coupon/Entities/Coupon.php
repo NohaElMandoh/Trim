@@ -18,7 +18,7 @@ class Coupon extends Model implements TranslatableContract
         'city_id', 'governorate_id'
     ];
     protected $dates = ['deleted_at'];
-
+ 
     public function users()
     {
         return $this->belongsToMany('App\User')->withPivot('usage');

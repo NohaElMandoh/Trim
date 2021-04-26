@@ -102,7 +102,9 @@ Route::group(['namespace' => 'Api'], function () {
             ///coupones
             Route::get('allCoupones', 'CouponController@allCoupones');
             Route::post('coupone', 'CouponController@coupone');
+            Route::post('winCoupone', 'CouponController@winCoupone');
 
+            
             // --------offers------
              ///salon details
              Route::post('offer', 'OfferController@offer');

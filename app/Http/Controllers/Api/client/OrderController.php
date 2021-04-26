@@ -61,8 +61,8 @@ class OrderController extends Controller
                 'reservation_time' => $request->reservation_time,
                 'reservation_day' => $request->reservation_day,
                 'status_id' => 1,
-                'order_type'=>'services'
-               
+                'order_type' => 'services'
+
             ]);
             $cost = 0;
             $discount = 0;
@@ -74,7 +74,7 @@ class OrderController extends Controller
                         $i['service_id'] => [
                             'qty' => $i['quantity'],
                             'price' => $item->price,
-                            'total'=>$i['quantity'] * $item->price
+                            'total' => $i['quantity'] * $item->price
                         ]
                     ];
                     $order->services()->attach($readyItem);
@@ -87,9 +87,17 @@ class OrderController extends Controller
                 $coupone = Coupon::where('code', $request->payment_coupon)->first();
                 ////check if avaliable
                 if ($coupone) {
-                    $discount = $coupone->price;
-                    $payment_coupon = $request->payment_coupon;
-                } else  return response()->json(['success' => false, 'message' => __('messages.coupone not avaliable')], 400);
+                    $user_coupon_ids = $request->user()->coupons->pluck('pivot.coupon_id')->toArray();
+                    if (in_array($coupone->id, $user_coupon_ids)) {
+                        $usages = $request->user()->coupons()->where('coupon_id', $coupone->id)->first();
+                        if ($usages->pivot->usage > 0) {
+                            $usage = ($usages->pivot->usage) - 1;
+                            $request->user()->coupons()->updateExistingPivot($coupone->id, ['usage' =>  $usage]);
+                            $discount = $coupone->price;
+                            $payment_coupon = $request->payment_coupon;
+                        } else return response()->json(['success' => false, 'message' => __('messages.cant use coupone')], 400);
+                    } else return response()->json(['success' => false, 'message' => __('messages.coupone not avaliable')], 400);
+                } else  return response()->json(['success' => false, 'message' => __('messages.coupone not in your list')], 400);
             }
 
             $total = $cost - $discount;
@@ -137,7 +145,7 @@ class OrderController extends Controller
                 'reservation_time' => $request->reservation_time,
                 'reservation_day' => $request->reservation_day,
                 'status_id' => 1,
-                'order_type'=>'offers'
+                'order_type' => 'offers'
             ]);
             $cost = 0;
             $discount = 0;
@@ -149,7 +157,7 @@ class OrderController extends Controller
                     $request->offer_id => [
                         'qty' => $request->qty,
                         'price' => $offer->price,
-                        'total'=> $request->qty * $offer->price
+                        'total' => $request->qty * $offer->price
                     ]
                 ];
                 $order->offers()->attach($readyItem);
@@ -163,9 +171,17 @@ class OrderController extends Controller
                 $coupone = Coupon::where('code', $request->payment_coupon)->first();
                 ////check if avaliable
                 if ($coupone) {
-                    $discount = $coupone->price;
-                    $payment_coupon = $request->payment_coupon;
-                } else  return response()->json(['success' => false, 'message' => __('messages.coupone not avaliable')], 400);
+                    $user_coupon_ids = $request->user()->coupons->pluck('pivot.coupon_id')->toArray();
+                    if (in_array($coupone->id, $user_coupon_ids)) {
+                        $usages = $request->user()->coupons()->where('coupon_id', $coupone->id)->first();
+                        if ($usages->pivot->usage > 0) {
+                            $usage = ($usages->pivot->usage) - 1;
+                            $request->user()->coupons()->updateExistingPivot($coupone->id, ['usage' =>  $usage]);
+                            $discount = $coupone->price;
+                            $payment_coupon = $request->payment_coupon;
+                        } else return response()->json(['success' => false, 'message' => __('messages.cant use coupone')], 400);
+                    } else return response()->json(['success' => false, 'message' => __('messages.coupone not avaliable')], 400);
+                } else return response()->json(['success' => false, 'message' => __('messages.coupone not in your list')], 400);
             }
 
             $total = $cost - $discount;
@@ -181,7 +197,7 @@ class OrderController extends Controller
             ]);
 
             if ($order)
-          
+
                 return response()->json(['success' => true, 'data' => new OrderResource($order)], 200);
             else
                 return response()->json(['success' => false, 'message' => __('messages.Try Again Later')], 400);
@@ -201,59 +217,67 @@ class OrderController extends Controller
         }
         // $barber = User::find($request->barber_id);
         // if ($barber) {
-            // 'cost','discount','total',
-            $order = $request->user()->orders()->create([
-                'address' => $request->address,
-                'phone' => $request->phone,
-                'payment_method' => $request->payment_method,
-                'status_id' => 1,
-                'order_type'=>'products'
-               
-            ]);
-            $cost = 0;
-            $discount = 0;
+        // 'cost','discount','total',
+        $order = $request->user()->orders()->create([
+            'address' => $request->address,
+            'phone' => $request->phone,
+            'payment_method' => $request->payment_method,
+            'status_id' => 1,
+            'order_type' => 'products'
+
+        ]);
+        $cost = 0;
+        $discount = 0;
+        $total = 0;
+        foreach ($request->products as $i) {
+            $item = Product::find($i['product_id']);
+            if ($item) {
+                $readyItem = [
+                    $i['product_id'] => [
+                        'qty' => $i['quantity'],
+                        'price' => $item->price,
+                        'total' => $i['quantity'] * $item->price
+                    ]
+                ];
+                $order->products()->attach($readyItem);
+            } else return response()->json(['success' => false, 'message' => __('messages.product not exist ')], 400);
+        }
+
+        $cost = $order->products()->sum('order_product.total');
+        $payment_coupon = "";
+        if ($request->has('payment_coupon')) {
+            $coupone = Coupon::where('code', $request->payment_coupon)->first();
+            ////check if avaliable
+            if ($coupone) {
+                $user_coupon_ids = $request->user()->coupons->pluck('pivot.coupon_id')->toArray();
+                if (in_array($coupone->id, $user_coupon_ids)) {
+                    $usages = $request->user()->coupons()->where('coupon_id', $coupone->id)->first();
+                    if ($usages->pivot->usage > 0) {
+                        $usage = ($usages->pivot->usage) - 1;
+                        $request->user()->coupons()->updateExistingPivot($coupone->id, ['usage' =>  $usage]);
+                        $discount = $coupone->price;
+                        $payment_coupon = $request->payment_coupon;
+                    } else return response()->json(['success' => false, 'message' => __('messages.cant use coupone')], 400);
+                } else return response()->json(['success' => false, 'message' => __('messages.coupone not avaliable')], 400);
+            } else return response()->json(['success' => false, 'message' => __('messages.coupone not in your list')], 400);
+        }
+
+        $total = $cost - $discount;
+        if ($total < 0) {
             $total = 0;
-            foreach ($request->products as $i) {
-                $item = Product::find($i['product_id']);
-                if ($item) {
-                    $readyItem = [
-                        $i['product_id'] => [
-                            'qty' => $i['quantity'],
-                            'price' => $item->price,
-                            'total'=>$i['quantity'] * $item->price
-                        ]
-                    ];
-                    $order->products()->attach($readyItem);
-                } else return response()->json(['success' => false, 'message' => __('messages.product not exist ')], 400);
-            }
+        }
+        $order->update([
+            'cost' => $cost,
+            'discount' => $discount,
+            'total' => $total,
+            'payment_coupon' => $payment_coupon,
 
-            $cost = $order->products()->sum('order_product.total');
-            $payment_coupon = "";
-            if ($request->has('payment_coupon')) {
-                $coupone = Coupon::where('code', $request->payment_coupon)->first();
-                ////check if avaliable
-                if ($coupone) {
-                    $discount = $coupone->price;
-                    $payment_coupon = $request->payment_coupon;
-                } else  return response()->json(['success' => false, 'message' => __('messages.coupone not avaliable')], 400);
-            }
+        ]);
 
-            $total = $cost - $discount;
-            if ($total < 0) {
-                $total = 0;
-            }
-            $order->update([
-                'cost' => $cost,
-                'discount' => $discount,
-                'total' => $total,
-                'payment_coupon' => $payment_coupon,
-
-            ]);
-
-            if ($order)
-                return response()->json(['success' => true, 'data' => new OrderResource($order)], 200);
-            else
-                return response()->json(['success' => false, 'message' => __('messages.Try Again Later')], 400);
+        if ($order)
+            return response()->json(['success' => true, 'data' => new OrderResource($order)], 200);
+        else
+            return response()->json(['success' => false, 'message' => __('messages.Try Again Later')], 400);
         // } else  return response()->json(['success' => false, 'message' => __('messages.salon not exist')], 400);
     }
     public function  getCoupone(Request $request)
@@ -278,14 +302,12 @@ class OrderController extends Controller
 
     public function myOrders(Request $request)
     {
-        $orders = $request->user()->orders()->orderBy('created_at','desc')->get();
+        $orders = $request->user()->orders()->orderBy('created_at', 'desc')->get();
 
-        if ($orders){
-           
+        if ($orders) {
+
             return response()->json(['success' => true, 'data' => OrderResource::collection($orders)], 200);
-
-        }
-        else
+        } else
             return response()->json(['success' => false, 'message' => __('messages.Try Again Later')], 400);
     }
 
