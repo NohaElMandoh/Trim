@@ -106,6 +106,10 @@ Route::group(['namespace' => 'Api'], function () {
             // --------offers------
              ///salon details
              Route::post('offer', 'OfferController@offer');
+            //  ------------------
+            Route::get('myFav', 'MainController@myFav');
+            
+
         });
         Route::post('sms', 'UserController@sms');
       

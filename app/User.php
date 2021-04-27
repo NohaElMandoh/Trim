@@ -107,7 +107,7 @@ class User extends Authenticatable
     }
     public function favorities()
     {
-        return $this->belongsTo('App\Favorite', 'id', 'user_id');
+        return $this->hasMany('App\Favorite');
     }
     public function favorities2()
     {

@@ -49,4 +49,9 @@ class MainController extends Controller
             'lastOffers' => OfferResource::collection($lastOffers)
         ]], 200);
     }
+    public function myFav(Request $request){
+       $salonsIds=$request->user()->favorities->pluck('salon_id')->toArray();
+       $salons=User::all();
+       return $salons;
+    }
 }
