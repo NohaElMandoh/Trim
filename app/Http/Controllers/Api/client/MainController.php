@@ -50,8 +50,11 @@ class MainController extends Controller
         ]], 200);
     }
     public function myFav(Request $request){
+
        $salonsIds=$request->user()->favorities->pluck('salon_id')->toArray();
-       $salons=User::all();
-       return $salons;
+       $salons=User::whereIn('id',$salonsIds)->orderBy('created_at','desc')->get();
+      
+       return response()->json(['success' => true, 'data' =>  SalonResource::collection($salons)
+    ], 200);
     }
 }
