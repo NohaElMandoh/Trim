@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\client;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\OfferResource;
 use App\Http\Resources\SalonResource;
+use App\Http\Resources\StarsResource;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -16,6 +17,7 @@ use League\Fractal\Manager;
 use League\Fractal\Pagination\IlluminatePaginatorAdapter;
 use League\Fractal\Resource\Collection;
 use App\NotificationTransformer;
+use App\Rate;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\DB;
 use Modules\Offer\Entities\Offer;
@@ -32,22 +34,19 @@ class MainController extends Controller
     public function mainLists()
     {
         $lastOffers = Offer::latest()->get();
-        $mostSearchedSalons = User::role('salon')->where('type', 'salon')->orderBy('search')->paginate(10);
-        //    $trimStars=User::role('salon')->where('type','person')->paginate(10);
-        $trimStars = DB::table('rates')
-            ->join('users', 'rates.salon_id', '=', 'users.id')
+        $mostSearchedSalons = User::role('salon')->orderBy('search')->paginate(10);
+        $trimStars = User::role('captain')
+            ->distinct('users.id')
             ->select(DB::raw('avg(rate) as rate,users.id,users.name,users.image,users.cover'))
+            ->leftjoin('rates', 'rates.salon_id', '=', 'users.id')
             ->groupBy('salon_id', 'users.id', 'users.name', 'users.image', 'users.cover')
             ->orderBy('rate', 'desc')
             ->get();
-        $stars = collect($trimStars);
 
         return response()->json(['success' => true, 'data' => [
             'mostSearchedSalons' =>  SalonResource::collection($mostSearchedSalons),
-            'trimStars' => $trimStars,
+            'trimStars' => StarsResource::collection($trimStars),
             'lastOffers' => OfferResource::collection($lastOffers)
         ]], 200);
     }
-  
-
 }

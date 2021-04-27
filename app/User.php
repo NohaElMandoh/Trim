@@ -97,6 +97,10 @@ class User extends Authenticatable
     {
         return $this->belongsToMany('Modules\Coupon\Entities\Coupon')->withPivot('usage');
     }
+    public function captainrates()
+    {
+        return $this->belongsTo('App\Rate','salon_id');
+    }
     public function rates()
     {
         return $this->belongsTo('App\Rate', 'id', 'user_id');
