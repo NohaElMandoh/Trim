@@ -56,34 +56,42 @@ class CartController extends Controller
                     $item = Product::find($request->item_id);
                 }
             } else return response()->json(['success' => false, 'message' => __('messages.select item ')], 400);
-           
         } else return response()->json(['success' => false, 'message' => __('messages.type not selected ')], 400);
         if ($item) {
-        
+
             $price = $item->price;
 
-            $readyItem = [
-                $item->id => [
+            $item_cart = $request->user()->cart()->where('product_id', $item->id)->where('product_type', get_class($item))->first();
+            if (!empty($item_cart)) {
+                $request->user()->cart()->updateExistingPivot($item->id, [
                     'quantity' => $request->quantity,
                     'price' => $price,
                     'product_type' =>  get_class($item)
-                ]
-            ];
-          $request->user()->cart()->attach($readyItem);
+                ]);
+                $item = Cart::where('user_id', $request->user()->id)->where('product_id', $item->id)->first();
+            } else {
+                $readyItem = [
+                    $item->id => [
+                        'quantity' => $request->quantity,
+                        'price' => $price,
+                        'product_type' =>  get_class($item)
+                    ]
+                ];
 
-          $item = Cart::where('user_id', $request->user()->id)->where('product_id',$item->id )->first();
-          
+                $request->user()->cart()->attach($readyItem);
+
+                $item = Cart::where('user_id', $request->user()->id)->where('product_id', $item->id)->first();
+            }
             return response()->json(['success' => true, 'data' => new CartResource($item)], 200);
         } else {
             return response()->json(['success' => false, 'message' => __('messages.product not exist ')], 400);
         }
-   
     }
     public function cartItems(Request $request)
     {
         $items = Cart::where('user_id', $request->user()->id)->get();
-        
-        return response()->json(['success' => true, 'data' => CartResource::collection( $items)], 200);
+
+        return response()->json(['success' => true, 'data' => CartResource::collection($items)], 200);
     }
 
     public function updateCartItem(Request $request)
@@ -109,7 +117,7 @@ class CartController extends Controller
         $item = Cart::where('user_id', $request->user()->id)->where('id', $request->row_id)->first();
 
         if (!empty($item)) {
-         
+
             $item->update([
                 'quantity' => $request->quantity,
             ]);
@@ -138,16 +146,11 @@ class CartController extends Controller
                 ->delete();
             return response()->json(['success' => true, 'data' => __('messages.Product deleted successfully')], 200);
         } else   return response()->json(['success' => false, 'message' => __('messages.product not exist ')], 400);
-
-
-        
     }
 
     public function deleteAllCartItems(Request $request)
     {
         $request->user()->cart()->detach();
         return response()->json(['success' => true, 'data' => __('messages.all items deleted successfully')], 200);
-        
     }
-
 }
