@@ -7,6 +7,7 @@ return [
     'Offer updated successfully' => 'Offer updated successfully',
     'Offer deleted successfully' => 'Offer deleted successfully',
     'There are no captains near to you' => 'There are no captains near to you',
+    'There are no salons near to you'=>'There are no salons near to you',
     'Order created' => 'Order created',
     'Message sent successfully' => 'Message sent successfully',
     'You do not have points to send' => 'You do not have points to send',

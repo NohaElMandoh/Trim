@@ -93,6 +93,17 @@ class User extends Authenticatable
             ->get();
     }
 
+    public static function findNearestSalons($latitude, $longitude, $distance)
+    {
+        return User::select(DB::raw('*, ( 6367 * acos( cos( radians(' . $latitude . ') ) * cos( radians( lat ) ) * cos( radians( lng ) - radians(' . $longitude . ') ) + sin( radians(' . $latitude . ') ) * sin( radians( lat ) ) ) ) AS distance'))
+            ->having('distance', '<=', $distance)
+            ->where('is_active', 1)
+            ->orderBy('distance')
+            ->role('salon')
+            ->with('tokens')
+            ->get();
+    }
+
     public function coupons()
     {
         return $this->belongsToMany('Modules\Coupon\Entities\Coupon')->withPivot('usage');

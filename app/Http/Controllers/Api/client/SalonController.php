@@ -26,8 +26,36 @@ class SalonController extends Controller
         } elseif ($request->has('governorate_id')) {
             $governorate_id = $request->governorate_id;
             $salons = User::role('salon')->where('governorate_id', $governorate_id)->where('gender',auth()->user()->gender)->orderBy('created_at','desc')->paginate(10);
-        } else   $salons = User::role('salon')->where('gender',auth()->user()->gender)->orderBy('created_at','desc')->paginate(10);
+        }
+         else   $salons = User::role('salon')->where('gender',auth()->user()->gender)->orderBy('created_at','desc')->paginate(10);
 
+        return response()->json(['success' => true, 'data' => SalonResource::collection($salons)], 200);
+    }
+    public function nearestSalons(Request $request){
+        
+        $validation = validator()->make($request->all(), [
+            'lat' => 'required',
+            'lng' => 'required',
+        ]);
+
+        if ($validation->fails()) {
+            $data = $validation->errors();
+            return response()->json(['success' => false, 'errors' => $data], 402);
+        }
+        $salons = User::findNearestSalons($request->lat, $request->lng, 5);
+        if (count($salons) == 0) {
+            $salons = User::findNearestSalons($request->lat, $request->lng, 10);
+            if (count($salons) == 0) {
+                $salons = User::findNearestSalons($request->lat, $request->lng, 15);
+                if (count($salons) == 0) {
+                    $salons = User::findNearestSalons($request->lat, $request->lng, 20);
+                    if (count($salons) == 0) {
+                        
+                        return response()->json(['message' => __('messages.There are no salons near to you'), 'success' => false], 400);
+                    }
+                }
+            }
+        }
         return response()->json(['success' => true, 'data' => SalonResource::collection($salons)], 200);
     }
     public function salon(Request $request)

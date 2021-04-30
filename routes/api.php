@@ -53,7 +53,9 @@ Route::group(['namespace' => 'Api'], function () {
             Route::post('rateSalon', 'SalonController@rateSalon');
             Route::post('avaliableDates', 'SalonController@avaliableDates');
             Route::post('addToFavorities', 'SalonController@addToFavorities');
+            Route::post('nearestSalons', 'SalonController@nearestSalons');
 
+            
             ////persons apis
             Route::post('allPersons', 'SalonController@allPersons');
             ///salon details
