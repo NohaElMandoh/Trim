@@ -117,6 +117,39 @@ Route::group(['namespace' => 'Api'], function () {
       
        
     });
+    Route::group(['prefix' => 'salon','namespace' => 'salon'], function () {
+        ///login
+        Route::post('login', 'UserController@login');
+        Route::post('getVerificationCode', 'UserController@getVerificationCode');
+        //register
+        Route::post('register', 'UserController@register');
+        //reset password
+
+        Route::post('resetPassword', 'UserController@resetPassword');
+
+        Route::post('user/reset-password', 'UserController@sendResetLinkEmail');
+        Route::post('user/new-password', 'UserController@newPassword');
+
+
+
+
+        Route::group(['middleware' => 'auth:api'], function () {
+
+            Route::get('logout', 'UserController@logout');
+            Route::post('user/change-password', 'UserController@changePassword');
+            Route::post('user/activate', 'UserController@activate');
+           
+            Route::post('user/profile', 'UserController@profile');
+
+            // ---add work days---
+            Route::post('work_days', 'UserController@work_days');
+
+            
+        });
+        Route::post('sms', 'UserController@sms');
+      
+       
+    });
       // Setings
     Route::get('contacts', 'SettingController@contacts');
     Route::get('settings', 'SettingController@index');

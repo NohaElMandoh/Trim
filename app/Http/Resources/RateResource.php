@@ -22,7 +22,7 @@ class RateResource extends JsonResource
             'user' => $this->user->name,
             'image'=> route('file_show',  $this->user->image),
             'salon' => $this->salon->name,
-            'rate' => $this->rate,
+            'rate' =>(int) $this->rate,
             'comment' => $this->comment,
             'created_at'=>(!empty($this->created_at))?$this->created_at->format('g:i A'):""
             

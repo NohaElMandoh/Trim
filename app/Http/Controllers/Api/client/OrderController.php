@@ -34,6 +34,7 @@ use Modules\Status\Entities\Status;
 class OrderController extends Controller
 {
 
+   
     public function newOrderWithService(Request $request)
     {
         $validation = validator()->make($request->all(), [

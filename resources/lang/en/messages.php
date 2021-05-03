@@ -42,5 +42,6 @@ return [
     'product not exist '=>'Product Not Exist',
     'all items deleted successfully'=>'All Items Deleted Successfully',
     'cant use coupone'=>'You Used All Attempts For This Coupon',
-    'coupone not in your list'=>'This Coupone Not In Your List'
+    'coupone not in your list'=>'This Coupone Not In Your List',
+    'work days updated'=>'Your Work Days Updated Successfully'
 ];
