@@ -40,11 +40,7 @@ class SalonResource extends JsonResource
          'is_fav' => $this->is_fav,
          'type' => $this->type,
          'offers' => OfferResource::collection($this->offers),],
-         'total' => $this->total(),
-         'count' => $this->count(),
-         'per_page' => $this->perPage(),
-         'current_page' => $this->currentPage(),
-         'total_pages' => $this->lastPage()
+        
               
                 
         ];
