@@ -23,9 +23,9 @@ class SalonController extends Controller
         if ($request->has('name')) {
             $name = $request->name;
             $salons = User::role('salon')->where('name', 'LIKE', '%' . $name . '%')->where('is_active','1')->where('gender',auth()->user()->gender)->orderBy('created_at','desc')->paginate(10);
-        } elseif ($request->has('governorate_id')) {
-            $governorate_id = $request->governorate_id;
-            $salons = User::role('salon')->where('governorate_id', $governorate_id)->where('is_active','1')->where('gender',auth()->user()->gender)->orderBy('created_at','desc')->paginate(10);
+        } elseif ($request->has('city_id')) {
+            $city_id = $request->city_id;
+            $salons = User::role('salon')->where('city_id', $city_id)->where('is_active','1')->where('gender',auth()->user()->gender)->orderBy('created_at','desc')->paginate(10);
         }
          else   $salons = User::role('salon')->where('is_active','1')->where('gender',auth()->user()->gender)->orderBy('created_at','desc')->paginate(10);
 
@@ -69,7 +69,7 @@ class SalonController extends Controller
             $data = $validation->errors();
             return response()->json(['success' => false, 'errors' => $data], 402);
         }
-        $salon = User::role('salon')->where('id', $request->salon_id)->first();
+        $salon = User::where('id', $request->salon_id)->first();
         if ($salon) {
             $search = ($salon->search) + 1;
             $salon->update(['search' => $search]);
@@ -81,9 +81,9 @@ class SalonController extends Controller
         if ($request->has('name')) {
             $name = $request->name;
             $salons = User::role('captain')->where('is_active','1')->where('gender',auth()->user()->gender)->where('name', 'LIKE', '%' . $name . '%')->orderBy('created_at','desc')->paginate(10);
-        } elseif ($request->has('governorate_id')) {
-            $governorate_id = $request->governorate_id;
-            $salons = User::role('captain')->where('is_active','1')->where('gender',auth()->user()->gender)->where('governorate_id', $governorate_id)->orderBy('created_at','desc')->paginate(10);
+        } elseif ($request->has('city_id')) {
+            $city_id = $request->city_id;
+            $salons = User::role('captain')->where('is_active','1')->where('gender',auth()->user()->gender)->where('city_id', $city_id)->orderBy('created_at','desc')->paginate(10);
         } else   $salons = User::role('captain')->where('is_active','1')->where('gender',auth()->user()->gender)->orderBy('created_at','desc')->paginate(10);
 
         return response()->json(['success' => true, 'data' => SalonResource::collection($salons)], 200);
