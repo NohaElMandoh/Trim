@@ -54,7 +54,7 @@ class MainController extends Controller
             'lastOffers' => OfferResource::collection($lastOffers)
         ]], 200);
     }
-    public function myFav(Request $request)
+    public function myFav_salon(Request $request)
     {
 
         // $salonsIds = $request->user()->favorities()->where('pivot.is_fav',true)->pluck('salon_id')->toArray();
@@ -63,7 +63,22 @@ class MainController extends Controller
              
         })->pluck('salon_id')->toArray();
        
-        $salons = User::whereIn('id', $salonsIds)->orderBy('created_at', 'desc')->get();
+        $salons = User::role('salon')->whereIn('id', $salonsIds)->orderBy('created_at', 'desc')->get();
+
+        return response()->json([
+            'success' => true, 'data' =>  SalonResource::collection($salons)
+        ], 200);
+    }
+    public function myFav_person(Request $request)
+    {
+
+        // $salonsIds = $request->user()->favorities()->where('pivot.is_fav',true)->pluck('salon_id')->toArray();
+        $salonsIds = $request->user()->favorities()->where(function ($q) {
+            $q->where('is_fav', 1);
+             
+        })->pluck('salon_id')->toArray();
+       
+        $salons = User::role('captain')->whereIn('id', $salonsIds)->orderBy('created_at', 'desc')->get();
 
         return response()->json([
             'success' => true, 'data' =>  SalonResource::collection($salons)
