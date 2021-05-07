@@ -63,7 +63,7 @@ class MainController extends Controller
              
         })->pluck('salon_id')->toArray();
        
-        $salons = User::role('salon')->whereIn('id', $salonsIds)->orderBy('created_at', 'desc')->get();
+        $salons = User::role('salon')->whereIn('id', $salonsIds)->orderBy('created_at', 'desc')->paginate(10);
 
         return response()->json([
             'success' => true, 'data' =>  SalonResource::collection($salons)
@@ -78,7 +78,7 @@ class MainController extends Controller
              
         })->pluck('salon_id')->toArray();
        
-        $salons = User::role('captain')->whereIn('id', $salonsIds)->orderBy('created_at', 'desc')->get();
+        $salons = User::role('captain')->whereIn('id', $salonsIds)->orderBy('created_at', 'desc')->paginate(10);
 
         return response()->json([
             'success' => true, 'data' =>  SalonResource::collection($salons)
