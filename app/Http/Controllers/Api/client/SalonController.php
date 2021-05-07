@@ -129,8 +129,11 @@ class SalonController extends Controller
     public function addToFavorities(Request $request)
     {
         $validation = validator()->make($request->all(), [
-            'salon_id' => 'required',
+            'salon_id' => 'required|exists:users,id',
 
+        ],[
+            'required' => 'The :attribute not found',
+            'exists' => 'The :attribute not exist',
         ]);
 
         if ($validation->fails()) {
