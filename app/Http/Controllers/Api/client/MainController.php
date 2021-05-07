@@ -42,23 +42,27 @@ class MainController extends Controller
             ->groupBy('salon_id', 'users.id', 'users.name', 'users.image', 'users.cover')
             ->orderBy('rate', 'desc')
             ->get();
-     
-        if ($trimStars->count() == 0){
-           
-            $trimStars = User::role('captain')->orderBy('search','desc')->paginate(10);
+
+        if ($trimStars->count() == 0) {
+
+            $trimStars = User::role('captain')->orderBy('search', 'desc')->paginate(10);
         }
-        
+
         return response()->json(['success' => true, 'data' => [
             'mostSearchedSalons' =>  SalonResource::collection($mostSearchedSalons),
             'trimStars' => StarsResource::collection($trimStars),
             'lastOffers' => OfferResource::collection($lastOffers)
         ]], 200);
-        
     }
     public function myFav(Request $request)
     {
 
-        $salonsIds = $request->user()->favorities->pluck('salon_id')->toArray();
+        // $salonsIds = $request->user()->favorities()->where('pivot.is_fav',true)->pluck('salon_id')->toArray();
+        $salonsIds = $request->user()->favorities()->where(function ($q) {
+            $q->where('is_fav', 1);
+             
+        })->pluck('salon_id')->toArray();
+       
         $salons = User::whereIn('id', $salonsIds)->orderBy('created_at', 'desc')->get();
 
         return response()->json([
