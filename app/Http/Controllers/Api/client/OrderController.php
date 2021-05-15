@@ -40,7 +40,6 @@ class OrderController extends Controller
         $validation = validator()->make($request->all(), [
             'services' => 'required|array',
             'services.*.service_id' => 'required',
-            'services.*.quantity' => 'required',
             'barber_id' => 'required',
             'barber_type' => 'required', ///salon ,person
             'reservation_day' => 'required',
@@ -76,7 +75,7 @@ class OrderController extends Controller
                         $i['service_id'] => [
                             'qty' =>1,
                             'price' => $item->price,
-                            'total' => $i['quantity'] * $item->price
+                            'total' =>  $item->price
                         ]
                     ];
                     $order->services()->attach($readyItem);
@@ -128,7 +127,7 @@ class OrderController extends Controller
             'barber_type' => 'required', ///salon ,person
             'reservation_day' => 'required',
             'offer_id' => 'required',
-            'qty' => 'required',
+            
         ]);
 
         if ($validation->fails()) {
@@ -159,7 +158,7 @@ class OrderController extends Controller
                     $request->offer_id => [
                         'qty' => 1,
                         'price' => $offer->price,
-                        'total' => $request->qty * $offer->price
+                        'total' =>  $offer->price
                     ]
                 ];
                 $order->offers()->attach($readyItem);
