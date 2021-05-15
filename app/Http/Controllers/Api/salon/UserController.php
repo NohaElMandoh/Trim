@@ -219,13 +219,27 @@ class UserController extends Controller
         // ]);
         return response()->json(['success' => true, 'data' => ['user' => new UserResource($user)]], 200);
     }
-
+    public function days(Request $request)
+    {
+     
+        $obj = (object) array(
+            '0' => __('Sunday'),
+            '1' => __('Monday'),
+            '2' =>  __('Tuesday'),
+            '3' =>  __('Wednesday'),
+            '4' => __('Thursday'),
+            '5' => __('Friday'),
+            '6' => __('Saturday')
+        );
+        return response()->json(['success' => true, 'data' =>  $obj], 200);
+        
+    }
     public function work_days(Request $request)
     {
 
         $validator = Validator::make($request->all(), [
             'days' => 'required|array',
-            'days.*.day' => 'required',
+            'days.*.day' => 'required|in:0,1,2,3,4,5,6',
             'days.*.from' => 'required',
             'days.*.to' => 'required',
 
@@ -237,18 +251,25 @@ class UserController extends Controller
         $captain = User::where('id', $request->user()->id)->first();
 
         if ($request->has('days')) {
-            foreach ($request->days as $day) {
-                $w_day = $captain->works()->where('day', $day['day'])->first();
-                return $captain->load('works');
-                if ($w_day) {
-                    foreach( $captain->works() as $s)
-                    $s->delete();
-                    return 'exist';
-                } else {
-                    return 'notexist';
-                    $captain->works()->create($day);
-                }
+            foreach ($captain->works as $s){
+                $s->delete();
             }
+            foreach ($request->days as $day) {
+               
+                    $captain->works()->create($day);
+            }
+            // $captain->works()->sync($request->days, true);;
+            // $w_day = $captain->works()->where('day', $day['day'])->first();
+            // return $captain->load('works');
+            // if ($w_day) {
+            //     foreach( $captain->works() as $s)
+            //     $s->delete();
+            //     return 'exist';
+            // } else {
+            //     return 'notexist';
+            //     $captain->works()->create($day);
+            // }
+            // }
         }
         return response()->json(['success' => true, 'data' =>  __('messages.work days updated')], 200);
     }

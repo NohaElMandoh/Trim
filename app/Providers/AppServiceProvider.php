@@ -2,12 +2,13 @@
 
 namespace App\Providers;
 
+use App\Http\Resources\OfferResource;
 use App\Langman\Manager;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Filesystem\Filesystem;
 use App\Services\SocialUserResolver;
 use Coderello\SocialGrant\Resolvers\SocialUserResolverInterface;
-
+use Illuminate\Http\Resources\Json\JsonResource;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -39,6 +40,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
+        JsonResource::withoutWrapping(); // tried both
+    
     }
 }

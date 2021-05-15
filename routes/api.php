@@ -16,7 +16,7 @@ use Illuminate\Support\Facades\Route;
 
 
 Route::group(['namespace' => 'Api'], function () {
-    Route::group(['prefix' => 'client','namespace' => 'client'], function () {
+    Route::group(['prefix' => 'client', 'namespace' => 'client'], function () {
         ///login
         Route::post('login', 'UserController@login');
         Route::post('getVerificationCode', 'UserController@getVerificationCode');
@@ -55,7 +55,7 @@ Route::group(['namespace' => 'Api'], function () {
             Route::post('addToFavorities', 'SalonController@addToFavorities');
             Route::post('nearestSalons', 'SalonController@nearestSalons');
 
-            
+
             ////persons apis
             Route::post('allPersons', 'SalonController@allPersons');
             ///salon details
@@ -91,7 +91,7 @@ Route::group(['namespace' => 'Api'], function () {
             Route::post('confirmOrder', 'OrderController@confirmOrder');
             Route::post('updateOrderPaymentMethod', 'OrderController@updateOrderPaymentMethod');
             Route::post('rateOrder', 'OrderController@rateOrder');
-            
+
             // --------get coupone details
             Route::post('getCoupone', 'OrderController@getCoupone');
 
@@ -106,21 +106,15 @@ Route::group(['namespace' => 'Api'], function () {
             Route::get('myCoupons', 'CouponController@myCoupons');
 
             // --------offers------
-             ///salon details
-             Route::post('offer', 'OfferController@offer');
+            ///salon details
+            Route::post('offer', 'OfferController@offer');
             //  ------------------
             Route::get('myFav_salon', 'MainController@myFav_salon');
             Route::get('myFav_person', 'MainController@myFav_person');
-
-            
-            
-
         });
         Route::post('sms', 'UserController@sms');
-      
-       
     });
-    Route::group(['prefix' => 'salon','namespace' => 'salon'], function () {
+    Route::group(['prefix' => 'salon', 'namespace' => 'salon'], function () {
         ///login
         Route::post('login', 'UserController@login');
         Route::post('getVerificationCode', 'UserController@getVerificationCode');
@@ -141,20 +135,20 @@ Route::group(['namespace' => 'Api'], function () {
             Route::get('logout', 'UserController@logout');
             Route::post('user/change-password', 'UserController@changePassword');
             Route::post('user/activate', 'UserController@activate');
-           
+
             Route::post('user/profile', 'UserController@profile');
 
             // ---add work days---
             Route::post('work_days', 'UserController@work_days');
-
-            
+            Route::post('days', 'UserController@days');
+            // --------add services
+            Route::post('addService', 'ServiceController@addService');
+            // -------
+            Route::get('offers', 'OfferController@offers');
         });
         Route::post('sms', 'UserController@sms');
-      
-       
     });
-      // Setings
+    // Setings
     Route::get('contacts', 'SettingController@contacts');
     Route::get('settings', 'SettingController@index');
- 
 });

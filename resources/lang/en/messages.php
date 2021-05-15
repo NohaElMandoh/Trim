@@ -43,5 +43,7 @@ return [
     'all items deleted successfully'=>'All Items Deleted Successfully',
     'cant use coupone'=>'You Used All Attempts For This Coupon',
     'coupone not in your list'=>'This Coupone Not In Your List',
-    'work days updated'=>'Your Work Days Updated Successfully'
+    'work days updated'=>'Your Work Days Updated Successfully',
+    'phone taken before'=>'Phone Taken Before',
+    'this notification may be deleted or not exist'=>'This Notification May Be Deleted Or Not Exist'
 ];

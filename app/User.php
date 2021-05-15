@@ -58,7 +58,10 @@ class User extends Authenticatable
     {
         return $this->hasMany('\Modules\Offer\Entities\Offer', 'user_id');
     }
-
+    public function service()
+    {
+        return $this->hasMany('\Modules\Service\Entities\Service','salon_id');
+    }
     public function products()
     {
         return $this->hasMany('\Modules\Product\Entities\Product', 'shop_id');

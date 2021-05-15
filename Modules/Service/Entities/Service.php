@@ -12,11 +12,14 @@ class Service extends Model implements TranslatableContract
     use Translatable, SoftDeletes;
     
     public $translatedAttributes = ['title', 'description'];
-    protected $fillable = ['price_type', 'gender', 'price', 'min_price', 'max_price', 'for_children'];
+    protected $fillable = ['price_type', 'gender', 'price', 'min_price', 'max_price', 'for_children','image','salon_id'];
     protected $dates = ['deleted_at'];
 
     public function users() {
         return $this->belongsToMany('App\User','service_user');
+    }
+    public function salon() {
+        return $this->belongsTo('App\User','salon_id');
     }
 
     public function cart()

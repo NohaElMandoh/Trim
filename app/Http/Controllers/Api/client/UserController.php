@@ -102,12 +102,9 @@ class UserController extends Controller
                 'is_active' => 0
             ]);
             if ($result > 0) {
-                // try {
-                // Notification::send($user, new \App\Notifications\activateuser($user));
-                $smsstatus = $this->send($user->phone, $user->sms_token);
-                // } catch (Throwable $e) {
-                //     info('nexmo message not sent');
-                // }
+                $smsstatus = '';
+                // $smsstatus = $this->send($user->phone, $user->sms_token);
+
                 $token = $user->createToken('Myapp')->accessToken;
                 return response()->json(['success' => true, 'data' => ['token' => $token, 'user' => new UserResource($user), 'smsStatus' => $smsstatus]], 200);
             } else return response()->json(['success' => false, 'message' => __('messages.Try Again Later')], 400);
@@ -121,7 +118,7 @@ class UserController extends Controller
         $validator = Validator::make($request->all(), [
             'name'      => 'required|string|max:255',
             'email'     => 'required|string|email|unique:users,email|max:255',
-            'phone'     => ['required', 'string',  'unique:users,phone', 'min:11', 'max:11'],
+            'phone'     => 'required|string|unique:users,phone|min:11|max:11',
             'gender' => ['required', 'string', 'max:255', 'in:male,female'],
             'password'          => 'required|string|min:6|max:255|confirmed'
         ]);
@@ -129,19 +126,25 @@ class UserController extends Controller
             return response()->json(['success' => false, 'errors' => $validator->errors()], 402);
         }
 
-        $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'phone' => '+2' . $request->phone,
-            'gender' => $request->gender,
-            'password' => bcrypt($request->password),
-            'sms_token' => random_int(0, 9) . random_int(0, 9) . random_int(0, 9) . random_int(0, 9) . random_int(0, 9),
-        ]);
-        $token = $user->createToken('Myapp');
-        $smsstatus = $this->send($user->phone, $user->sms_token);
+        $phone = '+2' . $request->phone;
+        $user_with_phone = User::where('phone', $phone)->first();
+        if ($user_with_phone) {
+            return response()->json(['success' => false, 'message' => __('messages.phone taken before')], 400);
+        } else {
+            $user = User::create([
+                'name' => $request->name,
+                'email' => $request->email,
+                'phone' => '+2' . $request->phone,
+                'gender' => $request->gender,
+                'password' => bcrypt($request->password),
+                'sms_token' => random_int(0, 9) . random_int(0, 9) . random_int(0, 9) . random_int(0, 9) . random_int(0, 9),
+            ]);
+            $token = $user->createToken('Myapp');
+            $smsstatus = "";
+            // $smsstatus = $this->send($user->phone, $user->sms_token);
 
-        $smsstatus = "";
-        return response()->json(['success' => true, 'data' => ['token' => $token, 'user' => new UserResource($user), 'sms status' => $smsstatus]], 200);
+            return response()->json(['success' => true, 'data' => ['token' => $token, 'user' => new UserResource($user), 'sms status' => $smsstatus]], 200);
+        }
     }
     // social register
     public function socialRegister(Request $request)
@@ -317,20 +320,23 @@ class UserController extends Controller
         // $resource = new Collection($notifications, new NotificationTransformer);
         // $resource->setPaginator(new IlluminatePaginatorAdapter($paginator));
         // return response_api($this->fractal->createData($resource)->toArray());
-        $notifications=auth()->user()->notifications()->latest()->get();
+        $notifications = auth()->user()->notifications()->latest()->get();
         return $notifications;
     }
 
     public function read_notification(Request $request)
     {
         $validator = Validator::make($request->all(), [
-        'id'=>'required'
+            'id' => 'required'
         ]);
         if ($validator->fails()) {
-            return response()->json(['errors' => $validator->errors(), 'success' => false], 400);
+            return response()->json(['errors' => $validator->errors(), 'success' => false], 402);
         }
-        auth()->user()->notifications()->where('id', $request->id)->first()->markAsRead();
+        $notification=auth()->user()->notifications()->where('id', $request->id)->first();
+        if($notification){
+        $notification->markAsRead();
         return response()->json(['success' => true], 200);
+        }else return response()->json(['success' => false, 'message' => __('messages.this notification may be deleted or not exist')], 400);
     }
 
     public function update_image(Request $request)
@@ -347,6 +353,7 @@ class UserController extends Controller
         auth()->user()->update($data);
         return response()->json(['success' => true], 200);
     }
+    
 
     public function update_info(Request $request)
     {
@@ -397,17 +404,42 @@ class UserController extends Controller
         }
         if ($request->has('phone')) {
             $phone = '+2' . $request->phone;
+       
+            $user_with_phone = User::where('id','!=',$request->user()->id)->where('phone', $phone)->first();
+            if ($user_with_phone) {
+                return response()->json(['success' => false, 'message' => __('messages.phone taken before')], 400);
+            } else 
             $request->user()->update(['phone' => $phone]);
         }
 
         if ($request->has('image')) {
-            $img     = $request->hasFile('image') ? upload_image($request, 'image', 200, 200) : 'user.png';
-            $request->user()->update(['image' => $img]);
+            if ($request->hasFile('image')) {
+                $path = public_path();
+                $destinationPath = $path . '/uploads/profile/'; // upload path
+                $photo = $request->file('image');
+                $extension = $photo->getClientOriginalExtension(); // getting image extension
+                $name = time() . '' . rand(11111, 99999) . '.' . $extension; // renameing image
+                $photo->move($destinationPath, $name); // uploading file to given path
+                $request->user()->update(['image' => 'uploads/profile/' . $name]);
+            }
+
+            // $img     = $request->hasFile('image') ? upload_image($request, 'image', 200, 200) : 'user.png';
+            // $request->user()->update(['image' => $img]);
         }
 
         if ($request->has('cover')) {
-            $cover      = $request->hasFile('cover') ? upload_image($request, 'cover', 200, 200) : 'user.png';
-            $request->user()->update(['cover' => $cover]);
+            if ($request->hasFile('cover')) {
+                $path = public_path();
+                $destinationPath = $path . '/uploads/profile/'; // upload path
+                $photo = $request->file('cover');
+                $extension = $photo->getClientOriginalExtension(); // getting cover extension
+                $name = time() . '' . rand(11111, 99999) . '.' . $extension; // renameing cover
+                $photo->move($destinationPath, $name); // uploading file to given path
+                $request->user()->update(['cover' => 'uploads/profile/' . $name]);
+            }
+
+            // $cover      = $request->hasFile('cover') ? upload_image($request, 'cover', 200, 200) : 'user.png';
+            // $request->user()->update(['cover' => $cover]);
         }
 
         if ($request->has('password')) {

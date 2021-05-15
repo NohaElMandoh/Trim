@@ -17,7 +17,7 @@ class OfferResource extends JsonResource
     {
        
         return [
-           
+         
             'id' => $this->id,
             'name_en'=>$this->name,
             'name_ar' =>  $this->translate('ar')->name,
@@ -30,6 +30,10 @@ class OfferResource extends JsonResource
             'category_ar' => $this->category->translate('ar')->name,
             'category_en' => $this->category->translate('en')->name,
             'qty'=>(!empty($this->pivot)) ?$this->pivot->qty:""
+      
         ];
     }
+
+  
+    
 }
