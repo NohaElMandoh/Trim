@@ -74,7 +74,7 @@ class OrderController extends Controller
                 if ($item) {
                     $readyItem = [
                         $i['service_id'] => [
-                            'qty' => $i['quantity'],
+                            'qty' =>1,
                             'price' => $item->price,
                             'total' => $i['quantity'] * $item->price
                         ]
@@ -157,7 +157,7 @@ class OrderController extends Controller
             if ($offer) {
                 $readyItem = [
                     $request->offer_id => [
-                        'qty' => $request->qty,
+                        'qty' => 1,
                         'price' => $offer->price,
                         'total' => $request->qty * $offer->price
                     ]
