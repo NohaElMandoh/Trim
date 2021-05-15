@@ -17,7 +17,9 @@ use App\NotificationTransformer;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use Throwable;
+use Intervention\Image\ImageManagerStatic as Image;
 
 class UserController extends Controller
 {
@@ -332,11 +334,11 @@ class UserController extends Controller
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors(), 'success' => false], 402);
         }
-        $notification=auth()->user()->notifications()->where('id', $request->id)->first();
-        if($notification){
-        $notification->markAsRead();
-        return response()->json(['success' => true], 200);
-        }else return response()->json(['success' => false, 'message' => __('messages.this notification may be deleted or not exist')], 400);
+        $notification = auth()->user()->notifications()->where('id', $request->id)->first();
+        if ($notification) {
+            $notification->markAsRead();
+            return response()->json(['success' => true], 200);
+        } else return response()->json(['success' => false, 'message' => __('messages.this notification may be deleted or not exist')], 400);
     }
 
     public function update_image(Request $request)
@@ -353,7 +355,7 @@ class UserController extends Controller
         auth()->user()->update($data);
         return response()->json(['success' => true], 200);
     }
-    
+
 
     public function update_info(Request $request)
     {
@@ -404,15 +406,16 @@ class UserController extends Controller
         }
         if ($request->has('phone')) {
             $phone = '+2' . $request->phone;
-       
-            $user_with_phone = User::where('id','!=',$request->user()->id)->where('phone', $phone)->first();
+
+            $user_with_phone = User::where('id', '!=', $request->user()->id)->where('phone', $phone)->first();
             if ($user_with_phone) {
                 return response()->json(['success' => false, 'message' => __('messages.phone taken before')], 400);
-            } else 
-            $request->user()->update(['phone' => $phone]);
+            } else
+                $request->user()->update(['phone' => $phone]);
         }
 
         if ($request->has('image')) {
+           
             if ($request->hasFile('image')) {
                 $path = public_path();
                 $destinationPath = $path . '/uploads/profile/'; // upload path
@@ -422,9 +425,6 @@ class UserController extends Controller
                 $photo->move($destinationPath, $name); // uploading file to given path
                 $request->user()->update(['image' => 'uploads/profile/' . $name]);
             }
-
-            // $img     = $request->hasFile('image') ? upload_image($request, 'image', 200, 200) : 'user.png';
-            // $request->user()->update(['image' => $img]);
         }
 
         if ($request->has('cover')) {

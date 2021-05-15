@@ -102,7 +102,8 @@ class SalonController extends Controller
     public function edit($id)
     {
         $row               = User::findOrFail($id);
-        $selected          = $row->services()->pluck('id')->toArray();
+        $selected          = $row->services()->pluck('services.id')->toArray();
+     
         return view('salon::edit', compact('row', 'selected'));
     }
 

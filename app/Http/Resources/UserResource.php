@@ -20,6 +20,7 @@ class UserResource extends JsonResource
             'email' => $this->email,
             'phone' => $this->phone,
             // 'image' => route('file_show', $this->image),
+            // 'cover' => route('file_show', $this->cover),
             'image' => !empty($this->image) ? url($this->image) : url('uploads/user.png'),
             'cover' => !empty($this->cover) ? url($this->cover) : url('uploads/user.png'),
             'governorate_en' => (!empty($this->governorate->name)) ? $this->governorate->name : "",
