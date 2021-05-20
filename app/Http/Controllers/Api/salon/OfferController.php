@@ -21,6 +21,7 @@ use Illuminate\Support\Facades\Notification;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\DB;
 use Modules\Offer\Entities\Offer;
+use Modules\Order\Entities\Order;
 use Modules\Service\Entities\Service;
 use Throwable;
 

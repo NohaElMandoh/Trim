@@ -14,7 +14,7 @@ use Illuminate\Http\Request;
 */
 
 
-Route::group(['prefix' => 'governorates'], function () {
-    Route::get('/', 'ApiGovernorateController@index');
-    Route::post('find', 'ApiGovernorateController@find');
-});
+// Route::group(['prefix' => 'governorates'], function () {
+//     Route::get('/', 'ApiGovernorateController@index');
+//     Route::post('find', 'ApiGovernorateController@find');
+// });

@@ -145,6 +145,16 @@ Route::group(['namespace' => 'Api'], function () {
             Route::post('addService', 'ServiceController@addService');
             // -------
             Route::get('offers', 'OfferController@offers');
+            // -------
+            Route::post('orders', 'OrderController@orders');
+            Route::post('order', 'OrderController@order');
+            Route::post('cancelOrder', 'OrderController@cancelOrder');
+
+            Route::post('acceptOrder', 'OrderController@acceptOrder');
+            ///product
+            Route::post('allCategories', 'ProductsController@allCategories');
+            Route::post('products', 'ProductsController@products');
+            Route::post('newOrder', 'OrderController@newOrder');
         });
         Route::post('sms', 'UserController@sms');
     });
