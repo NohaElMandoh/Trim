@@ -17,10 +17,10 @@
         @component('input', ['type' => 'text', 'label' => 'Phone', 'required' => true, 'value' => $row->phone])
             phone
         @endcomponent
-        @component('input_image', ['width' => 200, 'height' => 200, 'label' => 'Image', 'src' => route('file_show', $row->image)])
+        @component('input_image', ['width' => 200, 'height' => 200, 'label' => 'Image', 'src' =>@if (!empty($row->image)) {{ url($row->image)}} @else url('uploads/user.png') @endif])
             image
         @endcomponent
-         @component('input_image', ['width' => 800, 'height' => 400, 'label' => 'Cover', 'src' => route('file_show', $row->cover)])
+         @component('input_image', ['width' => 800, 'height' => 400, 'label' => 'Cover', 'src' => @if (!empty($row->cover)) {{ url($row->cover)}} @else url('uploads/user.png') @endif])
             cover
         @endcomponent
         <div class="form-group form-md-line-input">

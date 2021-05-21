@@ -111,7 +111,7 @@ class CaptainController extends Controller
     public function edit($id)
     {
         $row               = User::findOrFail($id);
-        $selected           = $row->services()->pluck('id')->toArray();
+        $selected           = $row->services()->pluck('service_id')->toArray();
         return view('captain::edit', compact('row', 'selected'));
     }
 
@@ -166,7 +166,7 @@ class CaptainController extends Controller
             $photo->move($destinationPath, $name); // uploading file to given path
             $row->update(['cover' => 'uploads/captain/' . $name]);
         }
-        foreach ($row->services() as $service) $service->delete();
+      
         $row->services()->sync($request->services);
         return redirect()->route('captains.index')->with(['status' => 'success', 'message' => __('Updated successfully')]);
     }
