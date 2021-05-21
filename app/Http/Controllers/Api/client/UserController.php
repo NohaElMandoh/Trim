@@ -196,7 +196,7 @@ class UserController extends Controller
               }
              
           
-            return response()->json(['success' => true, 'data' => ['token' => $token->accessToken, 'user' => new UserResource($user), 'smsstatus' => $smsstatus]], 200);
+            return response()->json(['success' => true, 'data' => ['token' => $token->accessToken, 'user' => new UserResource($user)]], 200);
         }
     }
     // Activate api
