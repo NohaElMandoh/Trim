@@ -174,7 +174,7 @@ class User extends Authenticatable
 
     public function services()
     {
-        return $this->belongsToMany('Modules\Service\Entities\Service', 'service_user');
+        return $this->belongsToMany('Modules\Service\Entities\Service', 'service_user','service_id','user_id');
     }
     // public function cart ()
     // {

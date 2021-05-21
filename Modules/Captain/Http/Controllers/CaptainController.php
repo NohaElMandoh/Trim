@@ -52,14 +52,14 @@ class CaptainController extends Controller
             'image'         => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'id_photo'      => 'required|file|max:2048',
             'gender'        => 'required|in:male,female',
-            'governorate_id'=> 'required|exists:governorates,id',
+            'governorate_id' => 'required|exists:governorates,id',
             'city_id'       => 'required|exists:cities,id',
             'services'      => 'nullable|array',
             'services.*'    => 'required|exists:services,id'
         ]);
 
         $data               = $request->all();
-        $data['is_sponsored']  = (boolean) $request->is_sponsored; 
+        $data['is_sponsored']  = (bool) $request->is_sponsored;
         $data['password']   = bcrypt($request->password);
         $data['is_active']  = (bool) $request->is_active;
         $data['image']      = $request->hasFile('image') ? upload_image($request, 'image', 200, 200) : 'captain.png';
@@ -68,6 +68,27 @@ class CaptainController extends Controller
         $captain            = config('permission.models.role')::where('name', 'captain')->firstOrFail();
         $row->roles()->attach($captain);
         $row->services()->sync($request->services);
+
+
+        if ($request->hasFile('image')) {
+            $path = public_path();
+            $destinationPath = $path . '/uploads/captain/'; // upload path
+            $photo = $request->file('image');
+            $extension = $photo->getClientOriginalExtension(); // getting image extension
+            $name = time() . '' . rand(11111, 99999) . '.' . $extension; // renameing image
+            $photo->move($destinationPath, $name); // uploading file to given path
+            $row->update(['image' => 'uploads/captain/' . $name]);
+        }
+        if ($request->hasFile('cover')) {
+            $path = public_path();
+            $destinationPath = $path . '/uploads/captain/'; // upload path
+            $photo = $request->file('cover');
+            $extension = $photo->getClientOriginalExtension(); // getting cover extension
+            $name = time() . '' . rand(11111, 99999) . '.' . $extension; // renameing cover
+            $photo->move($destinationPath, $name); // uploading file to given path
+            $row->update(['cover' => 'uploads/captain/' . $name]);
+        }
+
         return redirect()->route('captains.index')->with(['status' => 'success', 'message' => __('Stored successfully')]);
     }
 
@@ -109,7 +130,7 @@ class CaptainController extends Controller
             'image'         => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'gender'        => 'required|in:male,female',
             'id_photo'      => 'nullable|file|max:2048',
-            'governorate_id'=> 'required|exists:governorates,id',
+            'governorate_id' => 'required|exists:governorates,id',
             'city_id'       => 'required|exists:cities,id',
             'services'      => 'nullable|array',
             'services.*'    => 'required|exists:services,id'
@@ -117,7 +138,7 @@ class CaptainController extends Controller
 
         $data               = $request->all();
         $data['is_active']  = (bool) $request->is_active;
-        $data['is_sponsored']  = (boolean) $request->is_sponsored; 
+        $data['is_sponsored']  = (bool) $request->is_sponsored;
         // if ($request->hasFile('image'))
         //     $data['image']      = upload_image($request, 'image', 200, 200);
 
@@ -145,7 +166,7 @@ class CaptainController extends Controller
             $photo->move($destinationPath, $name); // uploading file to given path
             $row->update(['cover' => 'uploads/captain/' . $name]);
         }
-
+        foreach ($row->services() as $service) $service->delete();
         $row->services()->sync($request->services);
         return redirect()->route('captains.index')->with(['status' => 'success', 'message' => __('Updated successfully')]);
     }
