@@ -54,12 +54,21 @@ class ProductController extends Controller
         ]);
 
         $data   = $request->all();
-        $data['image']  = upload_image($request, 'image', 200, 200);
+        // $data['image']  = upload_image($request, 'image', 200, 200);
         $data['shop_id']  = 1;
 
 
-        Product::create($data);
+        $row=Product::create($data);
 
+        if ($request->hasFile('image')) {
+            $path = public_path();
+            $destinationPath = $path . '/uploads/product/'; // upload path
+            $photo = $request->file('image');
+            $extension = $photo->getClientOriginalExtension(); // getting image extension
+            $name = time() . '' . rand(11111, 99999) . '.' . $extension; // renameing image
+            $photo->move($destinationPath, $name); // uploading file to given path
+            $row->update(['image' => 'uploads/product/' . $name]);
+        }
         return redirect()->route('products.index')->with(['status' => 'success', 'message' => __('Stored successfully')]);
     }
 
@@ -104,11 +113,19 @@ class ProductController extends Controller
         ]);
 
         $data   = $request->all();
-        if($request->hasFile('image'))
-            $data['image']  = upload_image($request, 'image', 200, 200);
+        // if($request->hasFile('image'))
+        //     $data['image']  = upload_image($request, 'image', 200, 200);
         $row    = Product::findOrFail($id);
         $row->update($data);
-
+        if ($request->hasFile('image')) {
+            $path = public_path();
+            $destinationPath = $path . '/uploads/product/'; // upload path
+            $photo = $request->file('image');
+            $extension = $photo->getClientOriginalExtension(); // getting image extension
+            $name = time() . '' . rand(11111, 99999) . '.' . $extension; // renameing image
+            $photo->move($destinationPath, $name); // uploading file to given path
+            $row->update(['image' => 'uploads/product/' . $name]);
+        }
         return redirect()->route('products.index')->with(['status' => 'success', 'message' => __('Updated successfully')]);
     }
 

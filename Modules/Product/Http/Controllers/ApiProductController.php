@@ -59,9 +59,18 @@ class ApiProductController extends Controller
             return response()->json(['errors' => $validator->errors(), 'success' => false], 401);
         }
         $data   = $request->all();
-        $data['image']      = upload_image($request, 'image', 128, 128);
+        // $data['image']      = upload_image($request, 'image', 128, 128);
         $data['shop_id']    = auth()->id();
         $product            = Product::create($data);
+        if ($request->hasFile('image')) {
+            $path = public_path();
+            $destinationPath = $path . '/uploads/product/'; // upload path
+            $photo = $request->file('image');
+            $extension = $photo->getClientOriginalExtension(); // getting image extension
+            $name = time() . '' . rand(11111, 99999) . '.' . $extension; // renameing image
+            $photo->move($destinationPath, $name); // uploading file to given path
+            $product->update(['image' => 'uploads/product/' . $name]);
+        }
         $resource = new Item($product, new ProductTransformer);
         return response_api($this->fractal->createData($resource)->toArray(), true, __('messages.Product created successfully'));
     }
@@ -79,10 +88,20 @@ class ApiProductController extends Controller
             return response()->json(['errors' => $validator->errors(), 'success' => false], 401);
         }
         $data   = $request->all();
-        if ($request->hasFile('image'))
-            $data['image']  = upload_image($request, 'image', 128, 128);
+        // if ($request->hasFile('image'))
+        //     $data['image']  = upload_image($request, 'image', 128, 128);
         $product            = Product::where('id', $request->id)->where('shop_id', auth()->id())->firstOrFail();
         $product->update($data);
+        
+        if ($request->hasFile('image')) {
+            $path = public_path();
+            $destinationPath = $path . '/uploads/product/'; // upload path
+            $photo = $request->file('image');
+            $extension = $photo->getClientOriginalExtension(); // getting image extension
+            $name = time() . '' . rand(11111, 99999) . '.' . $extension; // renameing image
+            $photo->move($destinationPath, $name); // uploading file to given path
+            $product->update(['image' => 'uploads/product/' . $name]);
+        }
         $resource = new Item($product, new ProductTransformer);
         return response_api($this->fractal->createData($resource)->toArray(), true, __('messages.Product updated successfully'));
     }

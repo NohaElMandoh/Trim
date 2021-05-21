@@ -8,9 +8,14 @@
         @component('input_trans', ['type' => 'text', 'label' => 'Name', 'required' => true, 'model' => $row])
             name
         @endcomponent
-        @component('input_image', ['width' => 200, 'height' => 200, 'label' => 'Image', 'src' => route('file_show', $row->image)])
+        @if (!empty($row->image))
+        @component('input_image', ['width' => 200, 'height' => 200, 'label' => 'Image', 'src' =>  url($row->image)  ])
             image
         @endcomponent
+        @else @component('input_image', ['width' => 200, 'height' => 200, 'label' => 'Image', 'src' =>  url('uploads/product.png')  ])
+        image
+    @endcomponent 
+    @endif
         @component('input', ['label' => 'Price', 'type' => 'number', 'required' => true, 'value' => $row->price])
             price
         @endcomponent
