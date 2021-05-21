@@ -174,7 +174,7 @@ class UserController extends Controller
 
             $user = User::create($data);
             $token = $user->createToken('Myapp');
-            $smsstatus = $this->send($user->phone, $user->sms_token);
+            // $smsstatus = $this->send($user->phone, $user->sms_token);
             return response()->json(['success' => true, 'data' => ['token' => $token->accessToken, 'user' => new UserResource($user), 'smsstatus' => $smsstatus]], 200);
         }
     }

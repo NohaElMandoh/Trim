@@ -13,7 +13,7 @@ use Illuminate\Http\Request;
 |
 */
 
-// Route::group(['middleware' => 'auth:api', 'prefix' => 'coupons'], function () {
-//     Route::get('/', 'ApiCouponController@index');
-//     Route::post('validate', 'ApiCouponController@validate_coupon');
-// });
+Route::group(['middleware' => 'auth:api', 'prefix' => 'coupons'], function () {
+    Route::get('/', 'ApiCouponController@index');
+    Route::post('validate', 'ApiCouponController@validate_coupon');
+});

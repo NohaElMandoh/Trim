@@ -46,7 +46,7 @@ Route::group(['namespace' => 'Api'], function () {
             Route::post('user/change-password', 'UserController@changePassword');
             Route::post('user/activate', 'UserController@activate');
             // main lists
-            Route::get('mainLists', 'MainController@mainLists');
+            Route::get('/mainLists', 'MainController@mainLists');
 
             ////salon apis
             Route::post('allSalons', 'SalonController@allSalons');
