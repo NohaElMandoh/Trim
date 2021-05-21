@@ -14,9 +14,14 @@
         @component('input', ['type' => 'text', 'label' => 'Phone', 'required' => true, 'value' => $row->phone])
             phone
         @endcomponent
-        @component('input_image', ['width' => 200, 'height' => 200, 'label' => 'Image', 'src' => {{url('uploads/user.png')}} ])
+        @if (!empty($row->image))
+        @component('input_image', ['width' => 200, 'height' => 200, 'label' => 'Image', 'src' =>  url($row->image)  ])
             image
         @endcomponent
+        @else @component('input_image', ['width' => 200, 'height' => 200, 'label' => 'Image', 'src' =>  url('uploads/user.png')  ])
+        image
+    @endcomponent 
+    @endif
         <div class="form-group form-md-line-input">
             <div class="col-md-2"></div>
             <div class="col-md-10">

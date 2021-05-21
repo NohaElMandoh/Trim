@@ -17,12 +17,28 @@
         @component('input', ['type' => 'text', 'label' => 'Phone', 'required' => true, 'value' => $row->phone])
             phone
         @endcomponent
-        @component('input_image', ['width' => 200, 'height' => 200, 'label' => 'Image', 'src' =>"@if (!empty($row->image)) {{ url($row->image)}} @else url('uploads/user.png') @endif"])
+        @if (!empty($row->image))
+        @component('input_image', ['width' => 200, 'height' => 200, 'label' => 'Image', 'src' =>  url($row->image)  ])
             image
         @endcomponent
-         @component('input_image', ['width' => 800, 'height' => 400, 'label' => 'Cover', 'src' =>" @if (!empty($row->cover)) {{ url($row->cover)}} @else url('uploads/user.png') @endif"])
+        @else @component('input_image', ['width' => 200, 'height' => 200, 'label' => 'Image', 'src' =>  url('uploads/user.png')  ])
+        image
+    @endcomponent 
+    @endif
+    @if (!empty($row->cover))
+        @component('input_cover', ['width' => 200, 'height' => 200, 'label' => 'cover', 'src' =>  url($row->cover)  ])
             cover
         @endcomponent
+        @else @component('input_cover', ['width' => 200, 'height' => 200, 'label' => 'cover', 'src' =>  url('uploads/user.png')  ])
+        cover
+    @endcomponent 
+    @endif
+        {{-- @component('input_image', ['width' => 200, 'height' => 200, 'label' => 'Image', 'src' =>"@if (!empty($row->image)) {{ url($row->image)}} @else url('uploads/user.png') @endif"])
+            image
+        @endcomponent --}}
+         {{-- @component('input_image', ['width' => 800, 'height' => 400, 'label' => 'Cover', 'src' =>" @if (!empty($row->cover)) {{ url($row->cover)}} @else url('uploads/user.png') @endif"])
+            cover
+        @endcomponent --}}
         <div class="form-group form-md-line-input">
             <div class="col-md-2"></div>
             <div class="col-md-10">
