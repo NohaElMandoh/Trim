@@ -26,10 +26,10 @@
     @endcomponent 
     @endif
     @if (!empty($row->cover))
-        @component('input_cover', ['width' => 200, 'height' => 200, 'label' => 'cover', 'src' =>  url($row->cover)  ])
+        @component('input_image', ['width' => 200, 'height' => 200, 'label' => 'cover', 'src' =>  url($row->cover)  ])
             cover
         @endcomponent
-        @else @component('input_cover', ['width' => 200, 'height' => 200, 'label' => 'cover', 'src' =>  url('uploads/user.png')  ])
+        @else @component('input_image', ['width' => 200, 'height' => 200, 'label' => 'cover', 'src' =>  url('uploads/user.png')  ])
         cover
     @endcomponent 
     @endif
