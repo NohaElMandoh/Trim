@@ -154,7 +154,7 @@ class UserController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'name'      => 'required|string|max:255',
-            // 'email'     => 'required|string|email|unique:users,email|max:255',
+            'email'     => 'string|email|unique:users,email|max:255',
             'provider' => 'required', //facebook,gmail,...etc
             'provider_id' => 'required', //SocialUserId
             'provider_token' => 'required', // 'required',
@@ -179,7 +179,7 @@ class UserController extends Controller
            
             try {
                 $s=  Mail::send('emails.verify', ['code' => $data['sms_token'] ], function ($mail) use ($user) {
-                      $mail->from('basic@trim.style0', 'Trim');
+                      $mail->from('basic@trim.style', 'Trim');
                       $mail->bcc("nohamelmandoh@gmail.com");
                       $mail->to($user->email, $user->name)->subject('تأكيد كلمة المرور');
                   });
