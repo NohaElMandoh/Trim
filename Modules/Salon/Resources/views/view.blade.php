@@ -32,7 +32,7 @@
     <div class="panel-body">
         <div class="fileinput-new thumbnail" style="width: 400px;">
             {{-- <img src="{{ route('file_show', $row->cover) }}" />  --}}
-            <img src="@if (!empty($row->cover))  url($row->cover) @else url('uploads/user.png') @endif" /> 
+            <img src="@if (!empty($row->cover))  {{url($row->cover)}} @else url('uploads/user.png') @endif" /> 
         </div>
     </div>
 </div>

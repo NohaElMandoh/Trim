@@ -68,8 +68,8 @@ class SalonController extends Controller
         $data['password']   = bcrypt($request->password);
         $data['is_active']  = (bool) $request->is_active;
         $data['is_sponsored']  = (boolean) $request->is_sponsored; 
-        $data['image']      = $request->hasFile('image') ? upload_image($request, 'image', 200, 200) : 'salon.png';
-        $data['cover']      = $request->hasFile('cover') ? upload_image($request, 'cover', 800, 400) : 'salon.png';
+        // $data['image']      = $request->hasFile('image') ? upload_image($request, 'image', 200, 200) : 'salon.png';
+        // $data['cover']      = $request->hasFile('cover') ? upload_image($request, 'cover', 800, 400) : 'salon.png';
         $data['commercial_register']   = upload_file($request, 'commercial_register');
         $row                = User::create($data);
         $salon              = config('permission.models.role')::where('name', 'salon')->firstOrFail();
@@ -79,6 +79,24 @@ class SalonController extends Controller
             foreach($request->works as $work) {
                 $row->works()->create($work);
             }
+        }
+        if ($request->hasFile('image')) {
+            $path = public_path();
+            $destinationPath = $path . '/uploads/salon/'; // upload path
+            $photo = $request->file('image');
+            $extension = $photo->getClientOriginalExtension(); // getting image extension
+            $name = time() . '' . rand(11111, 99999) . '.' . $extension; // renameing image
+            $photo->move($destinationPath, $name); // uploading file to given path
+            $row->update(['image' => 'uploads/salon/' . $name]);
+        }
+        if ($request->hasFile('cover')) {
+            $path = public_path();
+            $destinationPath = $path . '/uploads/salon/'; // upload path
+            $photo = $request->file('cover');
+            $extension = $photo->getClientOriginalExtension(); // getting cover extension
+            $name = time() . '' . rand(11111, 99999) . '.' . $extension; // renameing cover
+            $photo->move($destinationPath, $name); // uploading file to given path
+            $row->update(['cover' => 'uploads/salon/' . $name]);
         }
         return redirect()->route('salons.index')->with(['status' => 'success', 'message' => __('Stored successfully')]);
     }

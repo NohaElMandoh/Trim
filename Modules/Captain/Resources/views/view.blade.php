@@ -17,7 +17,8 @@
     <div class="panel-heading">{{ __('Image') }}</div>
     <div class="panel-body">
         <div class="fileinput-new thumbnail" style="width: 200px; height: 200px;">
-            <img src="{{ route('file_show', $row->image) }}" /> 
+            {{-- <img src="{{ route('file_show', $row->image) }}" />  --}}
+            <img src="@if (!empty($row->image))  url($row->image) @else url('uploads/user.png') @endif" /> 
         </div>
     </div>
 </div>
