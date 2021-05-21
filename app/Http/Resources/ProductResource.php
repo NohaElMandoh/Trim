@@ -21,7 +21,8 @@ class ProductResource extends JsonResource
             'id' => $this->id,
             'name_en' => $this->name,
             'name_ar' =>  $this->translate('ar')->name,
-            'image'=>route('file_show',  $this->image),
+            // 'image'=>route('file_show',  $this->image),
+            'image' => !empty($this->image) ? url($this->image) : url('uploads/product.png'),
             'price'=>$this->price,
             'qty'=>(!empty($this->pivot)) ?$this->pivot->qty:""
         ];

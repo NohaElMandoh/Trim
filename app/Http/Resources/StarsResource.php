@@ -20,8 +20,10 @@ class StarsResource extends JsonResource
 
             'id' => $this->id,
             'name' => $this->name,
-            'image' => route('file_show', $this->image),
-            'cover' => route('file_show', $this->cover),
+            // 'image' => route('file_show', $this->image),
+            'image' => !empty($this->image) ? url($this->image) : url('uploads/user.png'),
+            // 'cover' => route('file_show', $this->cover),
+            'image' => !empty($this->cover) ? url($this->cover) : url('uploads/user.png'),
             'rate' => $this->rate,
             
         ];
