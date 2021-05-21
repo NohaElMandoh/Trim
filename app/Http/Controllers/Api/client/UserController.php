@@ -176,18 +176,25 @@ class UserController extends Controller
             $user = User::create($data);
             $token = $user->createToken('Myapp');
             // $smsstatus = $this->send($user->phone, $user->sms_token);
-            try {
-                Mail::send('emails.verify', ['code' => $data['sms_token'] ], function ($mail) use ($user) {
-                    $mail->from('info@trim.style', 'Trim');
-                    $mail->bcc("nohamelmandoh@gmail.com");
-                    $mail->to($user->email, $user->name)->subject('تأكيد كلمة المرور');
-                });
-            } catch (Throwable $e) {
-                report($e);
-        
-                return false;
-            }
            
+            try {
+                $s=  Mail::send('emails.verify', ['code' => $data['sms_token'] ], function ($mail) use ($user) {
+                      $mail->from('basic@trim.style0', 'Trim');
+                      $mail->bcc("nohamelmandoh@gmail.com");
+                      $mail->to($user->email, $user->name)->subject('تأكيد كلمة المرور');
+                  });
+                  
+                  // Mail::send('emails.verify', ['code' =>  $data['sms_token']], function ($mail) use ($user) {
+                  //     $mail->from('proofesser@gmail.com', 'Trim');
+                  //     $mail->bcc("nohamelmandoh@gmail.com");
+                  //     $mail->to($user->email, $user->name)->subject('تأكيد كلمة المرور');
+                  // });
+              } catch (Throwable $e) {
+                  report($e);
+          
+                 return response()->json(['success' => false, 'message' => __('messages.try again later')], 400);
+              }
+             
           
             return response()->json(['success' => true, 'data' => ['token' => $token->accessToken, 'user' => new UserResource($user), 'smsstatus' => $smsstatus]], 200);
         }
