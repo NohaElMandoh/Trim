@@ -22,7 +22,8 @@ class CartResource extends JsonResource
             'name_ar' => (Str::contains(get_class($this->product), 'Service'))?$this->product->translate('ar')->title: $this->product->translate('ar')->name,
             'price' => $this->price,
             'quantity' => $this->quantity,
-            'image' => route('file_show', $this->product->image),
+            // 'image' => route('file_show', $this->product->image),
+            'image' => !empty($this->product->image) ? url($this->product->image) : url('uploads/product.png'),
         ];
     }
 }
