@@ -73,9 +73,18 @@ class ApiOfferController extends Controller
             return response()->json(['errors' => $validator->errors(), 'success' => false], 401);
         }
         $data   = $request->all();
-        $data['image']      = upload_image($request, 'image', 128, 128);
+        // $data['image']      = upload_image($request, 'image', 128, 128);
         $data['shop_id']    = auth()->id();
         $product            = Offer::create($data);
+        if ($request->hasFile('image')) {
+            $path = public_path();
+            $destinationPath = $path . '/uploads/offers/'; // upload path
+            $photo = $request->file('image');
+            $extension = $photo->getClientOriginalExtension(); // getting image extension
+            $name = time() . '' . rand(11111, 99999) . '.' . $extension; // renameing image
+            $photo->move($destinationPath, $name); // uploading file to given path
+            $product->update(['image' => 'uploads/offers/' . $name]);
+        }
         $resource = new Item($product, new OfferTransformer);
         return response_api($this->fractal->createData($resource)->toArray(), true, __('messages.Offer created successfully'));
     }
@@ -95,10 +104,19 @@ class ApiOfferController extends Controller
             return response()->json(['errors' => $validator->errors(), 'success' => false], 401);
         }
         $data   = $request->all();
-        if ($request->hasFile('image'))
-            $data['image']  = upload_image($request, 'image', 128, 128);
+        // if ($request->hasFile('image'))
+        //     $data['image']  = upload_image($request, 'image', 128, 128);
         $product            = Offer::where('id', $request->id)->where('shop_id', auth()->id())->firstOrFail();
         $product->update($data);
+        if ($request->hasFile('image')) {
+            $path = public_path();
+            $destinationPath = $path . '/uploads/offers/'; // upload path
+            $photo = $request->file('image');
+            $extension = $photo->getClientOriginalExtension(); // getting image extension
+            $name = time() . '' . rand(11111, 99999) . '.' . $extension; // renameing image
+            $photo->move($destinationPath, $name); // uploading file to given path
+            $product->update(['image' => 'uploads/offers/' . $name]);
+        }
         $resource = new Item($product, new OfferTransformer);
         return response_api($this->fractal->createData($resource)->toArray(), true, __('messages.Offer updated successfully'));
     }

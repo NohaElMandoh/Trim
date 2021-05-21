@@ -55,10 +55,18 @@ class OfferController extends Controller
         ]);
 
         $data   = $request->all();
-        $data['image']  = upload_image($request, 'image', 800, 400);
+        // $data['image']  = upload_image($request, 'image', 800, 400);
         $data['is_sponsored']  = (boolean) $request->is_sponsored; 
-        Offer::create($data);
-
+      $row=  Offer::create($data);
+      if ($request->hasFile('image')) {
+        $path = public_path();
+        $destinationPath = $path . '/uploads/offers/'; // upload path
+        $photo = $request->file('image');
+        $extension = $photo->getClientOriginalExtension(); // getting image extension
+        $name = time() . '' . rand(11111, 99999) . '.' . $extension; // renameing image
+        $photo->move($destinationPath, $name); // uploading file to given path
+        $row->update(['image' => 'uploads/offers/' . $name]);
+    }
         return redirect()->route('offers.index')->with(['status' => 'success', 'message' => __('Stored successfully')]);
     }
 
@@ -104,13 +112,21 @@ class OfferController extends Controller
         ]);
 
         $data   = $request->all();
-        if($request->hasFile('image'))
-            $data['image']  = upload_image($request, 'image', 800, 400);
+        // if($request->hasFile('image'))
+        //     $data['image']  = upload_image($request, 'image', 800, 400);
 
         $data['is_sponsored']  = (boolean) $request->is_sponsored; 
         $row    = Offer::findOrFail($id);
         $row->update($data);
-
+        if ($request->hasFile('image')) {
+            $path = public_path();
+            $destinationPath = $path . '/uploads/offers/'; // upload path
+            $photo = $request->file('image');
+            $extension = $photo->getClientOriginalExtension(); // getting image extension
+            $name = time() . '' . rand(11111, 99999) . '.' . $extension; // renameing image
+            $photo->move($destinationPath, $name); // uploading file to given path
+            $row->update(['image' => 'uploads/offers/' . $name]);
+        }
         return redirect()->route('offers.index')->with(['status' => 'success', 'message' => __('Updated successfully')]);
     }
 
