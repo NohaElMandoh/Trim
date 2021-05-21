@@ -52,9 +52,18 @@ class CategoryController extends Controller
         ]);
 
         $data               = $request->all();
-        $data['image']      = upload_image($request, 'image', 200, 200);
+        // $data['image']      = upload_image($request, 'image', 200, 200);
         $data['for_offers'] = (boolean) $request->for_offers;
         $row                = Category::create($data);
+        if ($request->hasFile('image')) {
+            $path = public_path();
+            $destinationPath = $path . '/uploads/category/'; // upload path
+            $photo = $request->file('image');
+            $extension = $photo->getClientOriginalExtension(); // getting image extension
+            $name = time() . '' . rand(11111, 99999) . '.' . $extension; // renameing image
+            $photo->move($destinationPath, $name); // uploading file to given path
+            $row->update(['image' => 'uploads/category/' . $name]);
+        }
         return redirect()->route('categories.index')->with(['status' => 'success', 'message' => __('Stored successfully')]);
     }
 
@@ -99,10 +108,19 @@ class CategoryController extends Controller
 
         $data               = $request->all();
         $data['for_offers'] = (boolean) $request->for_offers;
-        if($request->hasFile('image'))
-            $data['image']      = upload_image($request, 'image', 200, 200);
+        // if($request->hasFile('image'))
+        //     $data['image']      = upload_image($request, 'image', 200, 200);
         $row                = Category::findOrFail($id);
         $row->update($data);
+        if ($request->hasFile('image')) {
+            $path = public_path();
+            $destinationPath = $path . '/uploads/category/'; // upload path
+            $photo = $request->file('image');
+            $extension = $photo->getClientOriginalExtension(); // getting image extension
+            $name = time() . '' . rand(11111, 99999) . '.' . $extension; // renameing image
+            $photo->move($destinationPath, $name); // uploading file to given path
+            $row->update(['image' => 'uploads/category/' . $name]);
+        }
         return redirect()->route('categories.index')->with(['status' => 'success', 'message' => __('Updated successfully')]);
     }
 
