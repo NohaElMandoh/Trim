@@ -10,7 +10,7 @@ class Order extends Model
     protected $fillable = [
         'lat', 'lng', 'user_id', 'barber_id',
         'status_id', 'rate', 'review', 'review_image',
-        'payment_method', 'payment_coupon', 'phone',
+        'payment_method', 'payment_coupon', 'phone','payment_id',
         'address', 'is_now', 'type', 'work_day_id','cost','discount','total','reservation_time','reservation_day','approve','cancel_reason','order_type'
     ];
     use SoftDeletes;

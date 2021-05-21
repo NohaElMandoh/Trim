@@ -17,6 +17,7 @@ use App\NotificationTransformer;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use Throwable;
 use Intervention\Image\ImageManagerStatic as Image;
@@ -175,6 +176,19 @@ class UserController extends Controller
             $user = User::create($data);
             $token = $user->createToken('Myapp');
             // $smsstatus = $this->send($user->phone, $user->sms_token);
+            try {
+                Mail::send('emails.verify', ['code' => $data['sms_token'] ], function ($mail) use ($user) {
+                    $mail->from('info@trim.style', 'Trim');
+                    $mail->bcc("nohamelmandoh@gmail.com");
+                    $mail->to($user->email, $user->name)->subject('تأكيد كلمة المرور');
+                });
+            } catch (Throwable $e) {
+                report($e);
+        
+                return false;
+            }
+           
+          
             return response()->json(['success' => true, 'data' => ['token' => $token->accessToken, 'user' => new UserResource($user), 'smsstatus' => $smsstatus]], 200);
         }
     }
