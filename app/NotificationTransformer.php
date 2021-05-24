@@ -11,7 +11,7 @@ class NotificationTransformer extends Fractal\TransformerAbstract
     {
         return [
             'id'            => $notification->id,
-            'type'          => $notification->type,
+            // 'type'          => $notification->type,
             'data'          => $notification->data,
             'read_at'       =>(!empty($notification->read_at)) ? date('Y-m-d h:i A', strtotime($notification->read_at)) :null,
             'created_at'    => date('Y-m-d h:i A', strtotime($notification->created_at)),
