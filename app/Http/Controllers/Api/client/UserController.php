@@ -106,7 +106,7 @@ class UserController extends Controller
             ]);
             if ($result > 0) {
                 $smsstatus = '';
-                // $smsstatus = $this->send($user->phone, $user->sms_token);
+                $smsstatus = $this->send($user->phone, $user->sms_token);
 
                 $token = $user->createToken('Myapp')->accessToken;
                 return response()->json(['success' => true, 'data' => ['token' => $token, 'user' => new UserResource($user), 'smsStatus' => $smsstatus]], 200);
