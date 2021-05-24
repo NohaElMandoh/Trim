@@ -1,0 +1,5 @@
+[19-May-2021 11:30:41 America/New_York] PHP Fatal error:  Uncaught Error: Class 'Illuminate\Foundation\Application' not found in /home/trimkrgm/public_html/trim-web/bootstrap/app.php:14
+Stack trace:
+#0 /home/trimkrgm/public_html/trim-web/artisan(20): require_once()
+#1 {main}
+  thrown in /home/trimkrgm/public_html/trim-web/bootstrap/app.php on line 14

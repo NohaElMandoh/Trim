@@ -84,7 +84,11 @@ class User extends Authenticatable
     {
         return $this->hasMany('App\Token');
     }
-
+    public function  notifications()
+    {
+        return $this->morphMany('App\Notification', 'notifiable')->where('read_at', null);
+    }
+   
     public static function findNearestCaptains($latitude, $longitude, $distance)
     {
         return User::select(DB::raw('*, ( 6367 * acos( cos( radians(' . $latitude . ') ) * cos( radians( lat ) ) * cos( radians( lng ) - radians(' . $longitude . ') ) + sin( radians(' . $latitude . ') ) * sin( radians( lat ) ) ) ) AS distance'))

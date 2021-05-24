@@ -16,7 +16,10 @@ class Notification extends Model
     protected $fillable = [
        'type','data','read_at','notifiable_type','notifiable_id'
     ];
-
+    public function notifiable()
+    {
+        return $this->morphTo();
+    }
   
 
 }
