@@ -47,5 +47,6 @@ return [
     'phone taken before'=>'Phone Taken Before',
     'this notification may be deleted or not exist'=>'This Notification May Be Deleted Or Not Exist',
     'Order Does Not Belongs To You'=>'Order Does Not Belongs To You',
-    'verification code'=>'Your Verification code is'
+    'verification code'=>'Your Verification code is',
+    'you already used this coupone before'=>'you already used this coupone before'
 ];

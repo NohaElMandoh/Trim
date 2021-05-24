@@ -22,6 +22,7 @@ use League\Fractal\Manager;
 use League\Fractal\Pagination\IlluminatePaginatorAdapter;
 use League\Fractal\Resource\Collection;
 use App\NotificationTransformer;
+use Carbon\Carbon;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\DB;
 use Modules\Coupon\Entities\Coupon;
@@ -34,7 +35,7 @@ use Modules\Status\Entities\Status;
 class OrderController extends Controller
 {
 
-   
+
     public function newOrderWithService(Request $request)
     {
         $validation = validator()->make($request->all(), [
@@ -73,7 +74,7 @@ class OrderController extends Controller
                 if ($item) {
                     $readyItem = [
                         $i['service_id'] => [
-                            'qty' =>1,
+                            'qty' => 1,
                             'price' => $item->price,
                             'total' =>  $item->price
                         ]
@@ -88,18 +89,52 @@ class OrderController extends Controller
                 $coupone = Coupon::where('code', $request->payment_coupon)->first();
                 ////check if avaliable
                 if ($coupone) {
+                    $currentDateTime = Carbon::now();
+                    // $end_at = Carbon::now()->addHours(5);
+                    $end_at = Carbon::parse($coupone['created_at'])->addHours($coupone->duration); //get end time of coupone 
                     $user_coupon_ids = $request->user()->coupons->pluck('pivot.coupon_id')->toArray();
-                    if (in_array($coupone->id, $user_coupon_ids)) {
-                        $usages = $request->user()->coupons()->where('coupon_id', $coupone->id)->first();
-                        if ($usages->pivot->usage > 0) {
-                            $usage = ($usages->pivot->usage) - 1;
-                            $request->user()->coupons()->updateExistingPivot($coupone->id, ['usage' =>  $usage]);
+                 
+                    if (!in_array($coupone->id, $user_coupon_ids)) { //check if user use this coupone before
+                       
+                        if ($coupone->usage_number_times > 0 && ($end_at >=   $currentDateTime)) { //check if coupone usage time >0 and check if duration end or not 
                             $discount = $coupone->price;
-                            $payment_coupon = $request->payment_coupon;
-                        } else return response()->json(['success' => false, 'message' => __('messages.cant use coupone')], 400);
-                    } else return response()->json(['success' => false, 'message' => __('messages.coupone not in your list')], 400);
-                } else  return response()->json(['success' => false, 'message' => __('messages.coupone not avaliable')], 400);
+                            $usage = ($coupone->usage_number_times) - 1;
+                            $coupone->update(['usage_number_times' => $usage]);
+    
+                            $readyItem = [
+                                $coupone->id => [
+                                    'usage' => 1,
+            
+                                ]
+                            ];
+                            $request->user()->coupons()->attach($readyItem);
+                            // $user_coupon_ids = $request->user()->coupons->pluck('pivot.coupon_id')->toArray();
+                            // if (in_array($coupone->id, $user_coupon_ids)) {
+                            //     $usages = $request->user()->coupons()->where('coupon_id', $coupone->id)->first();
+                            //     if ($usages->pivot->usage > 0) {
+                            //         $usage = ($usages->pivot->usage) - 1;
+                            //         $request->user()->coupons()->updateExistingPivot($coupone->id, ['usage' =>  $usage]);
+                            //         $discount = $coupone->price;
+                            //         $payment_coupon = $request->payment_coupon;
+                            //     } else return response()->json(['success' => false, 'message' => __('messages.cant use coupone')], 400);
+                            // } else return response()->json(['success' => false, 'message' => __('messages.coupone not in your list')], 400);
+                        } else {
+                            $order->services()->detach($order->id);
+                            $order->delete();
+                            return response()->json(['success' => false, 'message' => __('messages.coupone not avaliable')], 400);
+                        }
+                    } else {
+                        $order->services()->detach($order->id);
+                        $order->delete();
+                        return response()->json(['success' => false, 'message' => __('messages.you already used this coupone before')], 400);
+                    }
+                } else {
+                    $order->services()->detach($order->id);
+                    $order->delete();
+                    return response()->json(['success' => false, 'message' => __('messages.coupone not avaliable')], 400);
+                }
             }
+    
 
             $total = $cost - $discount;
             if ($total < 0) {
@@ -127,7 +162,7 @@ class OrderController extends Controller
             'barber_type' => 'required', ///salon ,person
             'reservation_day' => 'required',
             'offer_id' => 'required',
-            
+
         ]);
 
         if ($validation->fails()) {
@@ -172,19 +207,52 @@ class OrderController extends Controller
                 $coupone = Coupon::where('code', $request->payment_coupon)->first();
                 ////check if avaliable
                 if ($coupone) {
+                    $currentDateTime = Carbon::now();
+                    // $end_at = Carbon::now()->addHours(5);
+                    $end_at = Carbon::parse($coupone['created_at'])->addHours($coupone->duration); //get end time of coupone 
                     $user_coupon_ids = $request->user()->coupons->pluck('pivot.coupon_id')->toArray();
-                    if (in_array($coupone->id, $user_coupon_ids)) {
-                        $usages = $request->user()->coupons()->where('coupon_id', $coupone->id)->first();
-                        if ($usages->pivot->usage > 0) {
-                            $usage = ($usages->pivot->usage) - 1;
-                            $request->user()->coupons()->updateExistingPivot($coupone->id, ['usage' =>  $usage]);
+                 
+                    if (!in_array($coupone->id, $user_coupon_ids)) { //check if user use this coupone before
+                       
+                        if ($coupone->usage_number_times > 0 && ($end_at >=   $currentDateTime)) { //check if coupone usage time >0 and check if duration end or not 
                             $discount = $coupone->price;
-                            $payment_coupon = $request->payment_coupon;
-                        } else return response()->json(['success' => false, 'message' => __('messages.cant use coupone')], 400);
-                    } else return response()->json(['success' => false, 'message' => __('messages.coupone not in your list')], 400);
-                } else  return response()->json(['success' => false, 'message' => __('messages.coupone not avaliable')], 400);
+                            $usage = ($coupone->usage_number_times) - 1;
+                            $coupone->update(['usage_number_times' => $usage]);
+    
+                            $readyItem = [
+                                $coupone->id => [
+                                    'usage' => 1,
+            
+                                ]
+                            ];
+                            $request->user()->coupons()->attach($readyItem);
+                            // $user_coupon_ids = $request->user()->coupons->pluck('pivot.coupon_id')->toArray();
+                            // if (in_array($coupone->id, $user_coupon_ids)) {
+                            //     $usages = $request->user()->coupons()->where('coupon_id', $coupone->id)->first();
+                            //     if ($usages->pivot->usage > 0) {
+                            //         $usage = ($usages->pivot->usage) - 1;
+                            //         $request->user()->coupons()->updateExistingPivot($coupone->id, ['usage' =>  $usage]);
+                            //         $discount = $coupone->price;
+                            //         $payment_coupon = $request->payment_coupon;
+                            //     } else return response()->json(['success' => false, 'message' => __('messages.cant use coupone')], 400);
+                            // } else return response()->json(['success' => false, 'message' => __('messages.coupone not in your list')], 400);
+                        } else {
+                            $order->services()->detach($order->id);
+                            $order->delete();
+                            return response()->json(['success' => false, 'message' => __('messages.coupone not avaliable')], 400);
+                        }
+                    } else {
+                        $order->services()->detach($order->id);
+                        $order->delete();
+                        return response()->json(['success' => false, 'message' => __('messages.you already used this coupone before')], 400);
+                    }
+                } else {
+                    $order->services()->detach($order->id);
+                    $order->delete();
+                    return response()->json(['success' => false, 'message' => __('messages.coupone not avaliable')], 400);
+                }
             }
-
+    
             $total = $cost - $discount;
             if ($total < 0) {
                 $total = 0;
@@ -246,21 +314,56 @@ class OrderController extends Controller
 
         $cost = $order->products()->sum('order_product.total');
         $payment_coupon = "";
+   
         if ($request->has('payment_coupon')) {
             $coupone = Coupon::where('code', $request->payment_coupon)->first();
+           
             ////check if avaliable
             if ($coupone) {
+                $currentDateTime = Carbon::now();
+                // $end_at = Carbon::now()->addHours(5);
+                $end_at = Carbon::parse($coupone['created_at'])->addHours($coupone->duration); //get end time of coupone 
                 $user_coupon_ids = $request->user()->coupons->pluck('pivot.coupon_id')->toArray();
-                if (in_array($coupone->id, $user_coupon_ids)) {
-                    $usages = $request->user()->coupons()->where('coupon_id', $coupone->id)->first();
-                    if ($usages->pivot->usage > 0) {
-                        $usage = ($usages->pivot->usage) - 1;
-                        $request->user()->coupons()->updateExistingPivot($coupone->id, ['usage' =>  $usage]);
+             
+                if (!in_array($coupone->id, $user_coupon_ids)) { //check if user use this coupone before
+                   
+                    if ($coupone->usage_number_times > 0 && ($end_at >=   $currentDateTime)) { //check if coupone usage time >0 and check if duration end or not 
                         $discount = $coupone->price;
-                        $payment_coupon = $request->payment_coupon;
-                    } else return response()->json(['success' => false, 'message' => __('messages.cant use coupone')], 400);
-                } else return response()->json(['success' => false, 'message' => __('messages.coupone not in your list')], 400);
-            } else  return response()->json(['success' => false, 'message' => __('messages.coupone not avaliable')], 400);
+                        $usage = ($coupone->usage_number_times) - 1;
+                        $coupone->update(['usage_number_times' => $usage]);
+
+                        $readyItem = [
+                            $coupone->id => [
+                                'usage' => 1,
+        
+                            ]
+                        ];
+                        $request->user()->coupons()->attach($readyItem);
+                        // $user_coupon_ids = $request->user()->coupons->pluck('pivot.coupon_id')->toArray();
+                        // if (in_array($coupone->id, $user_coupon_ids)) {
+                        //     $usages = $request->user()->coupons()->where('coupon_id', $coupone->id)->first();
+                        //     if ($usages->pivot->usage > 0) {
+                        //         $usage = ($usages->pivot->usage) - 1;
+                        //         $request->user()->coupons()->updateExistingPivot($coupone->id, ['usage' =>  $usage]);
+                        //         $discount = $coupone->price;
+                        //         $payment_coupon = $request->payment_coupon;
+                        //     } else return response()->json(['success' => false, 'message' => __('messages.cant use coupone')], 400);
+                        // } else return response()->json(['success' => false, 'message' => __('messages.coupone not in your list')], 400);
+                    } else {
+                        $order->services()->detach($order->id);
+                        $order->delete();
+                        return response()->json(['success' => false, 'message' => __('messages.coupone not avaliable')], 400);
+                    }
+                } else {
+                    $order->services()->detach($order->id);
+                    $order->delete();
+                    return response()->json(['success' => false, 'message' => __('messages.you already used this coupone before')], 400);
+                }
+            } else {
+                $order->services()->detach($order->id);
+                $order->delete();
+                return response()->json(['success' => false, 'message' => __('messages.coupone not avaliable')], 400);
+            }
         }
 
         $total = $cost - $discount;
@@ -294,11 +397,15 @@ class OrderController extends Controller
         }
         $coupone = Coupon::where('code', $request->payment_coupon)->first();
 
-        ///////check if coupone avaliable or not
-        if ($coupone)
-            return response()->json(['success' => true, 'data' => [new CouponeResource($coupone)]], 200);
-        else
+        if ($coupone) {
+            if ($coupone->usage_number_times > 0) {
+                return response()->json(['success' => true, 'data' => [new CouponeResource($coupone)]], 200);
+            } else {
+                return response()->json(['success' => false, 'message' => __('messages.coupone not avaliable')], 400);
+            }
+        } else {
             return response()->json(['success' => false, 'message' => __('messages.coupone not avaliable')], 400);
+        }
     }
 
     public function myOrders(Request $request)
@@ -485,11 +592,12 @@ class OrderController extends Controller
         }
         $cancelStatus = Status::where('slug', 'cancelled')->first();
         $order = Order::find($request->order_id);
-      if($order){  $order->update([
-            'status_id' => $cancelStatus->id,
-            'cancel_reason' => $request->reason
-        ]);
-    }else return response()->json(['success' => false, 'message' => __('messages.Order Not Exist')], 400);
+        if ($order) {
+            $order->update([
+                'status_id' => $cancelStatus->id,
+                'cancel_reason' => $request->reason
+            ]);
+        } else return response()->json(['success' => false, 'message' => __('messages.Order Not Exist')], 400);
         event(new clientnotify($order, 'your order cancelled'));
         if ($order)
             return response()->json(['success' => true, 'data' => new  OrderResource($order)], 200);
@@ -508,12 +616,12 @@ class OrderController extends Controller
         }
         $deliveredStatus = Status::where('slug', 'delivered')->first();
         $order = Order::find($request->order_id);
-        if($order){
+        if ($order) {
             $order->update([
                 'status_id' => $deliveredStatus->id
             ]);
-        }else return response()->json(['success' => false, 'message' => __('messages.Order Not Exist')], 400);
-       
+        } else return response()->json(['success' => false, 'message' => __('messages.Order Not Exist')], 400);
+
         event(new clientnotify($order, 'Thank You'));
         if ($order)
             return response()->json(['success' => true, 'data' => new  OrderResource($order)], 200);
@@ -534,8 +642,8 @@ class OrderController extends Controller
         }
         $order = Order::find($request->order_id);
         if ($order) {
-           $order->update(['rate'=>$request->rate,'review'=>$request->review]);
-        } 
+            $order->update(['rate' => $request->rate, 'review' => $request->review]);
+        }
 
         return response()->json(['success' => true, 'data' => 'Done'], 200);
     }
@@ -588,7 +696,7 @@ class OrderController extends Controller
     //         'title'         => 'required|string|max:255',
     //         'description'   => 'nullable|string|max:255',
     //     ]);
-        
+
     //     if ($request->name) {
     //         $tokens = Token::where('type', $request->type)->whereHas('user', function ($query) use($request) {
     //             $query->where('name', 'LIKE', '%' . $request->name . '%');

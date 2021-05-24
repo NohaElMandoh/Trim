@@ -127,7 +127,10 @@ Route::group(['namespace' => 'Api'], function () {
         Route::post('user/reset-password', 'UserController@sendResetLinkEmail');
         Route::post('user/new-password', 'UserController@newPassword');
 
-
+        //all governorates
+        Route::get('governorates', 'MainController@governorates');
+        //all cities
+        Route::post('cities', 'MainController@cities');
 
 
         Route::group(['middleware' => 'auth:api'], function () {

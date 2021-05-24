@@ -108,7 +108,7 @@ class User extends Authenticatable
             ->orderBy('distance')
             ->role('salon')
             ->with('tokens')
-            ->get();
+            ->paginate(10);
     }
 
     public function coupons()

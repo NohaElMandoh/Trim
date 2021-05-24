@@ -99,7 +99,7 @@ class UserController extends Controller
             ]);
             if ($result > 0) {
                 $smsStatus = "";
-                // $smsStatus = $this->send($user->phone, $user->sms_token);
+                $smsStatus = $this->send($user->phone, $user->sms_token);
 
                 $token = $user->createToken('Myapp')->accessToken;
                 return response()->json(['success' => true, 'data' => ['token' => $token, 'user' => new UserResource($user), 'smsStatus' => $smsStatus]], 200);
@@ -124,7 +124,11 @@ class UserController extends Controller
         if ($validator->fails()) {
             return response()->json(['success' => false, 'errors' => $validator->errors()], 402);
         }
-
+        $phone = '+2' . $request->phone;
+        $user_with_phone = User::where('phone', $phone)->first();
+        if ($user_with_phone) {
+            return response()->json(['success' => false, 'message' => __('messages.phone taken before')], 400);
+        } else {
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
@@ -134,13 +138,13 @@ class UserController extends Controller
             'city_id' => $request->city_id,
             'governorate_id' => $request->governorate_id,
             'sms_token' => random_int(0, 9) . random_int(0, 9) . random_int(0, 9) . random_int(0, 9) . random_int(0, 9),
-        ]);
+        ]);}
         $token = $user->createToken('Myapp');
 
         $role = config('permission.models.role')::where('name', $request->type)->firstOrFail();
         $user->roles()->attach($role);
         $smsstatus = "";
-        // $smsstatus = $this->send($user->phone, $user->sms_token);
+        $smsstatus = $this->send($user->phone, $user->sms_token);
 
 
         return response()->json(['success' => true, 'data' => ['token' => $token, 'user' => new UserResource($user), 'sms status' => $smsstatus]], 200);
@@ -417,6 +421,7 @@ class UserController extends Controller
     {
 
         return $this->send('201224201414', '123');
+
     }
     public function send($mobile, $code)
     {
