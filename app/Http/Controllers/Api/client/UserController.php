@@ -341,8 +341,7 @@ class UserController extends Controller
         $resource = new Collection($notifications, new NotificationTransformer);
         $resource->setPaginator(new IlluminatePaginatorAdapter($paginator));
         return response_api($this->fractal->createData($resource)->toArray());
-        // $notifications = auth()->user()->notifications()->latest()->get();
-        // return $notifications;
+      
     }
 
     public function read_notification(Request $request)
