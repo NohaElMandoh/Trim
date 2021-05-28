@@ -488,7 +488,7 @@ class UserController extends Controller
                 'language' => 2,
                 'sender' => 'Beauty',
                 'mobile' =>  $mobile,
-                'message' => 'Your verification code is : ' . $code . ''
+                'message' => 'Trim code is : ' . $code . ''
             ],
             [
                 'Content-Type: application/json',

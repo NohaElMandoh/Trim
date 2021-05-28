@@ -48,5 +48,7 @@ return [
     'this notification may be deleted or not exist'=>'This Notification May Be Deleted Or Not Exist',
     'Order Does Not Belongs To You'=>'Order Does Not Belongs To You',
     'verification code'=>'Your Verification code is',
-    'you already used this coupone before'=>'you already used this coupone before'
+    'you already used this coupone before'=>'you already used this coupone before',
+    'member deleted successfully'=>'Member Deleted Successfully',
+    'Member Not Exist'=>'Member Not Exist'
 ];

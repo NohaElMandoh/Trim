@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\salon;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\SalonResource;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -414,7 +415,7 @@ class UserController extends Controller
         }
 
 
-        return response()->json(['success' => true, 'data' => new UserResource(User::find(auth()->id()))], 200);
+        return response()->json(['success' => true, 'data' => new SalonResource(User::find(auth()->id()))], 200);
     }
 
     public function sms(Request $request)

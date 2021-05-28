@@ -43,6 +43,7 @@ class ServiceController extends Controller
      */
     public function store(Request $request)
     {
+      
         validate_trans($request, [
             'name'  => 'required|string|max:255',
             'description'  => 'nullable|string|max:255',
@@ -92,6 +93,7 @@ class ServiceController extends Controller
      */
     public function update(Request $request, $id)
     {
+       
         validate_trans($request, [
             'name'  => 'required|string|max:255',
             'description'  => 'nullable|string|max:255',

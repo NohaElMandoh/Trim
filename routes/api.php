@@ -141,11 +141,19 @@ Route::group(['namespace' => 'Api'], function () {
 
             Route::post('user/profile', 'UserController@profile');
 
-            // ---add work days---
+            // ---work days---
             Route::post('work_days', 'UserController@work_days');
             Route::post('days', 'UserController@days');
-            // --------add services
+            // --------services
             Route::post('addService', 'ServiceController@addService');
+            Route::get('allServices', 'ServiceController@services');
+
+             // -------- Members
+             Route::post('addMember', 'MemberController@addMember');
+             Route::get('allMembers', 'MemberController@members');
+             Route::post('deleteMember', 'MemberController@deleteMember');
+
+             
             // -------
             Route::get('offers', 'OfferController@offers');
             // -------

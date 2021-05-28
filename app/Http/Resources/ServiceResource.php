@@ -27,7 +27,7 @@ class ServiceResource extends JsonResource
             'for_children' => $this->for_children,
             'title_en'=>(!empty($this->title)) ?$this->title:"" ,
             'title_ar' =>  (!empty($this->title)) ?$this->translate('ar')->title:"" ,
-            'description_en'=>(!empty($this->description)) ?$this->title:"" ,
+            'description_en'=>(!empty($this->description)) ?$this->description:"" ,
             'description_ar' =>  (!empty($this->description)) ? $this->translate('ar')->description:"",
             'qty'=>(!empty($this->pivot)) ?$this->pivot->qty:""
           
