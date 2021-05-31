@@ -34,8 +34,8 @@ class MainController extends Controller
     public function mainLists(Request $request)
     {
         $lastOffers = Offer::latest()->get();
-        $mostSearchedSalons = User::role('salon')->orderBy('search')->paginate(10);
-        $trimStars = User::role('captain')
+        $mostSearchedSalons = User::role('salon')->where('gender',auth()->user()->gender)->orderBy('search')->paginate(10);
+        $trimStars = User::role('captain')->where('gender',auth()->user()->gender)
             ->distinct('users.id')
             ->select(DB::raw('avg(rate) as rate,users.id,users.name,users.image,users.cover'))
             ->join('rates', 'rates.salon_id', '=', 'users.id')
