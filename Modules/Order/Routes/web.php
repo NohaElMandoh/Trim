@@ -20,9 +20,9 @@ Route::group(
         Route::group(['prefix' => 'dashboard', 'middleware' => ['auth', 'dashboard']], function () {
 
 
-            // Route::get('salon_orders/{id}/messages', 'OqController@messages')->name('salon_orders.messages');
-            // Route::get('salon_orders/{id}/status', 'OqController@status')->name('salon_orders.status');
-            // Route::post('salon_orders/{id}/status', 'OqController@post_status');
+            Route::get('salon_orders/{id}/messages', 'OqController@messages')->name('salon_orders.messages');
+            Route::get('salon_orders/{id}/status', 'OqController@status')->name('salon_orders.status');
+            Route::post('salon_orders/{id}/status', 'OqController@post_status');
             Route::resource('salon_orders', 'SalonOrderController');
 
             Route::get('captain_orders/{id}/messages', 'CaptainOrderController@messages')->name('captain_orders.messages');
