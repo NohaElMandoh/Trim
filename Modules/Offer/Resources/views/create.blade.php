@@ -30,6 +30,18 @@
             </div>
         </div>
         <div class="form-group form-md-line-input">
+            <label class="col-md-2 control-label">Service</label>
+            <div class="col-md-10">
+                <select class="js-example-basic-single js-states form-control" id="service_id" name="service_id">
+                    @foreach(\Modules\Service\Entities\Service::where('salon_id',Auth::user()->id)->latest()->get() as $service) 
+                       
+                    <option value="{{ $service->id }}" >{{ $service->title }}</option>
+                    @endforeach
+                </select>
+                <div class="form-control-focus"> </div>
+            </div>
+        </div>
+        <div class="form-group form-md-line-input">
             <label class="col-md-2 control-label">{{ ucfirst(__('category')) }}</label>
             <div class="col-md-10">
                 <select class="js-example-basic-single js-states form-control" id="category_id" name="category_id">

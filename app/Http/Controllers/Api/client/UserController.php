@@ -141,10 +141,12 @@ class UserController extends Controller
                 'gender' => $request->gender,
                 'password' => bcrypt($request->password),
                 'sms_token' => random_int(0, 9) . random_int(0, 9) . random_int(0, 9) . random_int(0, 9) . random_int(0, 9),
+                'image'=>'uploads/user.png',
+                'cover'=>'uploads/cover.png'
             ]);
             $token = $user->createToken('Myapp');
             $smsstatus = "";
-            $smsstatus = $this->send($user->phone, $user->sms_token);
+            // $smsstatus = $this->send($user->phone, $user->sms_token);
 
             return response()->json(['success' => true, 'data' => ['token' => $token, 'user' => new UserResource($user), 'sms status' => $smsstatus]], 200);
         }
@@ -172,7 +174,8 @@ class UserController extends Controller
         } else {
             $data = $request->all();
             $data['sms_token'] = random_int(0, 9) . random_int(0, 9) . random_int(0, 9) . random_int(0, 9) . random_int(0, 9);
-
+            $data[ 'image']='uploads/user.png';
+            $data[ 'cover']='uploads/cover.png';
             $user = User::create($data);
             $token = $user->createToken('Myapp');
       

@@ -20,8 +20,8 @@ class OfferResource extends JsonResource
          
             'id' => $this->id,
             'name_en'=>$this->name,
-            'name_ar' =>  $this->translate('ar')->name,
-            'description_ar' =>  $this->translate('ar')->description,
+            'name_ar' => (!empty($this->translate('ar')->name))? $this->translate('ar')->name:'',
+            'description_ar' =>  (!empty($this->translate('ar')->description))? $this->translate('ar')->description:'',
             'description_en'=>$this->description,
             'price' => $this->price,
             'image' => route('file_show', $this->image),

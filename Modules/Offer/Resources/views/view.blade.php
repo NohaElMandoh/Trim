@@ -6,6 +6,10 @@
     <div class="panel-body">{{ $row->name }}</div>
 </div>
 <div class="panel panel-default">
+    <div class="panel-heading">Service</div>
+    <div class="panel-body">{{ $row->service->title }}</div>
+</div>
+<div class="panel panel-default">
     <div class="panel-heading">{{ __('Description') }}</div>
     <div class="panel-body">{{ $row->description }}</div>
 </div>

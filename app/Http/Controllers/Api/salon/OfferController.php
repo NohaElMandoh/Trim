@@ -37,8 +37,48 @@ class OfferController extends Controller
     public function offers(Request $request)
     {
         $offers = Offer::latest()->paginate(10);
-       return response()->json(['success' => true, 'data' =>  OfferResource::collection($offers)->response()->getData(true)], 200);
+        return response()->json(['success' => true, 'data' =>  OfferResource::collection($offers)->response()->getData(true)], 200);
+    }
+    public function services(Request $request)
+    {
+        $services = $request->user()->service()->latest()->get();
+        return response()->json(['success' => true, 'data' =>  ServiceResource::collection($services)->response()->getData(true)], 200);
+    }
+    public function addOffer(Request $request)
+    {
+        validate_trans($request, [
+            'name'  => 'required|string|max:255',
+         
+        ]);
+        $validation = validator()->make($request->all(), [
+            'name'  => 'required|string|max:255',
+            'price' => 'required',
+            'service_id' => 'required|exists:services,id',
+            'category_id' => 'required',
+        ]);
 
-       
+        if ($validation->fails()) {
+            $data = $validation->errors();
+            return response()->json(['errors' => $data, 'success' => false], 402);
+        }
+        $data   = $request->all();
+        $service = Service::find($request->service_id);
+        if ($service)
+            $data['service_price']  = $service->price;
+        else
+            return response()->json(['success' => false, 'message' => __('messages.Service Not Exist')], 400);
+
+        $service = $request->user()->offers()->create($data);
+        if ($request->hasFile('image')) {
+            $path = public_path();
+            $destinationPath = $path . '/uploads/offers/'; // upload path
+            $photo = $request->file('image');
+            $extension = $photo->getClientOriginalExtension(); // getting image extension
+            $name = time() . '' . rand(11111, 99999) . '.' . $extension; // renameing image
+            $photo->move($destinationPath, $name); // uploading file to given path
+            $service->update(['image' => 'uploads/offers/' . $name]);
+        }
+      
+        return response()->json(['success' => true, 'data' => new OfferResource($service)], 200);
     }
 }

@@ -12,7 +12,7 @@ class Offer extends Model implements TranslatableContract
     use Translatable, SoftDeletes;
     
     public $translatedAttributes = ['name', 'description'];
-    protected $fillable = ['price', 'user_id', 'image', 'is_sponsored', 'category_id'];
+    protected $fillable = ['price', 'user_id', 'image', 'is_sponsored', 'category_id','service_id','service_price'];
     protected $dates = ['deleted_at'];
 
     public function user() {
@@ -25,5 +25,8 @@ class Offer extends Model implements TranslatableContract
     public function cart()
     {
         return $this->morphMany('App\Cart', 'item');
+    }
+    public function service() {
+        return $this->belongsTo('Modules\Service\Entities\Service');
     }
 }

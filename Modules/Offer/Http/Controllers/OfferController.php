@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
 use Modules\Offer\Entities\Offer;
+use Modules\Service\Entities\Service;
 
 class OfferController extends Controller
 {
@@ -51,12 +52,17 @@ class OfferController extends Controller
             'image'         => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'user_id'       => 'required|exists:users,id',
             'price'         => 'required|numeric',
-            'category_id'   => 'required|exists:categories,id'
+            'category_id'   => 'required|exists:categories,id',
+            'service_id' => 'required|exists:services,id',
         ]);
 
         $data   = $request->all();
         // $data['image']  = upload_image($request, 'image', 800, 400);
         $data['is_sponsored']  = (boolean) $request->is_sponsored; 
+        $service=Service::find($request->service_id);
+        if($service)
+        $data['service_price']  =$service->price; 
+
       $row=  Offer::create($data);
       if ($request->hasFile('image')) {
         $path = public_path();

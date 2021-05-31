@@ -62,7 +62,7 @@ class CaptainController extends Controller
         $data['is_sponsored']  = (bool) $request->is_sponsored;
         $data['password']   = bcrypt($request->password);
         $data['is_active']  = (bool) $request->is_active;
-        $data['image']      = $request->hasFile('image') ? upload_image($request, 'image', 200, 200) : 'captain.png';
+        // $data['image']      = $request->hasFile('image') ? upload_image($request, 'image', 200, 200) : 'captain.png';
         $data['id_photo']   = upload_file($request, 'id_photo');
         $row                = User::create($data);
         $captain            = config('permission.models.role')::where('name', 'captain')->firstOrFail();

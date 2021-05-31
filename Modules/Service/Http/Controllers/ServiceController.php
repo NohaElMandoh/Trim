@@ -58,6 +58,8 @@ class ServiceController extends Controller
 
         $data   = $request->all();
         $data['for_children'] = (boolean) $request->for_children;
+        $data['salon_id']=$request->user()->id;
+
         Service::create($data);
 
         return redirect()->route('services.index')->with(['status' => 'success', 'message' => __('Stored successfully')]);
@@ -108,6 +110,7 @@ class ServiceController extends Controller
 
         $data   = $request->all();
         $data['for_children'] = (boolean) $request->for_children;
+        $data['salon_id']=$request->user()->id;
         $row    = Service::findOrFail($id);
         $row->update($data);
 

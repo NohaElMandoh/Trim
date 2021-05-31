@@ -40,12 +40,14 @@ class ServiceController extends Controller
         ]);
 
         $validation = validator()->make($request->all(), [
-            'en' => 'required|array',
-            'en.title' => 'required',
-            'en.description' => 'required',
-            'ar' => 'required|array',
-            'ar.title' => 'required',
-            'ar.description' => 'required',
+            // 'en' => 'required|array',
+            // 'en.title' => 'required',
+            // 'en.description' => 'required',
+            // 'ar' => 'required|array',
+            // 'ar.title' => 'required',
+            // 'ar.description' => 'required',
+            'title'  => 'required|string|max:255',
+            'description'  => 'nullable|string|max:255',
             'price_type'    => 'required|in:normal,range',
             'gender'        => 'required|in:male,female',
             'price'         => 'nullable|required_if:price_type,normal|numeric',

@@ -154,8 +154,13 @@ Route::group(['namespace' => 'Api'], function () {
              Route::post('deleteMember', 'MemberController@deleteMember');
 
              
-            // -------
+            // -------offers
             Route::get('offers', 'OfferController@offers');
+            Route::get('services', 'OfferController@services');
+            Route::post('addOffer', 'OfferController@addOffer');
+
+
+            
             // -------
             Route::post('orders', 'OrderController@orders');
             Route::post('order', 'OrderController@order');
@@ -166,6 +171,9 @@ Route::group(['namespace' => 'Api'], function () {
             Route::post('allCategories', 'ProductsController@allCategories');
             Route::post('products', 'ProductsController@products');
             Route::post('newOrder', 'OrderController@newOrder');
+            ///cources
+            Route::post('courses', 'CourseController@courses');
+            
         });
         Route::post('sms', 'UserController@sms');
     });
