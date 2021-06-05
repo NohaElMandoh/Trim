@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\salon;
 
 use App\CourseReservation;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\CourseReservationsResource;
 use App\Http\Resources\CourseResource;
 use App\Http\Resources\ServiceResource;
 use App\User;
@@ -66,9 +67,9 @@ class CourseController extends Controller
             $data['price'] = $price;
         }
 
-        $reservation = $request->user()->courseReservation($data);
+        $reservation = $request->user()->courseReservation()->create($data);
 
-        // return  $reservation;
-        return response()->json(['success' => true, 'data' => new CourseResource($reservation)], 200);
+        // return    $reservation ;
+        return response()->json(['success' => true, 'data' => new CourseReservationsResource($reservation)], 200);
     }
 }

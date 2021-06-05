@@ -21,4 +21,9 @@ class CourseReservation extends Model
     {
         return $this->belongsTo('App\User');
     }
+    public function governorate()
+    {
+        return $this->belongsTo('Modules\Governorate\Entities\Governorate');
+    }
+  
 }

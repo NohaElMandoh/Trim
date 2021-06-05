@@ -115,14 +115,28 @@ class UserController extends Controller
             'governorate_id'=> 'required|exists:governorates,id',
             'city_id'       => 'required|exists:cities,id',
         ]);
-
+        $phone = '+2' . $request->phone;
+        $user_with_phone = User::where('phone', $phone)->first();
+        if ($user_with_phone) {
+            return response()->json(['success' => false, 'message' => __('messages.phone taken before')], 400);
+        }
         $data               = $request->all();
         $data['is_active']  = (bool) $request->is_active;
-        if ($request->hasFile('image'))
-            $data['image']      = upload_image($request, 'image', 200, 200);
+        // if ($request->hasFile('image'))
+        //     $data['image']      = upload_image($request, 'image', 200, 200);
+       
         $row               = User::findOrFail($id);
         $row->update($data);
         $row->roles()->sync($request->roles);
+        if ($request->hasFile('image')) {
+            $path = public_path();
+            $destinationPath = $path . '/uploads/salon/'; // upload path
+            $photo = $request->file('image');
+            $extension = $photo->getClientOriginalExtension(); // getting image extension
+            $name = time() . '' . rand(11111, 99999) . '.' . $extension; // renameing image
+            $photo->move($destinationPath, $name); // uploading file to given path
+            $row->update(['image' => 'uploads/salon/' . $name]);
+        }
         return redirect()->route('users.index')->with(['status' => 'success', 'message' => __('Updated successfully')]);
     }
 

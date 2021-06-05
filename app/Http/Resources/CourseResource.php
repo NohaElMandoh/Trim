@@ -20,10 +20,10 @@ class CourseResource extends JsonResource
         return [
 
             'id' => $this->id,
-            'name_en' => $this->translate('en')->name,
-            'name_ar' => $this->translate('ar')->name,
-            'description_en' => $this->translate('en')->description,
-            'description_ar' => $this->translate('ar')->description,
+            'name_en' => !empty($this->translate('en')->name) ? $this->translate('en')->name:'',
+            'name_ar' =>!empty($this->translate('ar')->name) ? $this->translate('ar')->name:'',
+            'description_en' =>!empty($this->translate('en')->description) ? $this->translate('en')->description:'',
+            'description_ar' => !empty($this->translate('ar')->description) ? $this->translate('ar')->description:'',
             'duration' =>  $this->duration,
             'price' =>  $this->price,
             'image' => !empty($this->image) ? url($this->image) : url('uploads/user.png'),
