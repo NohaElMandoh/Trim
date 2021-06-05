@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers\Api\salon;
 
+use App\CourseReservation;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\CourseResource;
 use App\Http\Resources\ServiceResource;
 use App\User;
 use Illuminate\Http\Request;
@@ -35,8 +37,38 @@ class CourseController extends Controller
     public function courses(Request $request)
     {
 
-        $cources =Course::get();
-return $cources;
-        // return response()->json(['success' => true, 'data' =>  ServiceResource::collection($services)->response()->getData(true)], 200);
+        $cources = Course::get();
+
+        return response()->json(['success' => true, 'data' =>  CourseResource::collection($cources)->response()->getData(true)], 200);
+    }
+    public function reserve_course(Request $request)
+    {
+        $validation = validator()->make($request->all(), [
+            'name' => 'required',
+            'type' => 'required',
+            'governorate_id' => 'required',
+            'phone' => 'required',
+            'payment_type' => 'required',
+            'course_id' => 'required',
+        ]);
+
+      
+        if ($validation->fails()) {
+            $data = $validation->errors();
+            return response()->json(['errors' => $data, 'success' => false], 402);
+        }
+        $data   = $request->all();
+
+        $course = Course::find($request->course_id);
+       
+        if ($course) {
+            $price=$course->price;
+            $data['price'] = $price;
+        }
+
+        $reservation = $request->user()->courseReservation($data);
+
+        // return  $reservation;
+        return response()->json(['success' => true, 'data' => new CourseResource($reservation)], 200);
     }
 }

@@ -28,4 +28,7 @@ class Course extends Model implements TranslatableContract
     
         return  $diffHuman;
     }
+    public function lessons() {
+        return $this->hasMany('Modules\Lesson\Entities\Lesson');
+    }
 }

@@ -141,10 +141,15 @@ class UserController extends Controller
                 'gender' => $request->gender,
                 'password' => bcrypt($request->password),
                 'sms_token' => random_int(0, 9) . random_int(0, 9) . random_int(0, 9) . random_int(0, 9) . random_int(0, 9),
-                'image'=>'uploads/user.png',
-                'cover'=>'uploads/cover.png'
+             
             ]);
             $token = $user->createToken('Myapp');
+            if($request->gender =='male')  $user->update(['image' => 'uploads/profile/m_user.png']);
+            if($request->gender =='female')  $user->update(['image' => 'uploads/profile/f_user.png']);
+
+            if($request->gender =='male')  $user->update(['cover' => 'uploads/profile/m_user.png']);
+            if($request->gender =='female')  $user->update(['cover' => 'uploads/profile/f_user.png']);
+
             $smsstatus = "";
             $smsstatus = $this->send($user->phone, $user->sms_token);
 
@@ -156,7 +161,7 @@ class UserController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'name'      => 'required|string|max:255',
-            'email'     => 'string|email|unique:users,email|max:255',
+            // 'email' => ['string', Rule::unique('users')->ignore($request->user()->id)],/
             'provider' => 'required', //facebook,gmail,...etc
             'provider_id' => 'required', //SocialUserId
             'provider_token' => 'required', // 'required',
@@ -165,6 +170,8 @@ class UserController extends Controller
         if ($validator->fails()) {
             return response()->json(['success' => false, 'errors' => $validator->errors()], 402);
         }
+       
+
         $user = User::where('provider_id', $request->provider_id)->first();
         if ($user) {
 
@@ -174,11 +181,33 @@ class UserController extends Controller
         } else {
             $data = $request->all();
             $data['sms_token'] = random_int(0, 9) . random_int(0, 9) . random_int(0, 9) . random_int(0, 9) . random_int(0, 9);
-            $data[ 'image']='uploads/user.png';
-            $data[ 'cover']='uploads/cover.png';
+            // $data[ 'image']='uploads/user.png';
+            // $data[ 'cover']='uploads/cover.png';
+
+            $user_with_email = User::where('email', $request->email)->first();
+            if ($user_with_email) {
+                return response()->json(['success' => false, 'message' => __('messages.this email registered before')], 400);
+            }
             $user = User::create($data);
             $token = $user->createToken('Myapp');
-      
+            if ($request->has('image')) {
+           
+                if ($request->hasFile('image')) {
+                    $path = public_path();
+                    $destinationPath = $path . '/uploads/profile/'; // upload path
+                    $photo = $request->file('image');
+                    $extension = $photo->getClientOriginalExtension(); // getting image extension
+                    $name = time() . '' . rand(11111, 99999) . '.' . $extension; // renameing image
+                    $photo->move($destinationPath, $name); // uploading file to given path
+                    $user->update(['image' => 'uploads/profile/' . $name]);
+                    $user->update(['cover' => 'uploads/profile/' . $name]);
+                }
+            }else    {
+                $user->update(['image' => 'uploads/profile/m_user.png']);
+                $user->update(['cover' => 'uploads/profile/m_user.png']);
+
+            }
+    
             try {
                 $s=  Mail::send('emails.verify', ['code' => $data['sms_token'] ], function ($mail) use ($user) {
                       $mail->from('basic@trim.style', 'Trim');
@@ -192,7 +221,7 @@ class UserController extends Controller
                  return response()->json(['success' => false, 'message' => __('messages.Try Again Later')], 400);
               }
              
-          
+       
             return response()->json(['success' => true, 'data' => ['token' => $token->accessToken, 'user' => new UserResource($user)]], 200);
         }
     }

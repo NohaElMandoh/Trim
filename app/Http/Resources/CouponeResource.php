@@ -23,7 +23,7 @@ class CouponeResource extends JsonResource
             'title_en' => $this->translate('en')->title,
             'title_ar' => $this->translate('ar')->title,
             'duration' =>  $this->duration,
-            'price' =>  $this->duration,
+            'price' =>  $this->price,
             'city_en' => $this->city->name,
             'city_ar' =>  $this->city->translate('ar')->name,
             'governorate_en' => $this->governorate->name,

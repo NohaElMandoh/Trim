@@ -131,6 +131,10 @@ class User extends Authenticatable
     {
         return $this->hasMany('App\Favorite');
     }
+    public function courseReservation()
+    {
+        return $this->hasMany('App\CourseReservation');
+    }
     public function favorities2()
     {
         return $this->belongsToMany('App\User', 'favorites','salon_id','user_id')->withpivot('is_fav')->withTimestamps();

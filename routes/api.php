@@ -173,6 +173,8 @@ Route::group(['namespace' => 'Api'], function () {
             Route::post('newOrder', 'OrderController@newOrder');
             ///cources
             Route::post('courses', 'CourseController@courses');
+            Route::post('reserve_course', 'CourseController@reserve_course');
+
             
         });
         Route::post('sms', 'UserController@sms');
