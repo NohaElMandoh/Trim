@@ -124,7 +124,9 @@ Route::group(['namespace' => 'Api'], function () {
         //reset password
 
         Route::post('resetPassword', 'UserController@resetPassword');
+        Route::post('resendSmsCode', 'UserController@resendSmsCode');
 
+        
         Route::post('user/reset-password', 'UserController@sendResetLinkEmail');
         Route::post('user/new-password', 'UserController@newPassword');
 

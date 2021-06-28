@@ -45,6 +45,7 @@ return [
     'coupone not in your list'=>'This Coupone Not In Your List',
     'work days updated'=>'Your Work Days Updated Successfully',
     'phone taken before'=>'Phone Taken Before',
+    'phone not exist'=>'Phone Not Exist',
     'this notification may be deleted or not exist'=>'This Notification May Be Deleted Or Not Exist',
     'Order Does Not Belongs To You'=>'Order Does Not Belongs To You',
     'verification code'=>'Your Verification code is',

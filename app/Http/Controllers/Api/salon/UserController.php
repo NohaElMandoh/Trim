@@ -130,16 +130,17 @@ class UserController extends Controller
         if ($user_with_phone) {
             return response()->json(['success' => false, 'message' => __('messages.phone taken before')], 400);
         } else {
-        $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'phone' => '+2' . $request->phone,
-            'gender' => $request->gender,
-            'password' => bcrypt($request->password),
-            'city_id' => $request->city_id,
-            'governorate_id' => $request->governorate_id,
-            'sms_token' => random_int(0, 9) . random_int(0, 9) . random_int(0, 9) . random_int(0, 9) . random_int(0, 9),
-        ]);}
+            $user = User::create([
+                'name' => $request->name,
+                'email' => $request->email,
+                'phone' => '+2' . $request->phone,
+                'gender' => $request->gender,
+                'password' => bcrypt($request->password),
+                'city_id' => $request->city_id,
+                'governorate_id' => $request->governorate_id,
+                'sms_token' => random_int(0, 9) . random_int(0, 9) . random_int(0, 9) . random_int(0, 9) . random_int(0, 9),
+            ]);
+        }
         $token = $user->createToken('Myapp');
 
         $role = config('permission.models.role')::where('name', $request->type)->firstOrFail();
@@ -149,6 +150,36 @@ class UserController extends Controller
 
 
         return response()->json(['success' => true, 'data' => ['token' => $token, 'user' => new UserResource($user), 'sms status' => $smsstatus]], 200);
+    }
+    // Resend sms code api
+    public function resendSmsCode(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+
+            'phone'     => ['required', 'string',  'unique:users,phone', 'min:11', 'max:11'],
+
+        ]);
+        if ($validator->fails()) {
+            return response()->json(['success' => false, 'errors' => $validator->errors()], 402);
+        }
+        $phone = '+2' . $request->phone;
+        $user_with_phone = User::where('phone', $phone)->first();
+        $smsstatus = "";
+        if ($user_with_phone) {
+
+            $user_with_phone->update([
+                'is_active' => 0,
+                'sms_token' => random_int(0, 9) . random_int(0, 9) . random_int(0, 9) . random_int(0, 9) . random_int(0, 9),
+            ]);
+            $user = User::where('phone', $phone)->first();
+            $smsstatus = $this->send($user->phone, $user->sms_token);
+
+            $token = $user->createToken('Myapp');
+
+            return response()->json(['success' => true, 'data' => ['token' => $token, 'user' => new UserResource($user), 'sms status' => $smsstatus]], 200);
+        } else {
+            return response()->json(['success' => false, 'message' => __('messages.phone not exist')], 400);
+        }
     }
 
     // Activate api
@@ -226,7 +257,7 @@ class UserController extends Controller
     }
     public function days(Request $request)
     {
-     
+
         $obj = (object) array(
             '0' => __('Sunday'),
             '1' => __('Monday'),
@@ -237,7 +268,6 @@ class UserController extends Controller
             '6' => __('Saturday')
         );
         return response()->json(['success' => true, 'data' =>  $obj], 200);
-        
     }
     public function work_days(Request $request)
     {
@@ -256,12 +286,12 @@ class UserController extends Controller
         $captain = User::where('id', $request->user()->id)->first();
 
         if ($request->has('days')) {
-            foreach ($captain->works as $s){
+            foreach ($captain->works as $s) {
                 $s->delete();
             }
             foreach ($request->days as $day) {
-               
-                    $captain->works()->create($day);
+
+                $captain->works()->create($day);
             }
             // $captain->works()->sync($request->days, true);;
             // $w_day = $captain->works()->where('day', $day['day'])->first();
@@ -422,7 +452,6 @@ class UserController extends Controller
     {
 
         return $this->send('201224201414', '123');
-
     }
     public function send($mobile, $code)
     {
@@ -435,7 +464,7 @@ class UserController extends Controller
                 'language' => 2,
                 'sender' => 'Beauty',
                 'mobile' =>  $mobile,
-                'message' => 'Your verification code is : ' . $code . ''
+                'message' => 'Trim code is : ' . $code . ''
             ],
             [
                 'Content-Type: application/json',
