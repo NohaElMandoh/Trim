@@ -261,6 +261,11 @@
                                 @endcomponent
                             </ul>
                         </li>
+                                            
+                        <li @if(url()->current() == route('subscription.index')) class="active" @endif>
+                                <a href="{{ route('subscription.index') }}">
+                                    <i class="fa fa-cogs"></i> <span>{{ __('subscription')}}</span></a></li>
+                               
                     </ul>
                 </section>
                 <!-- /.sidebar -->

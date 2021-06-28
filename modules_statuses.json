@@ -18,5 +18,7 @@
     "Branch": true,
     "Service": true,
     "Course": true,
-    "Lesson": true
+    "Lesson": true,
+    "Price": true,
+    "Subscription": true
 }

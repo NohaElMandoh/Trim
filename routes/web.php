@@ -42,5 +42,7 @@ Route::group(
         Route::post('password/email', 'Auth\ForgotPasswordController@sendResetLinkEmail')->name('password.email');
         Route::post('password/reset', 'Auth\ResetPasswordController@reset');
     }
+
 );
 Route::get('files/{filename?}', 'HomeController@file_show')->name('file_show');
+// Route::resource('subscriptions', '\Modules\Subscription\Http\Controllers\SubscriptionController');

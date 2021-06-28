@@ -23,7 +23,7 @@ class PermissionsTableSeeder extends Seeder
             'email', 'product', 'offer',
             'coupon', 'feature', 'screenshot',
             'city', 'governorate', 'salon', 'branch',
-            'service', 'course', 'lesson'
+            'service', 'course', 'lesson','subscriptions'
         ];
 
         foreach($models as $model) {

@@ -384,6 +384,21 @@ class OrderController extends Controller
             return response()->json(['success' => false, 'message' => __('messages.Try Again Later')], 400);
         // } else  return response()->json(['success' => false, 'message' => __('messages.salon not exist')], 400);
     }
+    public function checkout(Request $request){
+
+        $validation = validator()->make($request->all(), [
+            'payment_id' => 'required',
+            'status' => 'required|in:success,failed',
+        
+           
+        ]);
+
+        if ($validation->fails()) {
+            $data = $validation->errors();
+            return response()->json(['errors' => $data, 'success' => false], 402);
+        }
+
+    }
     public function  getCoupone(Request $request)
     {
         $validation = validator()->make($request->all(), [

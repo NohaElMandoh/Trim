@@ -81,8 +81,9 @@ Route::group(['namespace' => 'Api'], function () {
             Route::post('newOrderWithService', 'OrderController@newOrderWithService');
             Route::post('newOrderWithOffer', 'OrderController@newOrderWithOffer');
             Route::post('newOrderWithProduct', 'OrderController@newOrderWithProduct');
+            Route::post('checkout', 'OrderController@checkout');
 
-
+            
             Route::post('updateOrder', 'OrderController@updateOrder');
             Route::get('myOrders', 'OrderController@myOrders');
             Route::post('order', 'OrderController@order');
