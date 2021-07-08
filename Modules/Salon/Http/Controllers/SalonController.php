@@ -3,11 +3,13 @@
 namespace Modules\Salon\Http\Controllers;
 
 use App\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
 use Illuminate\Validation\Rule;
 use Modules\Salon\Entities\WorkDay;
+use Modules\Subscription\Entities\Subscription;
 
 class SalonController extends Controller
 {
@@ -45,7 +47,9 @@ class SalonController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
+
+       
+       $request->validate([
             'name'          => 'required|string|max:255',
             'description'   => 'nullable|string|max:255',
             'email'         => 'required|string|email|unique:users,email|max:255',
@@ -55,19 +59,21 @@ class SalonController extends Controller
             'cover'         => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'commercial_register'      => 'required|file|max:2048',
             'gender'        => 'required|in:male,female',
-            'governorate_id'=> 'required|exists:governorates,id',
+            'governorate_id' => 'required|exists:governorates,id',
             'city_id'       => 'required|exists:cities,id',
             'works'         => 'required|array',
             'works.*.from'  => 'required|string|max:255',
             'works.*.to'    => 'required|string|max:255',
             'services'      => 'nullable|array',
-            'services.*'    => 'required|exists:services,id'
+            'services.*'    => 'required|exists:services,id',
+            // 'subscription_id' => 'required|exists:subscriptions,id',
+            // 'from' => 'required',
         ]);
-
+        // return $request->all();
         $data               = $request->all();
         $data['password']   = bcrypt($request->password);
         $data['is_active']  = (bool) $request->is_active;
-        $data['is_sponsored']  = (boolean) $request->is_sponsored; 
+        $data['is_sponsored']  = (bool) $request->is_sponsored;
         // $data['image']      = $request->hasFile('image') ? upload_image($request, 'image', 200, 200) : 'salon.png';
         // $data['cover']      = $request->hasFile('cover') ? upload_image($request, 'cover', 800, 400) : 'salon.png';
         $data['commercial_register']   = upload_file($request, 'commercial_register');
@@ -75,9 +81,32 @@ class SalonController extends Controller
         $salon              = config('permission.models.role')::where('name', 'salon')->firstOrFail();
         $row->roles()->attach($salon);
         $row->services()->sync($request->services);
-        if($request->works) {
-            foreach($request->works as $work) {
+        if ($request->works) {
+            foreach ($request->works as $work) {
                 $row->works()->create($work);
+            }
+        }
+        $startDate = Carbon::now();
+        if ($request->has('from')) {
+            $startDate= Carbon::parse($request->from);
+
+        }
+        if ($request->has('subscription_id')) {
+            $subscription = Subscription::findOrFail('subscription_id');
+            if ($subscription) {
+            $endDate= $startDate->addMonths($subscription->months);
+
+                $data=[
+                    $subscription->id=>[
+                        'is_active'=>1,
+                        'from'=>$startDate,
+                        'to'=>   $endDate,
+                        'months'=>$subscription->months,
+                        'price'=>$subscription->price
+                    ],
+                ];
+                $row->subscription()->sync($data);
+
             }
         }
         if ($request->hasFile('image')) {
@@ -99,6 +128,8 @@ class SalonController extends Controller
             $row->update(['cover' => 'uploads/salon/' . $name]);
         }
         return redirect()->route('salons.index')->with(['status' => 'success', 'message' => __('Stored successfully')]);
+        // return redirect()->route('salons.index')->with(['status' => 'success', 'message' => __('Stored successfully')]);
+        // return redirect()->back()->withErrors(['msg', 'The Message']);
     }
 
     /**
@@ -121,7 +152,7 @@ class SalonController extends Controller
     {
         $row               = User::findOrFail($id);
         $selected          = $row->services()->pluck('services.id')->toArray();
-     
+
         return view('salon::edit', compact('row', 'selected'));
     }
 
@@ -142,7 +173,7 @@ class SalonController extends Controller
             'cover'         => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'gender'        => 'required|in:male,female',
             'commercial_register'      => 'nullable|file|max:2048',
-            'governorate_id'=> 'required|exists:governorates,id',
+            'governorate_id' => 'required|exists:governorates,id',
             'city_id'       => 'required|exists:cities,id',
             'works'         => 'required|array',
             'works.*.from'  => 'required|string|max:255',
@@ -153,13 +184,13 @@ class SalonController extends Controller
 
         $data               = $request->all();
         $data['is_active']  = (bool) $request->is_active;
-        $data['is_sponsored']  = (boolean) $request->is_sponsored; 
+        $data['is_sponsored']  = (bool) $request->is_sponsored;
         // if ($request->hasFile('image'))
         //     $data['image']      = upload_image($request, 'image', 200, 200);
-       
+
         // if ($request->hasFile('cover'))
         //     $data['cover']      = upload_image($request, 'cover', 800, 400);
-       
+
         if ($request->hasFile('commercial_register'))
             $data['commercial_register']   = upload_file($request, 'commercial_register');
 
@@ -185,8 +216,8 @@ class SalonController extends Controller
         }
         $row->services()->sync($request->services);
         WorkDay::where('user_id', $row->id)->delete();
-        if($request->works) {
-            foreach($request->works as $work) {
+        if ($request->works) {
+            foreach ($request->works as $work) {
                 $row->works()->create($work);
             }
         }

@@ -141,14 +141,14 @@ class UserController extends Controller
                 'gender' => $request->gender,
                 'password' => bcrypt($request->password),
                 'sms_token' => random_int(0, 9) . random_int(0, 9) . random_int(0, 9) . random_int(0, 9) . random_int(0, 9),
-             
+
             ]);
             $token = $user->createToken('Myapp');
-            if($request->gender =='male')  $user->update(['image' => 'uploads/profile/m_user.png']);
-            if($request->gender =='female')  $user->update(['image' => 'uploads/profile/f_user.png']);
+            if ($request->gender == 'male')  $user->update(['image' => 'uploads/profile/m_user.png']);
+            if ($request->gender == 'female')  $user->update(['image' => 'uploads/profile/f_user.png']);
 
-            if($request->gender =='male')  $user->update(['cover' => 'uploads/profile/m_user.png']);
-            if($request->gender =='female')  $user->update(['cover' => 'uploads/profile/f_user.png']);
+            if ($request->gender == 'male')  $user->update(['cover' => 'uploads/profile/m_user.png']);
+            if ($request->gender == 'female')  $user->update(['cover' => 'uploads/profile/f_user.png']);
 
             $smsstatus = "";
             $smsstatus = $this->send($user->phone, $user->sms_token);
@@ -170,7 +170,7 @@ class UserController extends Controller
         if ($validator->fails()) {
             return response()->json(['success' => false, 'errors' => $validator->errors()], 402);
         }
-       
+
 
         $user = User::where('provider_id', $request->provider_id)->first();
         if ($user) {
@@ -183,15 +183,16 @@ class UserController extends Controller
             $data['sms_token'] = random_int(0, 9) . random_int(0, 9) . random_int(0, 9) . random_int(0, 9) . random_int(0, 9);
             // $data[ 'image']='uploads/user.png';
             // $data[ 'cover']='uploads/cover.png';
-
-            $user_with_email = User::where('email', $request->email)->first();
-            if ($user_with_email) {
-                return response()->json(['success' => false, 'message' => __('messages.this email registered before')], 400);
+            if ($request->has('email')) {
+                $user_with_email = User::where('email', $request->email)->first();
+                if ($user_with_email) {
+                    return response()->json(['success' => false, 'message' => __('messages.this email registered before')], 400);
+                }
             }
             $user = User::create($data);
             $token = $user->createToken('Myapp');
             if ($request->has('image')) {
-           
+
                 if ($request->hasFile('image')) {
                     $path = public_path();
                     $destinationPath = $path . '/uploads/profile/'; // upload path
@@ -202,26 +203,24 @@ class UserController extends Controller
                     $user->update(['image' => 'uploads/profile/' . $name]);
                     $user->update(['cover' => 'uploads/profile/' . $name]);
                 }
-            }else    {
+            } else {
                 $user->update(['image' => 'uploads/profile/m_user.png']);
                 $user->update(['cover' => 'uploads/profile/m_user.png']);
-
             }
-    
+
             try {
-                $s=  Mail::send('emails.verify', ['code' => $data['sms_token'] ], function ($mail) use ($user) {
-                      $mail->from('basic@trim.style', 'Trim');
-                      $mail->bcc("nohamelmandoh@gmail.com");
-                      $mail->to($user->email, $user->name)->subject('كود تفعيل الحساب ');
-                  });
-                  
-              } catch (Throwable $e) {
-                  report($e);
-          
-                 return response()->json(['success' => false, 'message' => __('messages.Try Again Later')], 400);
-              }
-             
-       
+                $s =  Mail::send('emails.verify', ['code' => $data['sms_token']], function ($mail) use ($user) {
+                    $mail->from('basic@trim.style', 'Trim');
+                    $mail->bcc("nohamelmandoh@gmail.com");
+                    $mail->to($user->email, $user->name)->subject('كود تفعيل الحساب ');
+                });
+            } catch (Throwable $e) {
+                report($e);
+
+                return response()->json(['success' => false, 'message' => __('messages.Try Again Later')], 400);
+            }
+
+
             return response()->json(['success' => true, 'data' => ['token' => $token->accessToken, 'user' => new UserResource($user)]], 200);
         }
     }
@@ -365,15 +364,14 @@ class UserController extends Controller
     public function get_notifications(Request $request)
     {
         $user = $request->user();
-      
-        $paginator  =$user->notifications()->latest()->paginate(10);
- 
+
+        $paginator  = $user->notifications()->latest()->paginate(10);
+
         $notifications = $paginator->getCollection();
 
         $resource = new Collection($notifications, new NotificationTransformer);
         $resource->setPaginator(new IlluminatePaginatorAdapter($paginator));
         return response_api($this->fractal->createData($resource)->toArray());
-      
     }
 
     public function read_notification(Request $request)
@@ -387,8 +385,10 @@ class UserController extends Controller
         $notification = auth()->user()->notifications()->where('id', $request->id)->first();
         if ($notification) {
 
-            $notification->update([
-                'read_at'=> \Carbon\Carbon::now()]
+            $notification->update(
+                [
+                    'read_at' => \Carbon\Carbon::now()
+                ]
             );
             return response()->json(['success' => true], 200);
         } else return response()->json(['success' => false, 'message' => __('messages.this notification may be deleted or not exist')], 400);
@@ -468,7 +468,7 @@ class UserController extends Controller
         }
 
         if ($request->has('image')) {
-           
+
             if ($request->hasFile('image')) {
                 $path = public_path();
                 $destinationPath = $path . '/uploads/profile/'; // upload path

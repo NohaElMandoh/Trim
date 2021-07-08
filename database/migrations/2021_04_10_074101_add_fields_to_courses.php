@@ -27,7 +27,7 @@ class AddFieldsToCourses extends Migration
      */
     public function down()
     {
-        Schema::table('order_service', function (Blueprint $table) {
+        Schema::table('courses', function (Blueprint $table) {
           
             $table->dropColumn('from');
             $table->dropColumn('to');

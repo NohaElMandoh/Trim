@@ -18,8 +18,11 @@ class CreateSubscriptionsUsersTable extends Migration
            
             $table->integer('user_id');
             $table->integer('subsccription_id');
-
-        
+            $table->dateTime('from')->nullable();
+            $table->dateTime('to')->nullable();
+            $table->float('price')->nullable();
+            $table->integer('months');
+            $table->integer('is_active')->default(0);
             $table->timestamps();
 
         });

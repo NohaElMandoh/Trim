@@ -178,7 +178,12 @@ class User extends Authenticatable
     {
         return $this->belongsTo('Modules\City\Entities\City');
     }
+    public function subscription() {
 
+        return $this->belongsToMany('Modules\Subscription\Entities\Subscription','subscriptions_users')
+        ->withPivot('months','price','from','to','is_active');
+    }
+    
     public function works()
     {
         return $this->hasMany('Modules\Salon\Entities\WorkDay', 'user_id');
@@ -291,4 +296,8 @@ class User extends Authenticatable
     public function routeNotificationForNexmo(){
         return $this->phone;
     }
+    public function authorize()
+{
+    return true;
+}
 }

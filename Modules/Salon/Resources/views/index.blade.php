@@ -1,6 +1,7 @@
 @extends('dashboard.layouts.app')
 @section('title', __('Viewing').' '.ucfirst(__('salons')))
 @section('content')
+
 <div class="row">
     <div class="box">
         <div class="box-header">

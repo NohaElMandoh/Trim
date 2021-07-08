@@ -18,4 +18,8 @@ class Subscription extends Model  implements TranslatableContract
     public function cities() {
         return $this->hasMany('Modules\City\Entities\City');
     }
+    public function user()
+    {
+        return $this->belongsToMany('App\User','subscriptions_users');
+    }
 }
