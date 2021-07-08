@@ -189,6 +189,7 @@ class UserController extends Controller
                     return response()->json(['success' => false, 'message' => __('messages.this email registered before')], 400);
                 }
             }
+            $data['is_active']=1;
             $user = User::create($data);
             $token = $user->createToken('Myapp');
             if ($request->has('image')) {
@@ -208,17 +209,19 @@ class UserController extends Controller
                 $user->update(['cover' => 'uploads/profile/m_user.png']);
             }
 
-            try {
-                $s =  Mail::send('emails.verify', ['code' => $data['sms_token']], function ($mail) use ($user) {
-                    $mail->from('basic@trim.style', 'Trim');
-                    $mail->bcc("nohamelmandoh@gmail.com");
-                    $mail->to($user->email, $user->name)->subject('كود تفعيل الحساب ');
-                });
-            } catch (Throwable $e) {
-                report($e);
+            // try {
+            //     if($user->email){
+            //     $s =  Mail::send('emails.verify', ['code' => $data['sms_token']], function ($mail) use ($user) {
+            //         $mail->from('basic@trim.style', 'Trim');
+            //         $mail->bcc("nohamelmandoh@gmail.com");
+            //         $mail->to($user->email, $user->name)->subject('كود تفعيل الحساب ');
+            //     });
+            // }
+            // } catch (Throwable $e) {
+            //     report($e);
 
-                return response()->json(['success' => false, 'message' => __('messages.Try Again Later')], 400);
-            }
+            //     return response()->json(['success' => false, 'message' => __('messages.Try Again Later')], 400);
+            // }
 
 
             return response()->json(['success' => true, 'data' => ['token' => $token->accessToken, 'user' => new UserResource($user)]], 200);
