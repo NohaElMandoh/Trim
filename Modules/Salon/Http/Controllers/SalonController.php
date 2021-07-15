@@ -47,8 +47,7 @@ class SalonController extends Controller
      */
     public function store(Request $request)
     {
-
-       
+  
        $request->validate([
             'name'          => 'required|string|max:255',
             'description'   => 'nullable|string|max:255',
@@ -66,11 +65,12 @@ class SalonController extends Controller
             'works.*.to'    => 'required|string|max:255',
             'services'      => 'nullable|array',
             'services.*'    => 'required|exists:services,id',
-            // 'subscription_id' => 'required|exists:subscriptions,id',
-            // 'from' => 'required',
+            'subscription_id' => 'required|exists:subscriptions,id',
+            'start_date' => 'required',
         ]);
-        // return $request->all();
+       
         $data               = $request->all();
+
         $data['password']   = bcrypt($request->password);
         $data['is_active']  = (bool) $request->is_active;
         $data['is_sponsored']  = (bool) $request->is_sponsored;
@@ -86,29 +86,34 @@ class SalonController extends Controller
                 $row->works()->create($work);
             }
         }
+       
         $startDate = Carbon::now();
-        if ($request->has('from')) {
-            $startDate= Carbon::parse($request->from);
 
+        if ($request->start_date) {
+            $startDate= Carbon::parse($request->start_date);
         }
-        if ($request->has('subscription_id')) {
-            $subscription = Subscription::findOrFail('subscription_id');
+        // return $request->start_date;
+
+        if ($request->subscription_id) {
+            $subscription = Subscription::find($request->subscription_id);
             if ($subscription) {
             $endDate= $startDate->addMonths($subscription->months);
 
                 $data=[
                     $subscription->id=>[
                         'is_active'=>1,
-                        'from'=>$startDate,
-                        'to'=>   $endDate,
+                        'from'=>Carbon::parse($request->start_date),
+                        'to'=> $endDate,
                         'months'=>$subscription->months,
                         'price'=>$subscription->price
                     ],
                 ];
+              
                 $row->subscription()->sync($data);
 
             }
         }
+    
         if ($request->hasFile('image')) {
             $path = public_path();
             $destinationPath = $path . '/uploads/salon/'; // upload path
@@ -127,9 +132,9 @@ class SalonController extends Controller
             $photo->move($destinationPath, $name); // uploading file to given path
             $row->update(['cover' => 'uploads/salon/' . $name]);
         }
+      
         return redirect()->route('salons.index')->with(['status' => 'success', 'message' => __('Stored successfully')]);
-        // return redirect()->route('salons.index')->with(['status' => 'success', 'message' => __('Stored successfully')]);
-        // return redirect()->back()->withErrors(['msg', 'The Message']);
+      
     }
 
     /**
@@ -179,7 +184,9 @@ class SalonController extends Controller
             'works.*.from'  => 'required|string|max:255',
             'works.*.to'    => 'required|string|max:255',
             'services'      => 'nullable|array',
-            'services.*'    => 'required|exists:services,id'
+            'services.*'    => 'required|exists:services,id',
+            'subscription_id' => 'required|exists:subscriptions,id',
+            'start_date' => 'required',
         ]);
 
         $data               = $request->all();
@@ -196,6 +203,34 @@ class SalonController extends Controller
 
         $row                = User::findOrFail($id);
         $row->update($data);
+
+        $startDate = Carbon::now();
+
+        if ($request->start_date) {
+            $startDate= Carbon::parse($request->start_date);
+        }
+        // return $request->start_date;
+
+        if ($request->subscription_id) {
+            $subscription = Subscription::find($request->subscription_id);
+            if ($subscription) {
+            $endDate= $startDate->addMonths($subscription->months);
+
+                $data=[
+                    $subscription->id=>[
+                        'is_active'=>1,
+                        'from'=>Carbon::parse($request->start_date),
+                        'to'=> $endDate,
+                        'months'=>$subscription->months,
+                        'price'=>$subscription->price
+                    ],
+                ];
+              
+                $row->subscription()->sync($data);
+
+            }
+        }
+    
         if ($request->hasFile('image')) {
             $path = public_path();
             $destinationPath = $path . '/uploads/salon/'; // upload path

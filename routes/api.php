@@ -16,7 +16,11 @@ use Illuminate\Support\Facades\Route;
 
 
 Route::group(['namespace' => 'Api'], function () {
-    Route::group(['prefix' => 'client', 'namespace' => 'client'], function () {
+    Route::group(['prefix' => 'client'], function () {
+        Route::get('terms', 'TermsController@user_terms');
+
+        Route::group(['namespace' => 'client'], function () {
+
         ///login
         Route::post('login', 'UserController@login');
         Route::post('getVerificationCode', 'UserController@getVerificationCode');
@@ -114,8 +118,16 @@ Route::group(['namespace' => 'Api'], function () {
             Route::get('myFav_person', 'MainController@myFav_person');
         });
         Route::post('sms', 'UserController@sms');
+
+        });
+          
+        
+
     });
-    Route::group(['prefix' => 'salon', 'namespace' => 'salon'], function () {
+    Route::group(['prefix' => 'salon'], function () {
+        Route::get('terms', 'TermsController@salon_terms');
+    Route::group([ 'namespace' => 'salon'], function () {
+       
         ///login
         Route::post('login', 'UserController@login');
         Route::post('getVerificationCode', 'UserController@getVerificationCode');
@@ -182,6 +194,7 @@ Route::group(['namespace' => 'Api'], function () {
         });
         Route::post('sms', 'UserController@sms');
     });
+});
     // Setings
     Route::get('contacts', 'SettingController@contacts');
     Route::get('settings', 'SettingController@index');

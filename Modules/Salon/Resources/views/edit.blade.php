@@ -17,6 +17,30 @@
         @component('input', ['type' => 'text', 'label' => 'Phone', 'required' => true, 'value' => $row->phone])
             phone
         @endcomponent
+
+        <div class="form-group form-md-line-input">
+            <label class="col-md-2 control-label">{{ ucfirst(__('Subscription')) }}</label>
+            <div class="col-md-10">
+                <select class="js-example-basic-single js-states form-control" id="subscription_id"
+                    name="subscription_id">
+                    @foreach (\Modules\Subscription\Entities\Subscription::latest()->get() as $subscription)
+                        <option value="{{ $subscription->id }}"
+                            {{ old('subscription_id') == $subscription->id   ? 'selected' : '' }}>
+                            {{ $subscription->title }}</option>
+                    @endforeach
+                </select>
+                <div class="form-control-focus"> </div>
+            </div>
+        </div>
+        @foreach($row->subscription as $sub)
+         @if($sub->pivot->is_active ==1) 
+         @php
+             $d=\Carbon\Carbon::parse($sub->pivot->from)->format('Y-m-d');
+         @endphp
+        @component('input', ['label' => ' Start Date', 'type' => 'date','value'=>$d , 'required' => true])
+            start_date
+        @endcomponent
+        @endif @endforeach 
         @if (!empty($row->image))
         @component('input_image', ['width' => 200, 'height' => 200, 'label' => 'Image', 'src' =>  url($row->image)  ])
             image

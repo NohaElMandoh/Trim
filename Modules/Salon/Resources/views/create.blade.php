@@ -15,7 +15,7 @@
         enctype="multipart/form-data">
         @csrf
         <div class="form-body">
-            @component('input', ['type' => 'text', 'label' => 'Name', 'required' => true])
+            @component('input', ['type' => 'text', 'label' => 'Name','value'=>'Name', 'required' => true])
                 name
             @endcomponent
             @component('input', ['type' => 'textarea', 'label' => 'Description', 'required' => false])
@@ -31,7 +31,7 @@
                 password
             @endcomponent
 
-         {{--   <div class="form-group form-md-line-input">
+       <div class="form-group form-md-line-input">
                 <label class="col-md-2 control-label">{{ ucfirst(__('Subscription')) }}</label>
                 <div class="col-md-10">
                     <select class="js-example-basic-single js-states form-control" id="subscription_id"
@@ -47,16 +47,16 @@
             </div>
             @component('input', ['label' => ' Start Date', 'type' => 'date', 'required' => true])
                 start_date
-            @endcomponent--}}
+            @endcomponent
             @component('input_image', ['width' => 200, 'height' => 200, 'label' => 'Image'])
                 image
             @endcomponent
             @component('input_image', ['width' => 800, 'height' => 400, 'label' => 'Cover'])
                 cover
             @endcomponent
-           {{-- @component('input', ['type' => 'file', 'label' => 'Commercial register', 'required' => true])
+            @component('input', ['type' => 'file', 'label' => 'Commercial register', 'required' => true])
                 commercial_register
-            @endcomponent--}}
+            @endcomponent
             <div class="form-group form-md-line-input">
                 <label class="col-md-2 control-label">{{ ucfirst(__('governorate')) }}</label>
                 <div class="col-md-10">
