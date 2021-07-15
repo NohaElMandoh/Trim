@@ -11,8 +11,8 @@ class Subscription extends Model  implements TranslatableContract
 {
     use Translatable, SoftDeletes;
     
-    public $translatedAttributes = ['title'];
-    protected $fillable = ['price','months','currency'];
+    public $translatedAttributes = ['title','desc'];
+    protected $fillable = ['price','months','currency','origion_price'];
     protected $dates = ['deleted_at'];
 
     public function cities() {

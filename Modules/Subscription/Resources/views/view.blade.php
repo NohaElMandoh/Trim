@@ -6,8 +6,17 @@
     <div class="panel-body">{{ $row->title }}</div>
 </div>
 <div class="panel panel-default">
+    <div class="panel-heading">{{ __('Description') }}</div>
+    <div class="panel-body">{{ $row->desc }}</div>
+</div>
+<div class="panel panel-default">
     <div class="panel-heading">{{ __('Price') }}</div>
     <div class="panel-body">{{ $row->price }}</div>
+</div>
+<div class="panel panel-default">
+    
+    <div class="panel-heading">{{ __('Inested Of') }}</div>
+    <div class="panel-body">{{ $row->origion_price }}</div>
 </div>
 <div class="panel panel-default">
     <div class="panel-heading">{{ __('Months') }}</div>

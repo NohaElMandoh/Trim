@@ -36,11 +36,13 @@ class SubscriptionController extends Controller
     public function store(Request $request)
     {
         validate_trans($request, [
-            'title'  => 'required|string|max:255'
+            'title'  => 'required|string|max:255',
+            'desc'=> 'required',
         ]);
 
         $request->validate([
             'price'          => 'required',
+            'origion-price' => 'required',
             'months'   => 'required',
             'currency'         => 'required',
 

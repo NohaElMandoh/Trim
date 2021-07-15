@@ -7,5 +7,5 @@ use Illuminate\Database\Eloquent\Model;
 class SubscriptionTranslation extends Model
 {
     public $timestamps = false;
-    protected $fillable = ['title'];
+    protected $fillable = ['title','desc'];
 }

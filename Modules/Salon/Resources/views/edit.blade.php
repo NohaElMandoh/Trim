@@ -40,6 +40,10 @@
         @component('input', ['label' => ' Start Date', 'type' => 'date','value'=>$d , 'required' => true])
             start_date
         @endcomponent
+        @else
+        @component('input', ['label' => ' Start Date', 'type' => 'date', 'required' => true])
+        start_date
+    @endcomponent
         @endif @endforeach 
         @if (!empty($row->image))
         @component('input_image', ['width' => 200, 'height' => 200, 'label' => 'Image', 'src' =>  url($row->image)  ])

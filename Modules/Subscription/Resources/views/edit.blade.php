@@ -10,8 +10,18 @@
         @endcomponent
     </div>
     <div class="form-body">
+        @component('input_trans', ['type' => 'textarea', 'label' => 'Description', 'model' => $row,'value' => $row->desc, 'required' => false])
+            desc
+        @endcomponent
+        </div>
+    <div class="form-body">
         @component('input', ['type' => 'number', 'label' => 'Price', 'required' => true,'value' => $row->price])
             price
+        @endcomponent
+    </div>
+    <div class="form-body">
+        @component('input', ['type' => 'number', 'label' => 'Origion Price','value' => $row->origion_price, 'required' => true])
+            origion_price
         @endcomponent
     </div>
     <div class="form-body">
