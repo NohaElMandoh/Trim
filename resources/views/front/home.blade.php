@@ -184,8 +184,8 @@
 
     <!--End Section  Delivery Men ---->
     <!--  pricing area start -->
-    <section>
-        <div class="container p-5">
+
+        <div class="container p-5" style="display: none">
             <div class="row">
                 <div class="col-lg-4 col-md-12 mb-4">
                     <div class="h-100 flip-card">
@@ -297,7 +297,7 @@
 
             </div>
         </div>
-    </section>
+
     <!--  pricing area end -->
     <!--Start Section  Screen shots ---->
 
