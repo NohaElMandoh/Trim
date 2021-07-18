@@ -10,6 +10,8 @@ use Modules\Career\Entities\Career;
 use Modules\Career\Notifications\NewCareerNotification;
 use Modules\Feature\Entities\Feature;
 use Modules\Screenshot\Entities\Screenshot;
+use Modules\Subscription\Entities\Subscription;
+
 class HomeController extends Controller
 {
 
@@ -21,7 +23,8 @@ class HomeController extends Controller
     {
         $features = Feature::orderBy('order')->get();
         $screenshots = Screenshot::orderBy('order')->get();
-        return view('front.home', compact('features', 'screenshots'));
+        $subscriptions=Subscription::get();
+        return view('front.home', compact('features', 'screenshots','subscriptions'));
     }
 
     /**
