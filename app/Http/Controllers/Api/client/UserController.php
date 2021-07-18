@@ -159,6 +159,7 @@ class UserController extends Controller
     // social register
     public function socialRegister(Request $request)
     {
+      
         $validator = Validator::make($request->all(), [
             'name'      => 'required|string|max:255',
             // 'email' => ['string', Rule::unique('users')->ignore($request->user()->id)],/
@@ -176,7 +177,15 @@ class UserController extends Controller
         if ($user) {
 
             $token = $user->createToken('Myapp')->accessToken;
+            if ($request->has('image')) {
 
+                $user->update(['image' => $request->image]);
+                $user->update(['cover' => 'uploads/profile/m_user.png']);
+            } else {
+               
+                $user->update(['image' => 'uploads/profile/m_user.png']);
+                $user->update(['cover' => 'uploads/profile/m_user.png']);
+            }
             return response()->json(['success' => true, 'data' => ['token' => $token, 'user' => new UserResource($user)]], 200);
         } else {
             $data = $request->all();
@@ -194,17 +203,10 @@ class UserController extends Controller
             $token = $user->createToken('Myapp');
             if ($request->has('image')) {
 
-                if ($request->hasFile('image')) {
-                    $path = public_path();
-                    $destinationPath = $path . '/uploads/profile/'; // upload path
-                    $photo = $request->file('image');
-                    $extension = $photo->getClientOriginalExtension(); // getting image extension
-                    $name = time() . '' . rand(11111, 99999) . '.' . $extension; // renameing image
-                    $photo->move($destinationPath, $name); // uploading file to given path
-                    $user->update(['image' => 'uploads/profile/' . $name]);
-                    $user->update(['cover' => 'uploads/profile/' . $name]);
-                }
+                $user->update(['image' => $request->image]);
+                $user->update(['cover' => 'uploads/profile/m_user.png']);
             } else {
+               
                 $user->update(['image' => 'uploads/profile/m_user.png']);
                 $user->update(['cover' => 'uploads/profile/m_user.png']);
             }
