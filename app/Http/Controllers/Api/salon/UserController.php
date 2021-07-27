@@ -451,9 +451,9 @@ class UserController extends Controller
     public function comments(Request $request)
     {
         
-         $comments= $request->user()->rateSalon;
+         $comments= $request->user()->rateSalon()->paginate(10);
         // return $comments;
-        return response()->json(['success' => true, 'data' =>  CommentResource::collection($comments)], 200);
+        return response()->json(['success' => true, 'data' =>  CommentResource::collection($comments)->response()->getData(true)], 200);
     }
     public function sms(Request $request)
     {
