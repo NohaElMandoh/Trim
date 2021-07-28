@@ -27,8 +27,8 @@ class OfferResource extends JsonResource
             'image' => route('file_show', $this->image),
             'salon' => $this->user->name ,
             'is_sponsored'=>$this-> is_sponsored, 
-            'category_ar' => $this->category->translate('ar')->name,
-            'category_en' => $this->category->translate('en')->name,
+            'category_ar' =>  (!empty($this->category->translate('ar')->name))?$this->category->translate('ar')->name:'',
+            'category_en' =>  (!empty($this->category->translate('en')->name))? $this->category->translate('en')->name:'',
             'qty'=>(!empty($this->pivot)) ?$this->pivot->qty:""
       
         ];
