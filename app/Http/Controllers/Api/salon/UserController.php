@@ -470,7 +470,7 @@ class UserController extends Controller
     public function comments(Request $request)
     {
         
-         $comments= $request->user()->rateSalon()->paginate(10);
+         $comments= $request->user()->rateSalon()->get();
         // return $comments;
         return response()->json(['success' => true, 'data' =>  CommentResource::collection($comments)->response()->getData(true)], 200);
     }
