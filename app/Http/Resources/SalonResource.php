@@ -23,6 +23,7 @@ class SalonResource extends JsonResource
             'phone' => $this->phone,
             // 'image' => route('file_show', $this->image),
             'image' => !empty($this->image) ? url($this->image) : url('uploads/user.png'),
+            'cover' => !empty($this->cover) ? url($this->cover) : url('uploads/cover.png'),
             'governorate_en' => (!empty($this->governorate->name)) ? $this->governorate->name : "",
             'governorate_ar' => (!empty($this->governorate->name)) ? $this->governorate->translate('ar')->name : "",
             'city_en' => (!empty($this->city->name)) ? $this->city->name : "",

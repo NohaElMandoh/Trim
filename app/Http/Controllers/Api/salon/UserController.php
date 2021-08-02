@@ -431,13 +431,32 @@ class UserController extends Controller
         }
 
         if ($request->has('image')) {
-            $img     = $request->hasFile('image') ? upload_image($request, 'image', 200, 200) : 'user.png';
-            $request->user()->update(['image' => $img]);
+            if ($request->hasFile('image')) {
+                $path = public_path();
+                $destinationPath = $path . '/uploads/profile/'; // upload path
+                $photo = $request->file('image');
+                $extension = $photo->getClientOriginalExtension(); // getting image extension
+                $name = time() . '' . rand(11111, 99999) . '.' . $extension; // renameing image
+                $photo->move($destinationPath, $name); // uploading file to given path
+                $request->user()->update(['image' => 'uploads/profile/' . $name]);
+            }     
+            
+            // $img     = $request->hasFile('image') ? upload_image($request, 'image', 200, 200) : 'user.png';
+            // $request->user()->update(['image' => $img]);
         }
 
         if ($request->has('cover')) {
-            $cover      = $request->hasFile('cover') ? upload_image($request, 'cover', 200, 200) : 'user.png';
-            $request->user()->update(['cover' => $cover]);
+            if ($request->hasFile('cover')) {
+                $path = public_path();
+                $destinationPath = $path . '/uploads/profile/'; // upload path
+                $photo = $request->file('cover');
+                $extension = $photo->getClientOriginalExtension(); // getting cover extension
+                $name = time() . '' . rand(11111, 99999) . '.' . $extension; // renameing cover
+                $photo->move($destinationPath, $name); // uploading file to given path
+                $request->user()->update(['cover' => 'uploads/profile/' . $name]);
+            }     
+            // $cover      = $request->hasFile('cover') ? upload_image($request, 'cover', 200, 200) : 'user.png';
+            // $request->user()->update(['cover' => $cover]);
         }
 
         if ($request->has('password')) {
