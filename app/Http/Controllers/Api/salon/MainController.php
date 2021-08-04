@@ -20,6 +20,7 @@ use League\Fractal\Pagination\IlluminatePaginatorAdapter;
 use League\Fractal\Resource\Collection;
 use App\NotificationTransformer;
 use App\Rate;
+use Carbon\Carbon;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\DB;
 use Modules\City\Entities\City;
@@ -35,68 +36,35 @@ class MainController extends Controller
     }
 
     // main screen api
-    public function mainLists(Request $request)
+    public function statistics(Request $request)
     {
-        $lastOffers = Offer::latest()->get();
-        $mostSearchedSalons = User::role('salon')->orderBy('search')->paginate(10);
-        $trimStars = User::role('captain')
-            ->distinct('users.id')
-            ->select(DB::raw('avg(rate) as rate,users.id,users.name,users.image,users.cover'))
-            ->join('rates', 'rates.salon_id', '=', 'users.id')
-            ->groupBy('salon_id', 'users.id', 'users.name', 'users.image', 'users.cover')
-            ->orderBy('rate', 'desc')
-            ->get();
-
-        if ($trimStars->count() == 0) {
-
-            $trimStars = User::role('captain')->orderBy('search', 'desc')->paginate(10);
-        }
+        $allOrders = $request->user()->shop_orders()->get(); //all
+        $completedOrders = $request->user()->shop_orders()->where('status_id', 5)->get(); //delivered
+        $waitingOrders = $request->user()->shop_orders()->where('status_id', 1)->get(); //wating captin
+        $now = Carbon::now();
+        // $weekStartDate = $now->startOfWeek()->subDays(2)->format('Y-m-d H:i');//using subDays(2) to start week from satarday 
+        // $weekEndDate = $now->endOfWeek()->addDays(5)->format('Y-m-d H:i');//using addDays(5) to end week on friday
+        $from = $now->startOfWeek()->subDays(2);
+        $to = $from->addDays(6);
+        $weeklyOrders = $request->user()->shop_orders()->whereBetween('reservation_day',[date($from),date($to)])->get(); 
 
         return response()->json(['success' => true, 'data' => [
-            'mostSearchedSalons' =>  SalonResource::collection($mostSearchedSalons),
-            'trimStars' => StarsResource::collection($trimStars),
-            'lastOffers' => OfferResource::collection($lastOffers)
+            'allOrders' => $allOrders->count(),
+            'completedOrders' => $completedOrders->count(),
+            'waitingOrders' => $waitingOrders->count(),
+            'weeklyOrders' => $weeklyOrders,
+            'from'=>$from,
+            'to'=>$now->endOfWeek()->addDays(5)->format('Y-m-d H:i'),
+            'orders'=>$request->user()->shop_orders()->get()
+            
+           
         ]], 200);
     }
-    public function myFav_salon(Request $request)
+    public function lastOffers(Request $request)
     {
+        $lastOffers = Offer::latest()->get();
 
-        // $salonsIds = $request->user()->favorities()->where('pivot.is_fav',true)->pluck('salon_id')->toArray();
-        $salonsIds = $request->user()->favorities()->where(function ($q) {
-            $q->where('is_fav', 1);
-             
-        })->pluck('salon_id')->toArray();
-       
-        $salons = User::role('salon')->whereIn('id', $salonsIds)->orderBy('created_at', 'desc')->paginate(10);
-
-        return response()->json([
-            'success' => true, 'data' =>  SalonResource::collection($salons)
-        ], 200);
-    }
-    public function myFav_person(Request $request)
-    {
-
-        // $salonsIds = $request->user()->favorities()->where('pivot.is_fav',true)->pluck('salon_id')->toArray();
-        $salonsIds = $request->user()->favorities()->where(function ($q) {
-            $q->where('is_fav', 1);
-             
-        })->pluck('salon_id')->toArray();
-       
-        $salons = User::role('captain')->whereIn('id', $salonsIds)->orderBy('created_at', 'desc')->paginate(10);
-
-        return response()->json([
-            'success' => true, 'data' =>  SalonResource::collection($salons)
-        ], 200);
-    }
-
-    public function governorates()
-    {
-        $governorates = Governorate::paginate(10);
-        return response()->json(['success' => true, 'data' => GovernorateResource::collection($governorates)], 200);
-    }
-    public function cities(Request $request)
-    {
-        $cities = City::where('governorate_id',$request->governorate_id)->paginate(10);
-        return response()->json(['success' => true, 'data' => CityResource ::collection($cities)], 200);
+        return response()->json(['success' => true, 'data' =>
+        OfferResource::collection($lastOffers), 200]);
     }
 }

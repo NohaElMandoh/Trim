@@ -54,9 +54,18 @@ class CourseController extends Controller
         ]);
 
         $data   = $request->all();
-        $data['image']  = upload_image($request, 'image', 400, 400);
-        Course::create($data);
-
+        // $data['image']  = upload_image($request, 'image', 400, 400);
+      
+       $row= Course::create($data);
+       if ($request->hasFile('image')) {
+        $path = public_path();
+        $destinationPath = $path . '/uploads/courses/'; // upload path
+        $photo = $request->file('image');
+        $extension = $photo->getClientOriginalExtension(); // getting image extension
+        $name = time() . '' . rand(11111, 99999) . '.' . $extension; // renameing image
+        $photo->move($destinationPath, $name); // uploading file to given path
+        $row->update(['image' => 'uploads/courses/' . $name]);
+    }
         return redirect()->route('courses.index')->with(['status' => 'success', 'message' => __('Stored successfully')]);
     }
 
@@ -101,11 +110,19 @@ class CourseController extends Controller
         ]);
 
         $data   = $request->all();
-        if($request->hasFile('image'))
-            $data['image']  = upload_image($request, 'image', 400, 400);
+        // if($request->hasFile('image'))
+        //     $data['image']  = upload_image($request, 'image', 400, 400);
         $row    = Course::findOrFail($id);
         $row->update($data);
-
+        if ($request->hasFile('image')) {
+            $path = public_path();
+            $destinationPath = $path . '/uploads/courses/'; // upload path
+            $photo = $request->file('image');
+            $extension = $photo->getClientOriginalExtension(); // getting image extension
+            $name = time() . '' . rand(11111, 99999) . '.' . $extension; // renameing image
+            $photo->move($destinationPath, $name); // uploading file to given path
+            $row->update(['image' => 'uploads/courses/' . $name]);
+        }
         return redirect()->route('courses.index')->with(['status' => 'success', 'message' => __('Updated successfully')]);
     }
 

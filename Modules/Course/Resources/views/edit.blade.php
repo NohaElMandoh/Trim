@@ -11,7 +11,7 @@
         @component('input_trans', ['type' => 'textarea', 'label' => 'Description', 'required' => false, 'model' => $row])
             description
         @endcomponent
-        @component('input_image', ['width' => 400, 'height' => 400, 'label' => 'Image', 'src' => route('file_show', $row->image)])
+        @component('input_image', ['width' => 400, 'height' => 400, 'label' => 'Image', 'src' =>   url($row->image) ])
             image
         @endcomponent
         @component('input', ['label' => 'Price', 'type' => 'number', 'required' => true, 'value' => $row->price])

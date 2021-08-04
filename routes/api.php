@@ -151,7 +151,12 @@ Route::group(['namespace' => 'Api'], function () {
                 Route::post('user/activate', 'UserController@activate');
 
                 Route::post('user/profile', 'UserController@profile');
+                //main screen
 
+                Route::post('lastOffers', 'MainController@lastOffers');
+                Route::post('statistics', 'MainController@statistics');
+
+                
                 // ---work days---
                 Route::post('work_days', 'UserController@work_days');
                 Route::post('days', 'UserController@days');
@@ -189,7 +194,7 @@ Route::group(['namespace' => 'Api'], function () {
                 ///product
                 Route::post('allCategories', 'ProductsController@allCategories');
                 Route::post('products', 'ProductsController@products');
-       
+
                 ///cources
                 Route::post('courses', 'CourseController@courses');
                 Route::post('reserve_course', 'CourseController@reserve_course');
