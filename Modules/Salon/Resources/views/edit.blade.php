@@ -27,27 +27,45 @@
                         name="subscription_id">
                         @foreach (\Modules\Subscription\Entities\Subscription::latest()->get() as $subscription)
                             <option value="{{ $subscription->id }}"
-                                {{ old('subscription_id') == $subscription->id ? 'selected' : '' }}>
+                                @if (count($row->subscription) > 0)
+                                @foreach ($row->subscription as $sub)
+                                    @if ($sub->pivot->is_active == 1) 
+                                    {{  ($sub->pivot->subscription_id ==  $subscription->id ) ? 'selected' : '' }}
+
+                                  
+                                    @endif
+                                    @endforeach
+                                    @endif
+                             >
                                 {{ $subscription->title }}</option>
                         @endforeach
                     </select>
                     <div class="form-control-focus"> </div>
                 </div>
             </div>
-            @foreach ($row->subscription as $sub)
-                @if ($sub->pivot->is_active == 1)
-                    @php
-                        $d = \Carbon\Carbon::parse($sub->pivot->from)->format('Y-m-d');
-                    @endphp
-                    @component('input', ['label' => ' Start Date', 'type' => 'date', 'value' => $d, 'required' => true])
-                        start_date
-                    @endcomponent
-                @else
-                    @component('input', ['label' => ' Start Date', 'type' => 'date', 'required' => true])
-                        start_date
-                    @endcomponent
-                @endif
-            @endforeach
+
+            @if (count($row->subscription) > 0)
+                @foreach ($row->subscription as $sub)
+                    @if ($sub->pivot->is_active == 1) 
+                        @php
+                            $d = \Carbon\Carbon::parse($sub->pivot->from)->format('Y-m-d');
+                        @endphp
+                        @component('input', ['label' => ' Start Date', 'type' => 'date', 'value' => $d, 'required' => true])
+                            start_date
+                        @endcomponent
+                    @else
+                        @component('input', ['label' => ' Start Date', 'type' => 'date', 'required' => true])
+                            start_date
+                        @endcomponent
+                    @endif
+
+                @endforeach
+            @else
+                @component('input', ['label' => ' Start Date', 'type' => 'date', 'required' => true])
+                    start_date
+                @endcomponent
+            @endif
+
             @if (!empty($row->image))
                 @component('input_image', ['width' => 200, 'height' => 200, 'label' => 'Image', 'src' => url($row->image)])
                     image
@@ -175,7 +193,8 @@
                             <select class="form-control" name="day">
                                 @foreach (\App\User::days() as $key => $day)
                                     <option value="{{ $key }}"
-                                        {{ $key == $work->day ? 'selected' : '' }}>{{ ucfirst($day) }}</option>
+                                        {{ $key == $work->day ? 'selected' : '' }}>{{ ucfirst($day) }}
+                                    </option>
                                 @endforeach
                             </select>
                         </div>
@@ -330,7 +349,7 @@
                     for (i = 0; i < cities.length; i++) {
                         $("#city_id").append(
                             `<option value="${cities[i].id}" ${selected_city == cities[i].id ? 'selected': ''}>${cities[i].name}</option>`
-                            )
+                        )
                     }
                 }
             });

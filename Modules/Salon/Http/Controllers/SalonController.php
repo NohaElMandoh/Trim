@@ -169,6 +169,7 @@ class SalonController extends Controller
      */
     public function update(Request $request, $id)
     {
+      
         $request->validate([
             'name'          => 'required|string|max:255',
             'description'   => 'nullable|string|max:255',
@@ -232,6 +233,7 @@ class SalonController extends Controller
         }
     
         if ($request->hasFile('image')) {
+          
             $path = public_path();
             $destinationPath = $path . '/uploads/salon/'; // upload path
             $photo = $request->file('image');
@@ -239,7 +241,9 @@ class SalonController extends Controller
             $name = time() . '' . rand(11111, 99999) . '.' . $extension; // renameing image
             $photo->move($destinationPath, $name); // uploading file to given path
             $row->update(['image' => 'uploads/salon/' . $name]);
+           
         }
+     
         if ($request->hasFile('cover')) {
             $path = public_path();
             $destinationPath = $path . '/uploads/salon/'; // upload path
