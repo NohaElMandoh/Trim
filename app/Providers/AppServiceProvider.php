@@ -29,8 +29,6 @@ class AppServiceProvider extends ServiceProvider
                 array_merge($this->app['config']['view.paths'], [$this->app['config']['modules.paths.modules']], [$this->app['path']])
             );
         });
-
-        
     }
 
     /**
@@ -41,6 +39,6 @@ class AppServiceProvider extends ServiceProvider
     public function boot()
     {
         JsonResource::withoutWrapping(); // tried both
-    
+      
     }
 }

@@ -44,20 +44,34 @@ class MainController extends Controller
         $now = Carbon::now();
         // $weekStartDate = $now->startOfWeek()->subDays(2)->format('Y-m-d H:i');//using subDays(2) to start week from satarday 
         // $weekEndDate = $now->endOfWeek()->addDays(5)->format('Y-m-d H:i');//using addDays(5) to end week on friday
-        $from = $now->startOfWeek()->subDays(2);
-        $to = $from->addDays(6);
-        $weeklyOrders = $request->user()->shop_orders()->whereBetween('reservation_day',[date($from),date($to)])->get(); 
+        $from =  Carbon::now()->startOfWeek(Carbon::SATURDAY)->format('Y-m-d H:i');
+        $to =  Carbon::now()->endOfWeek(Carbon::FRIDAY)->format('Y-m-d H:i');
+        $weeklyOrders = $request->user()->shop_orders()->whereBetween('reservation_day', [date($from), date($to)])->get();
 
+
+        // $carbaoDay = Carbon::createFromFormat('Y-m-d', $request->day); //spesific day
+
+        $week = [];
+        for ($i = 1; $i < 8; $i++) {
+
+            $date = Carbon::now()->startOfWeek(Carbon::FRIDAY)->addDay($i)->format('Y-m-d');
+            $day = Carbon::now()->startOfWeek(Carbon::FRIDAY)->addDay($i)->format('l');
+
+            $orderPerDay_count = $request->user()->shop_orders()->where('reservation_day', $date)->sum('total');
+            array_push($week, [$day => $orderPerDay_count]);
+        }
+      
         return response()->json(['success' => true, 'data' => [
             'allOrders' => $allOrders->count(),
             'completedOrders' => $completedOrders->count(),
             'waitingOrders' => $waitingOrders->count(),
-            'weeklyOrders' => $weeklyOrders,
-            'from'=>$from,
-            'to'=>$now->endOfWeek()->addDays(5)->format('Y-m-d H:i'),
-            'orders'=>$request->user()->shop_orders()->get()
-            
-           
+            // 'weeklyOrders' => $weeklyOrders,
+            // 'now' => Carbon::now()->format('Y-m-d H:i'),
+            // 'from' => $from,
+            // 'to' => $to,
+            'chart' => $week,
+            // 'orders' => $request->user()->shop_orders()->get()
+
         ]], 200);
     }
     public function lastOffers(Request $request)
