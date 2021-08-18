@@ -340,15 +340,17 @@ class UserController extends Controller
         return response()->json(['success' => true], 200);
     }
 
-    public function get_notifications()
+    public function get_notifications(Request $request)
     {
-        // $paginator  = auth()->user()->notifications()->latest()->paginate(10);
-        // $notifications = $paginator->getCollection();
-        // $resource = new Collection($notifications, new NotificationTransformer);
-        // $resource->setPaginator(new IlluminatePaginatorAdapter($paginator));
-        // return response_api($this->fractal->createData($resource)->toArray());
-        $notifications = auth()->user()->notifications()->latest()->get();
-        return $notifications;
+        $user = $request->user();
+
+        $paginator  = $user->notifications()->latest()->paginate(10);
+
+        $notifications = $paginator->getCollection();
+
+        $resource = new Collection($notifications, new NotificationTransformer);
+        $resource->setPaginator(new IlluminatePaginatorAdapter($paginator));
+        return response_api($this->fractal->createData($resource)->toArray());
     }
 
     public function read_notification(Request $request)
@@ -357,10 +359,18 @@ class UserController extends Controller
             'id' => 'required'
         ]);
         if ($validator->fails()) {
-            return response()->json(['errors' => $validator->errors(), 'success' => false], 400);
+            return response()->json(['errors' => $validator->errors(), 'success' => false], 402);
         }
-        auth()->user()->notifications()->where('id', $request->id)->first()->markAsRead();
-        return response()->json(['success' => true], 200);
+        $notification = auth()->user()->notifications()->where('id', $request->id)->first();
+        if ($notification) {
+
+            $notification->update(
+                [
+                    'read_at' => \Carbon\Carbon::now()
+                ]
+            );
+            return response()->json(['success' => true], 200);
+        } else return response()->json(['success' => false, 'message' => __('messages.this notification may be deleted or not exist')], 400);
     }
 
     public function update_image(Request $request)

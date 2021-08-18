@@ -142,6 +142,10 @@ Route::group(['namespace' => 'Api'], function () {
             Route::get('governorates', 'MainController@governorates');
             //all cities
             Route::post('cities', 'MainController@cities');
+            ///token and notifications
+            Route::post('user/token', 'UserController@add_token');
+            Route::get('user/notifications', 'UserController@get_notifications')->middleware('auth:api');
+            Route::post('user/notifications/read', 'UserController@read_notification')->middleware('auth:api');
 
 
             Route::group(['middleware' => 'auth:api'], function () {
@@ -156,7 +160,7 @@ Route::group(['namespace' => 'Api'], function () {
                 Route::post('lastOffers', 'MainController@lastOffers');
                 Route::post('statistics', 'MainController@statistics');
 
-                
+
                 // ---work days---
                 Route::post('work_days', 'UserController@work_days');
                 Route::post('days', 'UserController@days');
