@@ -40,7 +40,7 @@ class MainController extends Controller
     {
         $allOrders = $request->user()->shop_orders()->get(); //all
         $completedOrders = $request->user()->shop_orders()->where('status_id', 5)->get(); //delivered
-        $waitingOrders = $request->user()->shop_orders()->where('status_id', 1)->get(); //wating captin
+        $waitingOrders = $request->user()->shop_orders()->where('status_id', 1)->get(); //waiting capten
         $now = Carbon::now();
         // $weekStartDate = $now->startOfWeek()->subDays(2)->format('Y-m-d H:i');//using subDays(2) to start week from satarday 
         // $weekEndDate = $now->endOfWeek()->addDays(5)->format('Y-m-d H:i');//using addDays(5) to end week on friday
@@ -80,5 +80,15 @@ class MainController extends Controller
 
         return response()->json(['success' => true, 'data' =>
         OfferResource::collection($lastOffers), 200]);
+    }
+    public function governorates()
+    {
+        $governorates = Governorate::paginate(10);
+        return response()->json(['success' => true, 'data' => GovernorateResource::collection($governorates)], 200);
+    }
+    public function cities()
+    {
+        $cities = City::paginate(10);
+        return response()->json(['success' => true, 'data' => CityResource::collection($cities)], 200);
     }
 }
