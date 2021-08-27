@@ -146,6 +146,15 @@ class UserController extends Controller
 
         $role = config('permission.models.role')::where('name', $request->type)->firstOrFail();
         $user->roles()->attach($role);
+     
+        if ($request->gender == 'male')  $user->update(['image' => 'uploads/profile/m_user.png']);
+        if ($request->gender == 'female')  $user->update(['image' => 'uploads/profile/f_user.png']);
+
+        if ($request->gender == 'male')  $user->update(['cover' => 'uploads/profile/m_user.png']);
+        if ($request->gender == 'female')  $user->update(['cover' => 'uploads/profile/f_user.png']);
+
+    
+
         $smsstatus = "";
         $smsstatus = $this->send($user->phone, $user->sms_token);
 

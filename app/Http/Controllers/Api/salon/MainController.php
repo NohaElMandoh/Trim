@@ -58,7 +58,8 @@ class MainController extends Controller
             $day = Carbon::now()->startOfWeek(Carbon::FRIDAY)->addDay($i)->format('l');
 
             $orderPerDay_count = $request->user()->shop_orders()->where('reservation_day', $date)->sum('total');
-            array_push($week, [$day => $orderPerDay_count]);
+            array_push($week, $orderPerDay_count);
+    
         }
       
         return response()->json(['success' => true, 'data' => [
@@ -69,7 +70,13 @@ class MainController extends Controller
             // 'now' => Carbon::now()->format('Y-m-d H:i'),
             // 'from' => $from,
             // 'to' => $to,
-            'chart' => $week,
+            'Saturday' => $week[0],
+            'Sunday' => $week[1],
+            "Monday"=> $week[2],
+                "Tuesday"=> $week[3],
+                "Wednesday"=> $week[4],
+                "Thursday"=> $week[5],
+                "Friday"=> $week[6],
             // 'orders' => $request->user()->shop_orders()->get()
 
         ]], 200);

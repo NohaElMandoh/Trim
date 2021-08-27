@@ -8,7 +8,7 @@
     ],
     "license": "MIT",
     "require": {
-        "php": "^7.2.5",
+        "php": "^7.3|^8.0",
         "astrotomic/laravel-translatable": "^11.8",
         "coderello/laravel-passport-social-grant": "^3.0",
         "doctrine/dbal": "^2.10",
