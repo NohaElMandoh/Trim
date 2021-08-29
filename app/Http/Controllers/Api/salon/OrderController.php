@@ -6,7 +6,10 @@ use App\Events\clientnotify;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\CouponeResource;
 use App\Http\Resources\OfferResource;
+use App\Http\Resources\OrderWithServicesResource;
+use App\Http\Resources\OrderWithOffersResource;
 use App\Http\Resources\OrderResource;
+
 use App\Http\Resources\ServiceResource;
 use App\User;
 use Illuminate\Http\Request;
@@ -51,6 +54,26 @@ class OrderController extends Controller
        return response()->json(['success' => true, 'data' =>OrderResource::collection($orders)->response()->getData(true) ], 200);
        
     }
+
+    public function ordersWithServices(Request $request)
+    {
+        if($request->has('day'))
+        $orders = $request->user()->shop_orders()->where('reservation_day',$request->day)->where('order_type','services')->get();
+        else
+        $orders = $request->user()->shop_orders()->where('order_type','services')->get();
+       return response()->json(['success' => true, 'data' =>OrderWithServicesResource::collection($orders) ], 200);
+       
+    }
+    public function ordersWithOffers(Request $request)
+    {
+        if($request->has('day'))
+        $orders = $request->user()->shop_orders()->where('reservation_day',$request->day)->where('order_type','offers')->get();
+        else
+        $orders = $request->user()->shop_orders()->where('order_type','offers')->get();
+       return response()->json(['success' => true, 'data' =>OrderWithOffersResource::collection($orders) ], 200);
+       
+    }
+    
     public function order(Request $request)
     {
         $validation = validator()->make($request->all(), [

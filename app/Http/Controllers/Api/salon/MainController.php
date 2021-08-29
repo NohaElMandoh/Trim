@@ -70,6 +70,7 @@ class MainController extends Controller
             // 'now' => Carbon::now()->format('Y-m-d H:i'),
             // 'from' => $from,
             // 'to' => $to,
+            'chart'=>[
             'Saturday' => $week[0],
             'Sunday' => $week[1],
             "Monday"=> $week[2],
@@ -77,6 +78,7 @@ class MainController extends Controller
                 "Wednesday"=> $week[4],
                 "Thursday"=> $week[5],
                 "Friday"=> $week[6],
+            ]
             // 'orders' => $request->user()->shop_orders()->get()
 
         ]], 200);

@@ -188,6 +188,10 @@ Route::group(['namespace' => 'Api'], function () {
                 Route::post('delete-all-cart-items', 'CartController@deleteAllCartItems');
                 //////orders
                 Route::post('orders', 'OrderController@orders');
+                Route::post('ordersWithServices', 'OrderController@ordersWithServices');
+                Route::post('ordersWithOffers', 'OrderController@ordersWithOffers');
+
+                
                 Route::post('order', 'OrderController@order');
                 Route::post('cancelOrder', 'OrderController@cancelOrder');
                 Route::post('acceptOrder', 'OrderController@acceptOrder');
