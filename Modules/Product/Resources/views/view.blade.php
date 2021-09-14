@@ -8,7 +8,7 @@
 <div class="panel panel-default">
     <div class="panel-heading">{{ __('Image') }}</div>
     {{-- <div class="panel-body"><img src="{{ route('file_show', $row->image) }}" /></div> --}}
-    <img src="@if (!empty($row->image))  {{url($row->image)}} @else url('uploads/product.png') @endif" /> 
+    <img src="@if (!empty($row->image))  {{url($row->image)}} @else url('uploads/product.png') @endif" width="200px" height="200px" />
 </div>
 <div class="panel panel-default">
     <div class="panel-heading">{{ __('Price') }}</div>

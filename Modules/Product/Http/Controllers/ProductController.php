@@ -5,6 +5,7 @@ namespace Modules\Product\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
+use Illuminate\Support\Facades\Auth;
 use Modules\Product\Entities\Product;
 
 class ProductController extends Controller
@@ -17,13 +18,21 @@ class ProductController extends Controller
         $this->middleware('permission:product.edit')->only(['edit', 'update']);
         $this->middleware('permission:product.delete')->only('destroy');
     }
+
     /**
      * Display a listing of the resource.
      * @return Response
      */
     public function index()
     {
-        $rows   = Product::latest()->get();
+        if (auth()->user()->type == 'factories') {
+            $rows = Product::where('user_id',Auth::id())->latest()->get();
+
+        } else {
+            $rows = Product::latest()->get();
+
+
+        }
         return view('product::index', compact('rows'));
     }
 
@@ -44,21 +53,24 @@ class ProductController extends Controller
     public function store(Request $request)
     {
         validate_trans($request, [
-            'name'  => 'required|string|max:255'
+            'name' => 'required|string|max:255'
         ]);
         $request->validate([
-            'image'         => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-            'category_id'   => 'required|exists:categories,id',
-            'price'         => 'required|numeric',
-            'order'         => 'required|integer'
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+//            'category_id' => 'required|exists:categories,id',
+            'price' => 'required|numeric',
+            'order' => 'required|integer'
         ]);
 
-        $data   = $request->all();
+        $data = $request->all();
         // $data['image']  = upload_image($request, 'image', 200, 200);
-        $data['shop_id']  = 1;
+        $data['shop_id'] = 1;
 
+        if (auth()->user()->type == 'factories') {
+            $data['user_id']=Auth::id();
 
-        $row=Product::create($data);
+        }
+        $row = Product::create($data);
 
         if ($request->hasFile('image')) {
             $path = public_path();
@@ -79,7 +91,7 @@ class ProductController extends Controller
      */
     public function show($id)
     {
-        $row    = Product::findOrFail($id);
+        $row = Product::findOrFail($id);
         return view('product::view', compact('row'));
     }
 
@@ -90,7 +102,7 @@ class ProductController extends Controller
      */
     public function edit($id)
     {
-        $row    = Product::findOrFail($id);
+        $row = Product::findOrFail($id);
         return view('product::edit', compact('row'));
     }
 
@@ -103,19 +115,19 @@ class ProductController extends Controller
     public function update(Request $request, $id)
     {
         validate_trans($request, [
-            'name'  => 'required|string|max:255'
+            'name' => 'required|string|max:255'
         ]);
         $request->validate([
-            'image'         => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-            'category_id'   => 'required|exists:categories,id',
-            'price'         => 'required|numeric',
-            'order'         => 'required|integer'
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'category_id' => 'required|exists:categories,id',
+            'price' => 'required|numeric',
+            'order' => 'required|integer'
         ]);
 
-        $data   = $request->all();
+        $data = $request->all();
         // if($request->hasFile('image'))
         //     $data['image']  = upload_image($request, 'image', 200, 200);
-        $row    = Product::findOrFail($id);
+        $row = Product::findOrFail($id);
         $row->update($data);
         if ($request->hasFile('image')) {
             $path = public_path();
@@ -136,7 +148,7 @@ class ProductController extends Controller
      */
     public function destroy($id)
     {
-        $row    = Product::findOrFail($id);
+        $row = Product::findOrFail($id);
         $row->delete();
 
         return redirect()->route('products.index')->with(['status' => 'success', 'message' => __('Deleted successfully')]);

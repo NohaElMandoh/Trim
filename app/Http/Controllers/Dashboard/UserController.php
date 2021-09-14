@@ -24,7 +24,7 @@ class UserController extends Controller
      */
     public function index()
     {
-        $rows      = User::whereDoesntHave('roles', function ($query) {
+        $rows      = User::where('type', 'admin')->whereDoesntHave('roles', function ($query) {
             $query->where('name', 'salon')->orWhere('name', 'captain');
         })->latest()->get();
         return view('dashboard.users.index', compact('rows'));
@@ -62,9 +62,11 @@ class UserController extends Controller
         ]);
 
         $data               = $request->all();
+        $data['type']   ='admin';
+
         $data['password']   = bcrypt($request->password);
         $data['is_active']  = (bool) $request->is_active;
-        $data['image']      = $request->hasFile('image') ? upload_image($request, 'image', 200, 200) : 'user.png';
+//        $data['image']      = $request->hasFile('image') ? upload_image($request, 'image', 200, 200) : 'user.png';
         $row               = User::create($data);
         $row->roles()->attach($request->roles);
         return redirect()->route('users.index')->with(['status' => 'success', 'message' => __('Stored successfully')]);
@@ -124,7 +126,7 @@ class UserController extends Controller
         $data['is_active']  = (bool) $request->is_active;
         // if ($request->hasFile('image'))
         //     $data['image']      = upload_image($request, 'image', 200, 200);
-       
+
         $row               = User::findOrFail($id);
         $row->update($data);
         $row->roles()->sync($request->roles);

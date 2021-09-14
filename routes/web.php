@@ -27,6 +27,13 @@ Route::group(
             Route::get('users/{id}/password', 'UserController@edit_password')->name('users.password');
             Route::post('users/{id}/password', 'UserController@update_password');
             Route::resource('users', 'UserController');
+            Route::resource('factories', 'FactoryController');
+            Route::resource('delegates', 'DelegateController');
+            Route::post('delegates/{id}/password', 'DelegateController@update_password');
+
+            Route::get('delegates/{id}/password', 'DelegateController@edit_password')->name('delegates.password');
+            Route::get('factories/{id}/password', 'FactoryController@edit_password')->name('factories.password');
+            Route::post('factories/{id}/password', 'FactoryController@update_password');
             Route::resource('translators', 'TranslatorCotroller');
         });
         Route::get('/', 'HomeController@home')->name('home');

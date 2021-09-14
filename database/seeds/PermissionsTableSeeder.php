@@ -16,14 +16,14 @@ class PermissionsTableSeeder extends Seeder
     {
         // Reset cached roles and permissions
         app()[PermissionRegistrar::class]->forgetCachedPermissions();
-        
+
         $models = [
             'role', 'user', 'captain',
             'category', 'address', 'social', 'phone',
             'email', 'product', 'offer',
             'coupon', 'feature', 'screenshot',
             'city', 'governorate', 'salon', 'branch',
-            'service', 'course', 'lesson','subscriptions'
+            'service', 'course', 'lesson','subscriptions','factories'
         ];
 
         foreach($models as $model) {
@@ -61,5 +61,8 @@ class PermissionsTableSeeder extends Seeder
 
         Role::create(['name' => 'captain']);
         Role::create(['name' => 'salon']);
+        Role::create(['name' => 'factory']);
+        Role::create(['name' => 'delegate']);
+
     }
 }

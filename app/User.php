@@ -24,7 +24,7 @@ class User extends Authenticatable
         'name', 'email', 'phone', 'password',
         'image', 'id_photo', 'commercial_register', 'is_active',
         'description', 'points', 'lat', 'lng',
-        'city_id', 'governorate_id', 'sms_token', 'gender',
+        'city_id', 'governorate_id', 'sms_token', 'gender','name_sales','phone2','address',
         'cover', 'is_sponsored', 'provider', 'provider_id', 'provider_token', 'type','search'
     ];
     protected $appends = ['rate', 'status', 'from', 'to', 'avaliable_dates','is_fav'];
@@ -92,7 +92,7 @@ class User extends Authenticatable
     {
         return $this->morphMany('App\Notification', 'notifiable')->where('read_at', null);
     }
-   
+
     public static function findNearestCaptains($latitude, $longitude, $distance)
     {
         return User::select(DB::raw('*, ( 6367 * acos( cos( radians(' . $latitude . ') ) * cos( radians( lat ) ) * cos( radians( lng ) - radians(' . $longitude . ') ) + sin( radians(' . $latitude . ') ) * sin( radians( lat ) ) ) ) AS distance'))
@@ -147,7 +147,7 @@ class User extends Authenticatable
     {
         return $this->hasMany('App\Rate', 'salon_id');
     }
-    
+
 
     public function getIsFavAttribute($value)
     {
@@ -157,7 +157,7 @@ class User extends Authenticatable
             return true;
         }
         return false;
-       
+
     }
     public function getRateAttribute($value)
     {
@@ -183,7 +183,7 @@ class User extends Authenticatable
         return $this->belongsToMany('Modules\Subscription\Entities\Subscription','subscriptions_users')
         ->withPivot('months','price','from','to','is_active');
     }
-    
+
     public function works()
     {
         return $this->hasMany('Modules\Salon\Entities\WorkDay', 'user_id');
