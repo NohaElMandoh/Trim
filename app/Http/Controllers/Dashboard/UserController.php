@@ -24,7 +24,10 @@ class UserController extends Controller
      */
     public function index()
     {
-        $rows      = User::where('type', 'admin')->whereDoesntHave('roles', function ($query) {
+        // $rows      = User::where('type', 'admin')->whereDoesntHave('roles', function ($query) {
+        //     $query->where('name', 'salon')->orWhere('name', 'captain');
+        // })->latest()->get();
+        $rows = User::where('type', 'admin')->orWhere('type', 'user')->whereDoesntHave('roles', function ($query) {
             $query->where('name', 'salon')->orWhere('name', 'captain');
         })->latest()->get();
         return view('dashboard.users.index', compact('rows'));
@@ -62,7 +65,9 @@ class UserController extends Controller
         ]);
 
         $data               = $request->all();
-        $data['type']   ='admin';
+        // $data['type']   ='admin';
+       
+        $data['type']   ='user';
 
         $data['password']   = bcrypt($request->password);
         $data['is_active']  = (bool) $request->is_active;

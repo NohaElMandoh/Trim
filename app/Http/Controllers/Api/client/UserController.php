@@ -141,7 +141,7 @@ class UserController extends Controller
                 'gender' => $request->gender,
                 'password' => bcrypt($request->password),
                 'sms_token' => random_int(0, 9) . random_int(0, 9) . random_int(0, 9) . random_int(0, 9) . random_int(0, 9),
-
+                'type'   => 'user'
             ]);
             $token = $user->createToken('Myapp');
             if ($request->gender == 'male')  $user->update(['image' => 'uploads/profile/m_user.png']);
@@ -150,8 +150,11 @@ class UserController extends Controller
             if ($request->gender == 'male')  $user->update(['cover' => 'uploads/profile/m_user.png']);
             if ($request->gender == 'female')  $user->update(['cover' => 'uploads/profile/f_user.png']);
 
+            $role = config('permission.models.role')::where('name', 'user')->firstOrFail();
+            $user->roles()->attach($role);
+
             $smsstatus = "";
-            $smsstatus = $this->send($user->phone, $user->sms_token);
+            // $smsstatus = $this->send($user->phone, $user->sms_token);
 
             return response()->json(['success' => true, 'data' => ['token' => $token, 'user' => new UserResource($user), 'sms status' => $smsstatus]], 200);
         }
@@ -159,7 +162,7 @@ class UserController extends Controller
     // social register
     public function socialRegister(Request $request)
     {
-      
+
         $validator = Validator::make($request->all(), [
             'name'      => 'required|string|max:255',
             // 'email' => ['string', Rule::unique('users')->ignore($request->user()->id)],/
@@ -182,7 +185,7 @@ class UserController extends Controller
                 $user->update(['image' => $request->image]);
                 $user->update(['cover' => 'uploads/profile/m_user.png']);
             } else {
-               
+
                 $user->update(['image' => 'uploads/profile/m_user.png']);
                 $user->update(['cover' => 'uploads/profile/m_user.png']);
             }
@@ -198,15 +201,20 @@ class UserController extends Controller
                     return response()->json(['success' => false, 'message' => __('messages.this email registered before')], 400);
                 }
             }
-            $data['is_active']=1;
+            $data['is_active'] = 1;
+            $data['type']  = 'user';
             $user = User::create($data);
             $token = $user->createToken('Myapp');
+
+            $role = config('permission.models.role')::where('name', 'user')->firstOrFail();
+            $user->roles()->attach($role);
+
             if ($request->has('image')) {
 
                 $user->update(['image' => $request->image]);
                 $user->update(['cover' => 'uploads/profile/m_user.png']);
             } else {
-               
+
                 $user->update(['image' => 'uploads/profile/m_user.png']);
                 $user->update(['cover' => 'uploads/profile/m_user.png']);
             }
