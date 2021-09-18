@@ -27,12 +27,12 @@ class SendClientNotification
     public function handle(clientnotify $event)
     {
         $order = $event->order;
-        $user    = auth()->user();
+        $barber    = $event->barber;
         \App\Notification::create([
 
             'type' => get_class($order),
-            'notifiable_type' => get_class($user),
-            'notifiable_id'   => $user->id,
+            'notifiable_type' => get_class($barber),
+            'notifiable_id'   => $barber->id,
             'is_read' => 0,
             'data'         => $event->text,
 

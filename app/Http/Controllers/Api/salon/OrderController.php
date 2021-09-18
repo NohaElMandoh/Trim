@@ -58,18 +58,18 @@ class OrderController extends Controller
     public function ordersWithServices(Request $request)
     {
         if($request->has('day'))
-        $orders = $request->user()->shop_orders()->where('reservation_day',$request->day)->where('order_type','services')->get();
+        $orders = $request->user()->shop_orders()->where('reservation_day',$request->day)->where('order_type','services')->where('status_id',1)->get();
         else
-        $orders = $request->user()->shop_orders()->where('order_type','services')->get();
+        $orders = $request->user()->shop_orders()->where('order_type','services')->where('status_id',1)->get();
        return response()->json(['success' => true, 'data' =>OrderWithServicesResource::collection($orders) ], 200);
        
     }
     public function ordersWithOffers(Request $request)
     {
         if($request->has('day'))
-        $orders = $request->user()->shop_orders()->where('reservation_day',$request->day)->where('order_type','offers')->get();
+        $orders = $request->user()->shop_orders()->where('reservation_day',$request->day)->where('order_type','offers')->where('status_id',1)->get();
         else
-        $orders = $request->user()->shop_orders()->where('order_type','offers')->get();
+        $orders = $request->user()->shop_orders()->where('order_type','offers')->where('status_id',1)->get();
        return response()->json(['success' => true, 'data' =>OrderWithOffersResource::collection($orders) ], 200);
        
     }

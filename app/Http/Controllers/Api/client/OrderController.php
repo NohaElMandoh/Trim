@@ -147,7 +147,12 @@ class OrderController extends Controller
                 'payment_coupon' => $payment_coupon,
 
             ]);
-
+            $mg1=$request->user()->name.'create new order with service';
+            
+            $barber=User::find($request->barber_id);
+           
+            // $this->sendOrderNotification($mg1, $order,$barber);
+            event(new clientnotify($order, $mg1,$barber));
             if ($order)
                 return response()->json(['success' => true, 'data' => new OrderResource($order)], 200);
             else
@@ -637,7 +642,7 @@ class OrderController extends Controller
             ]);
         } else return response()->json(['success' => false, 'message' => __('messages.Order Not Exist')], 400);
 
-        event(new clientnotify($order, 'Thank You'));
+        // event(new clientnotify($order, 'Thank You'));
         if ($order)
             return response()->json(['success' => true, 'data' => new  OrderResource($order)], 200);
         else
@@ -662,21 +667,21 @@ class OrderController extends Controller
 
         return response()->json(['success' => true, 'data' => 'Done'], 200);
     }
-    public function sendOrderNotification($mg1, $order, $client, $merchants_ids)
+    public function sendOrderNotification($mg1, $order, $salon_id)
     {
         //notifiable_type,notifiable_id,data,read_at
-        $text = Auth()->user()->name . " {$mg1}";
+        // $text = Auth()->user()->name . " {$mg1}";
 
-        $admin = User::where('email', 'admin@admin.com')->get();
-        $collection1 = collect($admin);
-        $client_notify = Client::where('id', $client->id)->get();
-        $ids[] = $merchants_ids;
-        $merchants = Merchant::whereIn('id', $ids)->get();
+        // $admin = User::where('email', 'admin@admin.com')->get();
+        // $collection1 = collect($admin);
+        // $client_notify = Client::where('id', $client->id)->get();
+        // $ids[] = $merchants_ids;
+        // $merchants = Merchant::whereIn('id', $ids)->get();
 
 
-        $merged = $collection1->merge($client_notify)->merge($merchants);
-        $merged_all = $merged->all();
-        event(new SomeEvent($order, $text, $merged_all));
+        // $merged = $collection1->merge($client_notify)->merge($merchants);
+        // $merged_all = $merged->all();
+        event(new clientnotify($order, $mg1,$salon_id));
 
         // $tokens = $client->tokens()->where('token', '!=', '')->pluck('token')->toArray();
         // $audience = ['include_player_ids' => $tokens];

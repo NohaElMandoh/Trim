@@ -19,10 +19,11 @@ class clientnotify
      *
      * @return void
      */
-    public function __construct( $order,$text)
+    public function __construct( $order,$text,$barber)
     {
         $this->order   = $order;
         $this->text      = $text;
+        $this->barber      = $barber;
        
     }
 
