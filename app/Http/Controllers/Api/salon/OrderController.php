@@ -114,7 +114,12 @@ class OrderController extends Controller
             ]);
           } else return response()->json(['success' => false, 'message' => __('messages.Order Does Not Belongs To You')], 400);
         } else return response()->json(['success' => false, 'message' => __('messages.Order Not Exist')], 400);
-        event(new clientnotify($order, 'your order cancelled'));
+
+        $mg1=$request->user()->name.'cancelled your order';
+            
+        $user=$order->user();
+        event(new clientnotify($order, $mg1,$user));
+
         if ($order)
             return response()->json(['success' => true, 'data' => new  OrderResource($order)], 200);
         else
@@ -130,18 +135,24 @@ class OrderController extends Controller
             $data = $validation->errors();
             return response()->json(['errors' => $data, 'success' => false], 402);
         }
-        $cancelStatus = Status::where('slug', 'processing')->first();
+        $acceptStatus = Status::where('slug', 'processing')->first();
         $order = Order::find($request->order_id);
      
         if ($order) {
           if( !empty( $request->user()->shop_orders()->where('id',$request->order_id)->first())){
             $order->update([
-                'status_id' => $cancelStatus->id,
+                'status_id' => $acceptStatus->id,
               
             ]);
           } else return response()->json(['success' => false, 'message' => __('messages.Order Does Not Belongs To You')], 400);
         } else return response()->json(['success' => false, 'message' => __('messages.Order Not Exist')], 400);
-        event(new clientnotify($order, 'your order cancelled'));
+
+        $mg1=$request->user()->name.'accepted your order';
+            
+        $user=$order->user();
+        event(new clientnotify($order, $mg1,$user));
+
+        // event(new clientnotify($order, 'your order cancelled'));
         if ($order)
             return response()->json(['success' => true, 'data' => new  OrderResource($order)], 200);
         else
