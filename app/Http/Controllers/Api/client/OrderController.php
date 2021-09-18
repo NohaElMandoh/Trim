@@ -269,7 +269,12 @@ class OrderController extends Controller
                 'payment_coupon' => $payment_coupon,
 
             ]);
-
+            $mg1=$request->user()->name.'create new order with offer';
+            
+            $barber=User::find($request->barber_id);
+           
+            // $this->sendOrderNotification($mg1, $order,$barber);
+            event(new clientnotify($order, $mg1,$barber));
             if ($order)
 
                 return response()->json(['success' => true, 'data' => new OrderResource($order)], 200);
@@ -383,6 +388,8 @@ class OrderController extends Controller
 
         ]);
         $request->user()->cart()->detach();
+
+        
         if ($order)
             return response()->json(['success' => true, 'data' => new OrderResource($order)], 200);
         else

@@ -117,7 +117,8 @@ class OrderController extends Controller
 
         $mg1=$request->user()->name.'cancelled your order';
             
-        $user=$order->user();
+        $user=$order->user()->first();
+        
         event(new clientnotify($order, $mg1,$user));
 
         if ($order)
@@ -149,7 +150,8 @@ class OrderController extends Controller
 
         $mg1=$request->user()->name.'accepted your order';
             
-        $user=$order->user();
+        $user=$order->user()->first();
+     
         event(new clientnotify($order, $mg1,$user));
 
         // event(new clientnotify($order, 'your order cancelled'));
