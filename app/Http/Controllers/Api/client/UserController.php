@@ -154,7 +154,7 @@ class UserController extends Controller
             $user->roles()->attach($role);
 
             $smsstatus = "";
-            // $smsstatus = $this->send($user->phone, $user->sms_token);
+            $smsstatus = $this->send($user->phone, $user->sms_token);
 
             return response()->json(['success' => true, 'data' => ['token' => $token, 'user' => new UserResource($user), 'sms status' => $smsstatus]], 200);
         }

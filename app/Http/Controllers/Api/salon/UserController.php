@@ -120,7 +120,7 @@ class UserController extends Controller
             'gender' => ['required', 'string', 'max:255', 'in:male,female'],
             'city_id' => 'required',
             'governorate_id' => 'required',
-            'password'          => 'required|string|min:6|max:255|confirmed',
+            // 'password'          => 'required|string|min:6|max:255|confirmed',
             'type' => 'required| in:salon,captain'
         ]);
         if ($validator->fails()) {
@@ -136,7 +136,7 @@ class UserController extends Controller
                 'email' => $request->email,
                 'phone' => '+2' . $request->phone,
                 'gender' => $request->gender,
-                'password' => bcrypt($request->password),
+                // 'password' => bcrypt($request->password),
                 'city_id' => $request->city_id,
                 'governorate_id' => $request->governorate_id,
                 'sms_token' => random_int(0, 9) . random_int(0, 9) . random_int(0, 9) . random_int(0, 9) . random_int(0, 9),
@@ -155,11 +155,11 @@ class UserController extends Controller
 
     
 
-        $smsstatus = "";
+        // $smsstatus = "";
         // $smsstatus = $this->send($user->phone, $user->sms_token);
 
 
-        return response()->json(['success' => true, 'data' => ['token' => $token, 'user' => new UserResource($user), 'sms status' => $smsstatus]], 200);
+        return response()->json(['success' => true, 'data' => ['token' => $token, 'user' => new UserResource($user)]], 200);
     }
     // Resend sms code api
     public function resendSmsCode(Request $request)
