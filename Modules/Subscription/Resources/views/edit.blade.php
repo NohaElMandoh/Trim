@@ -21,7 +21,7 @@
     </div>
     <div class="form-body">
         @component('input', ['type' => 'number', 'label' => 'Origion Price','value' => $row->origion_price, 'required' => true])
-            origion_price
+            origion-price
         @endcomponent
     </div>
     <div class="form-body">

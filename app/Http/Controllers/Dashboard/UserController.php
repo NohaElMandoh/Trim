@@ -68,7 +68,7 @@ class UserController extends Controller
         // $data['type']   ='admin';
        
         $data['type']   ='user';
-
+        $data['phone']  = '+2' . $request->phone;
         $data['password']   = bcrypt($request->password);
         $data['is_active']  = (bool) $request->is_active;
 //        $data['image']      = $request->hasFile('image') ? upload_image($request, 'image', 200, 200) : 'user.png';

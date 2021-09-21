@@ -21,7 +21,7 @@
         </div>
         <div class="form-body">
             @component('input', ['type' => 'number', 'label' => 'Origion Price', 'required' => true])
-                origion_price
+                origion-price
             @endcomponent
         </div>
         <div class="form-body">
