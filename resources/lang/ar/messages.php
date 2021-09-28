@@ -50,5 +50,8 @@ return [
     'this notification may be deleted or not exist'=>'This Notification May Be Deleted Or Not Exist',
     'Order Does Not Belongs To You'=>'Order Does Not Belongs To You',
     'verification code'=>'الكود الخاص بك لتفعيل الحساب',
-    'this email registered before'=>'This Email Registered Before'
+    'this email registered before'=>'This Email Registered Before',
+    'your subscription not active'=>'your subscription not active',
+    'contact trim to add subscription to you'=>'contact trim to add subscription to you',
+    'your subscription ended'=>'your subscription ended'
 ];

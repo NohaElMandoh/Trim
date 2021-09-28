@@ -52,5 +52,8 @@ return [
     'you already used this coupone before'=>'you already used this coupone before',
     'member deleted successfully'=>'Member Deleted Successfully',
     'Member Not Exist'=>'Member Not Exist',
-    'this email registered before'=>'This Email Registered Before'
+    'this email registered before'=>'This Email Registered Before',
+    'your subscription not active'=>'your subscription not active',
+    'contact trim to add subscription to you'=>'contact trim to add subscription to you',
+    'your subscription ended'=>'your subscription ended'
 ];

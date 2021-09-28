@@ -197,10 +197,10 @@
                         <div class="flip-card-inner">
                             <div class="flip-card-front">
 
-                                <span class="price">{{$subscriptions[0]->price}}E</span><br>/{{$subscriptions[0]->months}}month
+                           {{--   <span class="price">@if(!empty($subscriptions)){{$subscriptions[0]->price}}@endif E</span><br>/@if(!empty($subscriptions)){{$subscriptions[0]->months}} @endif month
                                 <br>
-                                <h2 class="card-title">{{$subscriptions[0]->title}}</h2>
-                                {{-- <small>Individual</small> --}}
+                                <h2 class="card-title">@if(!empty($subscriptions)){{$subscriptions[0]->title}}@endif</h2>
+                             --}}   {{-- <small>Individual</small> --}}
                             </div>
                             <div class="flip-card-back">
                                 <ul class="list-group list-group-flush">
@@ -232,10 +232,10 @@
                         <div class="flip-card-inner">
                             <div class="flip-card-front">
 
-                                <span class="price">{{$subscriptions[1]->price}}E</span><br>/{{$subscriptions[1]->months}}months
+                             {{--   <span class="price">{{$subscriptions[1]->price}}E</span><br>/{{$subscriptions[1]->months}}months
                                 <br>
                                 <h2 class="card-title">{{$subscriptions[1]->title}}</h2>
-                                {{-- <small>Small Business</small> --}}
+                           --}}     {{-- <small>Small Business</small> --}}
                             </div>
                             <div class="flip-card-back">
                                 <ul class="list-group list-group-flush">

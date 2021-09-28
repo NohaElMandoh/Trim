@@ -106,16 +106,20 @@
                                     <label>{{ __('To') }}</label>
                                     <input type="time" class="form-control" placeholder="{{ __('To') }}" name="to"
                                         value="{{ $work['to'] }}" />
-                                </div>
+                                </div>  
                                 <div class="col-md-4">
                                     <label>{{ __('Day') }}</label>
-                                    <select class="form-control" name="day">
+                                    @foreach (\App\User::days() as $key => $day)
+                                    <input type="checkbox" id="day" name="day" value="{{ $key }}"  >
+<label for="day"> {{ ucfirst($day) }}</label><br>
+@endforeach
+                                    {{--<select class="form-control" name="day">
                                         @foreach (\App\User::days() as $key => $day)
                                             <option value="{{ $key }}"
                                                 {{ $key == $work['day'] ? 'selected' : '' }}>{{ ucfirst($day) }}
                                             </option>
                                         @endforeach
-                                    </select>
+                                    </select>--}}
                                 </div>
                                 <div class="col-md-2">
                                     <br />
@@ -138,11 +142,15 @@
                             </div>
                             <div class="col-md-4">
                                 <label>{{ __('Day') }}</label>
-                                <select class="form-control" name="day">
+                                @foreach (\App\User::days() as $key => $day)
+                                    <input type="checkbox" id="day" name="day" value="{{ $key }}"  >
+<label for="day"> {{ ucfirst($day) }}</label><br>
+@endforeach
+                              {{-- <select class="form-control" name="day">
                                     @foreach (\App\User::days() as $key => $day)
                                         <option value="{{ $key }}">{{ ucfirst($day) }}</option>
                                     @endforeach
-                                </select>
+                                </select>--}}
                             </div>
                             <div class="col-md-2">
                                 <br />

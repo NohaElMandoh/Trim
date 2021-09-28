@@ -47,8 +47,9 @@ class SalonController extends Controller
      */
     public function store(Request $request)
     {
-  
-       $request->validate([
+      
+
+        $request->validate([
             'name'          => 'required|string|max:255',
             'description'   => 'nullable|string|max:255',
             'email'         => 'required|string|email|unique:users,email|max:255',
@@ -68,12 +69,14 @@ class SalonController extends Controller
             'subscription_id' => 'required|exists:subscriptions,id',
             'start_date' => 'required',
         ]);
-       
+
         $data               = $request->all();
 
         $data['password']   = bcrypt($request->password);
         $data['is_active']  = (bool) $request->is_active;
         $data['is_sponsored']  = (bool) $request->is_sponsored;
+        $phone = '+2' . $request->phone;
+        $data['phone']= $phone;
         // $data['image']      = $request->hasFile('image') ? upload_image($request, 'image', 200, 200) : 'salon.png';
         // $data['cover']      = $request->hasFile('cover') ? upload_image($request, 'cover', 800, 400) : 'salon.png';
         $data['commercial_register']   = upload_file($request, 'commercial_register');
@@ -81,39 +84,52 @@ class SalonController extends Controller
         $salon              = config('permission.models.role')::where('name', 'salon')->firstOrFail();
         $row->roles()->attach($salon);
         $row->services()->sync($request->services);
+        // if ($request->works) {
+        //     foreach ($request->works as $work) {
+        //         return $work;
+        //         $row->works()->create($work);
+        //     }
+        // }
         if ($request->works) {
             foreach ($request->works as $work) {
-                $row->works()->create($work);
+             
+                foreach ($work['day'] as $day){
+                    $data = [
+                        'from' => $work['from'],
+                        'day' => $day,
+                        'to' => $work['to'],
+                    ];
+             
+         $row->works()->create($data);
+                }
             }
         }
-       
         $startDate = Carbon::now();
 
         if ($request->start_date) {
-            $startDate= Carbon::parse($request->start_date);
+            $startDate = Carbon::parse($request->start_date);
         }
         // return $request->start_date;
 
         if ($request->subscription_id) {
             $subscription = Subscription::find($request->subscription_id);
             if ($subscription) {
-            $endDate= $startDate->addMonths($subscription->months);
+                $endDate = $startDate->addMonths($subscription->months);
 
-                $data=[
-                    $subscription->id=>[
-                        'is_active'=>1,
-                        'from'=>Carbon::parse($request->start_date),
-                        'to'=> $endDate,
-                        'months'=>$subscription->months,
-                        'price'=>$subscription->price
+                $data = [
+                    $subscription->id => [
+                        'is_active' => 1,
+                        'from' => Carbon::parse($request->start_date),
+                        'to' => $endDate,
+                        'months' => $subscription->months,
+                        'price' => $subscription->price
                     ],
                 ];
-              
-                $row->subscription()->sync($data);
 
+                $row->subscription()->sync($data);
             }
         }
-    
+
         if ($request->hasFile('image')) {
             $path = public_path();
             $destinationPath = $path . '/uploads/salon/'; // upload path
@@ -132,9 +148,8 @@ class SalonController extends Controller
             $photo->move($destinationPath, $name); // uploading file to given path
             $row->update(['cover' => 'uploads/salon/' . $name]);
         }
-      
+
         return redirect()->route('salons.index')->with(['status' => 'success', 'message' => __('Stored successfully')]);
-      
     }
 
     /**
@@ -169,7 +184,7 @@ class SalonController extends Controller
      */
     public function update(Request $request, $id)
     {
-      
+
         $request->validate([
             'name'          => 'required|string|max:255',
             'description'   => 'nullable|string|max:255',
@@ -184,6 +199,7 @@ class SalonController extends Controller
             'works'         => 'required|array',
             'works.*.from'  => 'required|string|max:255',
             'works.*.to'    => 'required|string|max:255',
+            'works.*.day'    => 'required',
             'services'      => 'nullable|array',
             'services.*'    => 'required|exists:services,id',
             'subscription_id' => 'required|exists:subscriptions,id',
@@ -193,6 +209,7 @@ class SalonController extends Controller
         $data               = $request->all();
         $data['is_active']  = (bool) $request->is_active;
         $data['is_sponsored']  = (bool) $request->is_sponsored;
+   
         // if ($request->hasFile('image'))
         //     $data['image']      = upload_image($request, 'image', 200, 200);
 
@@ -208,32 +225,31 @@ class SalonController extends Controller
         $startDate = Carbon::now();
 
         if ($request->start_date) {
-            $startDate= Carbon::parse($request->start_date);
+            $startDate = Carbon::parse($request->start_date);
         }
         // return $request->start_date;
 
         if ($request->subscription_id) {
             $subscription = Subscription::find($request->subscription_id);
             if ($subscription) {
-            $endDate= $startDate->addMonths($subscription->months);
+                $endDate = $startDate->addMonths($subscription->months);
 
-                $data=[
-                    $subscription->id=>[
-                        'is_active'=>1,
-                        'from'=>Carbon::parse($request->start_date),
-                        'to'=> $endDate,
-                        'months'=>$subscription->months,
-                        'price'=>$subscription->price
+                $data = [
+                    $subscription->id => [
+                        'is_active' => 1,
+                        'from' => Carbon::parse($request->start_date),
+                        'to' => $endDate,
+                        'months' => $subscription->months,
+                        'price' => $subscription->price
                     ],
                 ];
-              
-                $row->subscription()->sync($data);
 
+                $row->subscription()->sync($data);
             }
         }
-    
+
         if ($request->hasFile('image')) {
-          
+
             $path = public_path();
             $destinationPath = $path . '/uploads/salon/'; // upload path
             $photo = $request->file('image');
@@ -241,9 +257,8 @@ class SalonController extends Controller
             $name = time() . '' . rand(11111, 99999) . '.' . $extension; // renameing image
             $photo->move($destinationPath, $name); // uploading file to given path
             $row->update(['image' => 'uploads/salon/' . $name]);
-           
         }
-     
+
         if ($request->hasFile('cover')) {
             $path = public_path();
             $destinationPath = $path . '/uploads/salon/'; // upload path
@@ -254,10 +269,23 @@ class SalonController extends Controller
             $row->update(['cover' => 'uploads/salon/' . $name]);
         }
         $row->services()->sync($request->services);
-        WorkDay::where('user_id', $row->id)->delete();
+        $w= WorkDay::where('user_id', $row->id)->get();
+
+        foreach($w as $work)
+        $work->delete();
+        // $row->works()->detach();
         if ($request->works) {
             foreach ($request->works as $work) {
-                $row->works()->create($work);
+             
+                foreach ($work['day'] as $day){
+                    $data = [
+                        'from' => $work['from'],
+                        'day' => $day,
+                        'to' => $work['to'],
+                    ];
+             
+         $row->works()->create($data);
+                }
             }
         }
         return redirect()->route('salons.index')->with(['status' => 'success', 'message' => __('Updated successfully')]);

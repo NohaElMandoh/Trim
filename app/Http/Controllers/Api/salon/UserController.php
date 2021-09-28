@@ -16,6 +16,7 @@ use League\Fractal\Manager;
 use League\Fractal\Pagination\IlluminatePaginatorAdapter;
 use League\Fractal\Resource\Collection;
 use App\NotificationTransformer;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\DB;
@@ -34,6 +35,7 @@ class UserController extends Controller
     // Login api
     public function login(Request $request)
     {
+
         $validator = Validator::make($request->all(), [
             'phone' => ['required', 'string'],
             'password' => ['required', 'string'],
@@ -43,6 +45,25 @@ class UserController extends Controller
         }
         $req_phone = '+2' . $request->phone;
         if (Auth::attempt(['phone' => $req_phone, 'password' => $request->password])) {
+            // return auth()->user()->subscription->count();
+            if (auth()->user()->subscription->count() <= 0) {
+                return response()->json(['success' => false, 'errors' => __('messages.contact trim to add subscription to you')], 402);
+            } else {
+                foreach (auth()->user()->subscription as $key => $subscription) {
+                    if ($key == 0) {
+                        if ($subscription->pivot->is_active == 0) {
+                            
+                            return response()->json(['success' => false, 'errors' => __('messages.your subscription not active')], 402);
+                        }
+                        elseif($subscription->pivot->to < Carbon::now() ){
+                            
+                            return response()->json(['success' => false, 'errors' => __('messages.your subscription ended')], 402);
+
+                        }
+                    }
+                }
+            }
+
             if (auth()->user()->is_active == 0) {
                 return response()->json(['success' => false, 'message' => __('messages.user account not activated')], 401);
             } else {
@@ -146,14 +167,14 @@ class UserController extends Controller
 
         $role = config('permission.models.role')::where('name', $request->type)->firstOrFail();
         $user->roles()->attach($role);
-     
+
         if ($request->gender == 'male')  $user->update(['image' => 'uploads/profile/m_user.png']);
         if ($request->gender == 'female')  $user->update(['image' => 'uploads/profile/f_user.png']);
 
         if ($request->gender == 'male')  $user->update(['cover' => 'uploads/profile/m_user.png']);
         if ($request->gender == 'female')  $user->update(['cover' => 'uploads/profile/f_user.png']);
 
-    
+
 
         // $smsstatus = "";
         // $smsstatus = $this->send($user->phone, $user->sms_token);
@@ -357,7 +378,7 @@ class UserController extends Controller
         $notifications = $paginator->getCollection();
 
         $resource = new Collection($notifications, new NotificationTransformer);
-        $resource->setPaginator(                                                                                                                                                                                                                                                                                                                                                                                           new IlluminatePaginatorAdapter($paginator));
+        $resource->setPaginator(new IlluminatePaginatorAdapter($paginator));
         return response_api($this->fractal->createData($resource)->toArray());
     }
 
@@ -457,8 +478,8 @@ class UserController extends Controller
                 $name = time() . '' . rand(11111, 99999) . '.' . $extension; // renameing image
                 $photo->move($destinationPath, $name); // uploading file to given path
                 $request->user()->update(['image' => 'uploads/profile/' . $name]);
-            }     
-            
+            }
+
             // $img     = $request->hasFile('image') ? upload_image($request, 'image', 200, 200) : 'user.png';
             // $request->user()->update(['image' => $img]);
         }
@@ -472,7 +493,7 @@ class UserController extends Controller
                 $name = time() . '' . rand(11111, 99999) . '.' . $extension; // renameing cover
                 $photo->move($destinationPath, $name); // uploading file to given path
                 $request->user()->update(['cover' => 'uploads/profile/' . $name]);
-            }     
+            }
             // $cover      = $request->hasFile('cover') ? upload_image($request, 'cover', 200, 200) : 'user.png';
             // $request->user()->update(['cover' => $cover]);
         }
@@ -487,8 +508,8 @@ class UserController extends Controller
     }
     public function comments(Request $request)
     {
-        
-         $comments= $request->user()->rateSalon()->get();
+
+        $comments = $request->user()->rateSalon()->get();
         // return $comments;
         return response()->json(['success' => true, 'data' =>  CommentResource::collection($comments)->response()->getData(true)], 200);
     }
