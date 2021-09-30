@@ -25,7 +25,8 @@ class User extends Authenticatable
         'image', 'id_photo', 'commercial_register', 'is_active',
         'description', 'points', 'lat', 'lng',
         'city_id', 'governorate_id', 'sms_token', 'gender','name_sales','phone2','address',
-        'cover', 'is_sponsored', 'provider', 'provider_id', 'provider_token', 'type','search'
+        'cover', 'is_sponsored', 'provider', 'provider_id', 'provider_token', 'type','search',
+        'national_id','added_by'
     ];
     protected $appends = ['rate', 'status', 'from', 'to', 'avaliable_dates','is_fav'];
 

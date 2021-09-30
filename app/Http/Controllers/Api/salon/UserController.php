@@ -174,8 +174,10 @@ class UserController extends Controller
         if ($request->gender == 'male')  $user->update(['cover' => 'uploads/profile/m_user.png']);
         if ($request->gender == 'female')  $user->update(['cover' => 'uploads/profile/f_user.png']);
 
-
-
+    
+        if ($request->has('national_id')) {
+            $user->update(['national_id' => $request->national_id]);
+        }
         // $smsstatus = "";
         // $smsstatus = $this->send($user->phone, $user->sms_token);
 
