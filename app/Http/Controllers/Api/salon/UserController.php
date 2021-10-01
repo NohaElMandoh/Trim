@@ -180,7 +180,7 @@ class UserController extends Controller
             $user->update(['national_id' => $request->national_id]);
         }
         // $smsstatus = "";
-        // $smsstatus = $this->send($user->phone, $user->sms_token);
+        $smsstatus = $this->send($user->phone, $user->sms_token);
 
 
         return response()->json(['success' => true, 'data' => ['token' => $token, 'user' => new UserResource($user)]], 200);
