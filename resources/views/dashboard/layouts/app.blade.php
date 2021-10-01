@@ -307,11 +307,11 @@
                         @endcomponent
                     </ul>
                 </li>
-
+                @can("setting.view")
                 <li @if(url()->current() == route('subscription.index')) class="active" @endif>
                     <a href="{{ route('subscription.index') }}">
                         <i class="fa fa-cogs"></i> <span>{{ __('Subscription')}}</span></a></li>
-
+                        @endcan
             </ul>
         </section>
         <!-- /.sidebar -->

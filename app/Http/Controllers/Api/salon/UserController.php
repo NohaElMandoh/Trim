@@ -46,19 +46,20 @@ class UserController extends Controller
         $req_phone = '+2' . $request->phone;
         if (Auth::attempt(['phone' => $req_phone, 'password' => $request->password])) {
             // return auth()->user()->subscription->count();
-            if (auth()->user()->subscription->count() <= 0) {
-                return response()->json(['success' => false, 'errors' => __('messages.contact trim to add subscription to you')], 402);
-            } else {
-                foreach (auth()->user()->subscription as $key => $subscription) {
-                    if ($key == 0) {
-                        if ($subscription->pivot->is_active == 0) {
-                            
-                            return response()->json(['success' => false, 'errors' => __('messages.your subscription not active')], 402);
-                        }
-                        elseif($subscription->pivot->to < Carbon::now() ){
-                            
-                            return response()->json(['success' => false, 'errors' => __('messages.your subscription ended')], 402);
+            if (auth()->user()->hasRole('salon')) {
 
+                if (auth()->user()->subscription->count() <= 0) {
+                    return response()->json(['success' => false, 'errors' => __('messages.contact trim to add subscription to you')], 402);
+                } else {
+                    foreach (auth()->user()->subscription as $key => $subscription) {
+                        if ($key == 0) {
+                            if ($subscription->pivot->is_active == 0) {
+
+                                return response()->json(['success' => false, 'errors' => __('messages.your subscription not active')], 402);
+                            } elseif ($subscription->pivot->to < Carbon::now()) {
+
+                                return response()->json(['success' => false, 'errors' => __('messages.your subscription ended')], 402);
+                            }
                         }
                     }
                 }
@@ -174,7 +175,7 @@ class UserController extends Controller
         if ($request->gender == 'male')  $user->update(['cover' => 'uploads/profile/m_user.png']);
         if ($request->gender == 'female')  $user->update(['cover' => 'uploads/profile/f_user.png']);
 
-    
+
         if ($request->has('national_id')) {
             $user->update(['national_id' => $request->national_id]);
         }
@@ -392,14 +393,15 @@ class UserController extends Controller
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors(), 'success' => false], 402);
         }
-        $notification = auth()->user()->notifications()->where('id', $request->id)->first();
-        if ($notification) {
+        $notification = auth()->user()->notifications()->get();
 
-            $notification->update(
-                [
-                    'read_at' => \Carbon\Carbon::now()
-                ]
-            );
+        if ($notification) {
+            foreach ($notification as $n)
+                $n->update(
+                    [
+                        'read_at' => \Carbon\Carbon::now()
+                    ]
+                );
             return response()->json(['success' => true], 200);
         } else return response()->json(['success' => false, 'message' => __('messages.this notification may be deleted or not exist')], 400);
     }
