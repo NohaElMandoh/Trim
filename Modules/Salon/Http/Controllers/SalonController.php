@@ -8,6 +8,8 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Auth;
+
 use Modules\Salon\Entities\WorkDay;
 use Modules\Subscription\Entities\Subscription;
 
@@ -27,7 +29,20 @@ class SalonController extends Controller
      */
     public function index()
     {
-        $rows = User::role('salon')->latest()->get();
+      
+
+
+
+    if (auth()->user()->type == 'delegates') {
+        
+        $rows = User::role('salon')->where('user_id',Auth::id())->latest()->get();
+
+        } else {
+              $rows = User::role('salon')->latest()->get();
+
+        }
+ 
+        
         return view('salon::index', compact('rows'));
     }
 
@@ -73,6 +88,7 @@ class SalonController extends Controller
         $data               = $request->all();
 
         $data['password']   = bcrypt($request->password);
+        $data['user_id']  =Auth::id();
         $data['is_active']  = (bool) $request->is_active;
         $data['is_sponsored']  = (bool) $request->is_sponsored;
         $phone = '+2' . $request->phone;
