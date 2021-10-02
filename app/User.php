@@ -93,6 +93,10 @@ class User extends Authenticatable
     {
         return $this->morphMany('App\Notification', 'notifiable')->where('read_at', null);
     }
+    public function  all_notifications()
+    {
+        return $this->morphMany('App\Notification', 'notifiable');
+    }
 
     public static function findNearestCaptains($latitude, $longitude, $distance)
     {

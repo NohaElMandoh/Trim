@@ -375,10 +375,25 @@ class UserController extends Controller
 
     public function get_notifications(Request $request)
     {
+  
+        if($request->has('id')){
+        $notification = auth()->user()->all_notifications()->find($request->id)->first();
+        if ($notification) {
+         
+                $notification->update(
+                    [
+                        'read_at' => \Carbon\Carbon::now()
+                    ]
+                );
+            }
+       
+        }
         $user = $request->user();
-        $paginator  = $user->notifications()->latest()->paginate(10);
+        // $paginator  = $user->notifications()->latest()->paginate(10);
+        $paginator  = $user->all_notifications()->latest()->paginate(10);
 
         $notifications = $paginator->getCollection();
+
 
         $resource = new Collection($notifications, new NotificationTransformer);
         $resource->setPaginator(new IlluminatePaginatorAdapter($paginator));
