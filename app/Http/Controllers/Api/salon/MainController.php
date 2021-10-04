@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\salon;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\CityResource;
 use App\Http\Resources\GovernorateResource;
+use App\Http\Resources\OfferDiscountResource;
 use App\Http\Resources\OfferResource;
 use App\Http\Resources\SalonResource;
 use App\Http\Resources\StarsResource;
@@ -86,9 +87,9 @@ class MainController extends Controller
     public function lastOffers(Request $request)
     {
         $lastOffers = Offer::latest()->get();
-
+      
         return response()->json(['success' => true, 'data' =>
-        OfferResource::collection($lastOffers), 200]);
+        OfferDiscountResource::collection($lastOffers), 200]);
     }
     public function governorates()
     {
