@@ -36,7 +36,7 @@ class OfferController extends Controller
 
     public function offers(Request $request)
     {
-        $offers = Offer::latest();
+        $offers = Offer::latest()->get();
         return response()->json(['success' => true, 'data' =>  OfferResource::collection($offers)], 200);
     }
     public function services(Request $request)
