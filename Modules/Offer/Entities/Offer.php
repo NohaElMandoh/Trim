@@ -35,8 +35,11 @@ class Offer extends Model implements TranslatableContract
     }
     public function getDiscountAttribute($value)
     {
-        if ($this->service_price > 0 && $this->service_price  != null)
+        if ($this->service_price > 0 && $this->service_price  != null){
+            if( $this->service_price != $this->price)
             $dis = round(($this->price / $this->service_price) * 100, 0);
+            else $dis = 0;
+        }
         else $dis = 0;
         return  $dis;
     }
