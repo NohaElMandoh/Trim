@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\salon;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\OfferDiscountResource;
 use App\Http\Resources\OfferResource;
 use App\Http\Resources\ServiceResource;
 use App\User;
@@ -37,7 +38,7 @@ class OfferController extends Controller
     public function offers(Request $request)
     {
         $offers = Offer::latest()->get();
-        return response()->json(['success' => true, 'data' =>  OfferResource::collection($offers)], 200);
+        return response()->json(['success' => true, 'data' =>  OfferDiscountResource::collection($offers)], 200);
     }
     public function services(Request $request)
     {
