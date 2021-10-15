@@ -9,6 +9,7 @@ use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Resources\UserResource;
+use App\Http\Resources\WorkDaysResource;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Foundation\Auth\SendsPasswordResetEmails;
 use App\Token;
@@ -302,6 +303,13 @@ class UserController extends Controller
             '6' => __('Saturday')
         );
         return response()->json(['success' => true, 'data' =>  $obj], 200);
+    }
+
+    public function get_works_days(Request $request)
+    {
+        $work_days=$request->user()->works;
+        // return $work_days;
+        return response()->json(['success' => true, 'data' =>  WorkDaysResource::collection($work_days)], 200);
     }
     public function work_days(Request $request)
     {

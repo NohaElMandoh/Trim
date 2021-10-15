@@ -156,7 +156,8 @@ Route::group(['namespace' => 'Api'], function () {
 
                 Route::post('user/profile', 'UserController@profile');
                 //main screen
-
+                
+                Route::get('get_works_days', 'UserController@get_works_days');
                 Route::post('lastOffers', 'MainController@lastOffers');
                 Route::post('statistics', 'MainController@statistics');
 

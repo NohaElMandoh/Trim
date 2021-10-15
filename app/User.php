@@ -51,6 +51,8 @@ class User extends Authenticatable
     protected $hidden = [
         'password', 'remember_token',
     ];
+
+ 
     public function linkedSocialAccounts()
     {
         return $this->hasMany(LinkedSocialAccount::class);
