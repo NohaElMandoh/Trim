@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\salon;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\ServiceImageResource;
 use App\Http\Resources\ServiceResource;
 use App\User;
 use Illuminate\Http\Request;
@@ -79,6 +80,6 @@ class ServiceController extends Controller
 
         $services = $request->user()->service()->paginate(10);
 
-        return response()->json(['success' => true, 'data' =>  ServiceResource::collection($services)->response()->getData(true)], 200);
+        return response()->json(['success' => true, 'data' =>  ServiceImageResource::collection($services)->response()->getData(true)], 200);
     }
 }

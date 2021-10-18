@@ -36,7 +36,7 @@ Route::group(
             Route::post('factories/{id}/password', 'FactoryController@update_password');
             Route::resource('translators', 'TranslatorCotroller');
         });
-        Route::get('/', 'HomeController@home')->name('home');
+        Route::any('/', 'HomeController@home')->name('home');
         Route::get('career', 'HomeController@career')->name('career');
         Route::post('career', 'HomeController@save_career');
 

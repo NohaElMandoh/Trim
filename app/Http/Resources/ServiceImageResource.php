@@ -5,7 +5,7 @@ namespace App\Http\Resources;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Http\Resources\Json\ResourceCollection;
 
-class ServiceResource extends JsonResource
+class ServiceImageResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -30,7 +30,8 @@ class ServiceResource extends JsonResource
             'description_en'=>(!empty($this->description)) ?$this->description:"" ,
             'description_ar' =>  (!empty($this->translate('ar')->description)) ? $this->translate('ar')->description:"",
             'qty'=>(!empty($this->pivot)) ?$this->pivot->qty:"",
- 
+            'image' => !empty($this->image) ? url($this->image) : url('uploads/user.png'),
+          
 
         ];
     }
