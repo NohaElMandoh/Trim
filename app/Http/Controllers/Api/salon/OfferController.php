@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\salon;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\OfferDiscountResource;
 use App\Http\Resources\OfferResource;
+use App\Http\Resources\ServiceImageResource;
 use App\Http\Resources\ServiceResource;
 use App\User;
 use Illuminate\Http\Request;
