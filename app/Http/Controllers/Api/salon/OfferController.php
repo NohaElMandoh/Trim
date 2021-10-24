@@ -43,7 +43,7 @@ class OfferController extends Controller
     public function services(Request $request)
     {
         $services = $request->user()->service()->latest()->get();
-        return response()->json(['success' => true, 'data' =>  ServiceResource::collection($services)->response()->getData(true)], 200);
+        return response()->json(['success' => true, 'data' =>  ServiceImageResource::collection($services)->response()->getData(true)], 200);
     }
     public function addOffer(Request $request)
     {
