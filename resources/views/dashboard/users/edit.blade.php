@@ -17,7 +17,7 @@
         {{--@component('input_image', ['width' => 200, 'height' => 200, 'label' => 'Image', 'src' => route('file_show', $row->image)])
             image
         @endcomponent--}}
-        @if (!empt
+        @if (!empty($row->image))
                 @component('input_image', ['width' => 200, 'height' => 200, 'label' => 'Image', 'src' => url($row->image)])
                     image
                 @endcomponent
