@@ -72,8 +72,19 @@ class UserController extends Controller
         $data['password']   = bcrypt($request->password);
         $data['is_active']  = (bool) $request->is_active;
 //        $data['image']      = $request->hasFile('image') ? upload_image($request, 'image', 200, 200) : 'user.png';
+
         $row               = User::create($data);
         $row->roles()->attach($request->roles);
+
+        if ($request->hasFile('image')) {
+            $path = public_path();
+            $destinationPath = $path . '/uploads/user/'; // upload path
+            $photo = $request->file('image');
+            $extension = $photo->getClientOriginalExtension(); // getting image extension
+            $name = time() . '' . rand(11111, 99999) . '.' . $extension; // renameing image
+            $photo->move($destinationPath, $name); // uploading file to given path
+            $row->update(['image' => 'uploads/user/' . $name]);
+        }
         return redirect()->route('users.index')->with(['status' => 'success', 'message' => __('Stored successfully')]);
     }
 
@@ -137,12 +148,12 @@ class UserController extends Controller
         $row->roles()->sync($request->roles);
         if ($request->hasFile('image')) {
             $path = public_path();
-            $destinationPath = $path . '/uploads/salon/'; // upload path
+            $destinationPath = $path . '/uploads/user/'; // upload path
             $photo = $request->file('image');
             $extension = $photo->getClientOriginalExtension(); // getting image extension
             $name = time() . '' . rand(11111, 99999) . '.' . $extension; // renameing image
             $photo->move($destinationPath, $name); // uploading file to given path
-            $row->update(['image' => 'uploads/salon/' . $name]);
+            $row->update(['image' => 'uploads/user/' . $name]);
         }
         return redirect()->route('users.index')->with(['status' => 'success', 'message' => __('Updated successfully')]);
     }
