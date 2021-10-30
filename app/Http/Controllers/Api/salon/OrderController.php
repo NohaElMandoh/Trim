@@ -64,6 +64,16 @@ class OrderController extends Controller
        return response()->json(['success' => true, 'data' =>OrderWithServicesResource::collection($orders) ], 200);
        
     }
+//created for mobile dev 
+    public function processingOrders(Request $request)
+    {
+        if($request->has('day'))
+        $orders = $request->user()->shop_orders()->where('reservation_day',$request->day)->where('order_type','services')->where('status_id',3)->get();
+        else
+        $orders = $request->user()->shop_orders()->where('order_type','services')->where('status_id',3)->get();
+       return response()->json(['success' => true, 'data' =>OrderWithServicesResource::collection($orders) ], 200);
+       
+    }
     public function ordersWithOffers(Request $request)
     {
         if($request->has('day'))

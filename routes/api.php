@@ -83,6 +83,7 @@ Route::group(['namespace' => 'Api'], function () {
 
                 // ---------add service order
                 Route::post('newOrderWithService', 'OrderController@newOrderWithService');
+
                 Route::post('newOrderWithOffer', 'OrderController@newOrderWithOffer');
                 Route::post('newOrderWithProduct', 'OrderController@newOrderWithProduct');
                 Route::post('checkout', 'OrderController@checkout');
@@ -190,6 +191,8 @@ Route::group(['namespace' => 'Api'], function () {
                 //////orders
                 Route::post('orders', 'OrderController@orders');
                 Route::post('ordersWithServices', 'OrderController@ordersWithServices');
+                Route::post('processingOrders', 'OrderController@processingOrders');
+                
                 Route::post('ordersWithOffers', 'OrderController@ordersWithOffers');
 
                 
