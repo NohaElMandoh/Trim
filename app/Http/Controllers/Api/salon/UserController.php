@@ -9,6 +9,7 @@ use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Resources\UserResource;
+use App\Http\Resources\UserSalonResource;
 use App\Http\Resources\WorkDaysResource;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Foundation\Auth\SendsPasswordResetEmails;
@@ -72,7 +73,7 @@ class UserController extends Controller
 
                 $token = auth()->user()->createToken('Myapp')->accessToken;
 
-                return response()->json(['success' => true, 'data' => ['token' => $token, 'user' => new UserResource(User::find(auth()->id()))]], 200);
+                return response()->json(['success' => true, 'data' => ['token' => $token, 'user' => new UserSalonResource(User::find(auth()->id()))]], 200);
             }
         } else {
             return response()->json(['success' => false, 'message' => __('messages.UnAuthorised')], 401);
